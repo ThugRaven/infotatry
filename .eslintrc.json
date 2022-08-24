@@ -6,12 +6,20 @@
     "eslint:recommended",
     "prettier"
   ],
+  "plugins": ["testing-library"],
   "overrides": [
     {
       "files": ["*.stories.@(ts|tsx|js|jsx|mjs|cjs)"],
       "rules": {
         "storybook/hierarchy-separator": "error"
       }
+    },
+    {
+      "files": [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)"
+      ],
+      "extends": ["plugin:testing-library/react"]
     }
   ]
 }
