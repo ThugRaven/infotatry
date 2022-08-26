@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { NextPage } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
 import '../styles/globals.css';
@@ -13,15 +14,15 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
-  // return (
-  //   <ChakraProvider>
-  //     <Component {...pageProps} />
-  //   </ChakraProvider>
-  // );
 
   return (
-    <ChakraProvider>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
+    <SessionProvider session={session}>
+      <ChakraProvider>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
+    </SessionProvider>
   );
 }

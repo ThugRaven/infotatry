@@ -1,10 +1,12 @@
 import { Button, useColorMode } from '@chakra-ui/react';
-import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import { ReactElement } from 'react';
+import MainLayout from '../components/layouts/MainLayout/MainLayout';
 import styles from '../styles/Home.module.css';
+import { NextPageWithLayout } from './_app';
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
@@ -74,6 +76,10 @@ const Home: NextPage = () => {
       </footer>
     </div>
   );
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
 };
 
 export default Home;
