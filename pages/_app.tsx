@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
 import '../styles/globals.css';
+import '../styles/reset.css';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   // eslint-disable-next-line no-unused-vars
