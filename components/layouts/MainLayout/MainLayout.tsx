@@ -13,7 +13,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const { data: session, status } = useSession();
 
   return (
-    <div>
+    <div className={styles.container}>
       <header className={styles.header}>
         Header
         <Button onClick={() => setCount((state) => state + 1)}>
