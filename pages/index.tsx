@@ -2,7 +2,8 @@ import { Button, useColorMode } from '@chakra-ui/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { ReactElement } from 'react';
-import MainLayout from '../components/layouts/MainLayout/MainLayout';
+import { MainLayout } from '../components/layouts';
+
 import styles from '../styles/Home.module.css';
 import { NextPageWithLayout } from './_app';
 
