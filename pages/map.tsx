@@ -1,13 +1,10 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Head from 'next/head';
-import { ReactElement, useRef } from 'react';
-import { MapRef } from 'react-map-gl';
-import MainLayout from '../components/layouts/MainLayout/MainLayout';
-import { MapContainer } from '../components/ui';
+import { ReactElement } from 'react';
+import { MainLayout } from '../components/layouts';
+import { MapContainer } from '../components/map';
 
 const MapPage = () => {
-  const mapRef = useRef<MapRef>(null);
-
   return (
     <>
       <Head>
