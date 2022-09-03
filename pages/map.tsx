@@ -2,7 +2,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Head from 'next/head';
 import { ReactElement } from 'react';
 import { MainLayout } from '../components/layouts';
-import { MapContainer } from '../components/map';
+import { MapContainer, MapSidebar } from '../components/map';
+import styles from '../styles/MapPage.module.css';
 
 const MapPage = () => {
   return (
@@ -10,7 +11,10 @@ const MapPage = () => {
       <Head>
         <title>Map view</title>
       </Head>
-      <MapContainer />
+      <div className={styles.container}>
+        <MapSidebar />
+        <MapContainer />
+      </div>
     </>
   );
 };
