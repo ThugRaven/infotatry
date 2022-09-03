@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Map, { MapRef, Marker, NavigationControl } from 'react-map-gl';
 
 // interface MapContainerProps {
@@ -7,15 +7,17 @@ import Map, { MapRef, Marker, NavigationControl } from 'react-map-gl';
 
 const MapContainer = () => {
   const mapRef = useRef<MapRef>(null);
+  const [viewState, setViewState] = useState({
+    latitude: 49.23,
+    longitude: 19.93,
+    zoom: 11,
+  });
 
   return (
     <Map
       ref={mapRef}
-      initialViewState={{
-        latitude: 49.23,
-        longitude: 19.93,
-        zoom: 11,
-      }}
+      {...viewState}
+      onMove={(evt) => setViewState(evt.viewState)}
       maxPitch={60}
       reuseMaps
       mapStyle="mapbox://styles/mapbox/streets-v9"
