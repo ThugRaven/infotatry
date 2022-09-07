@@ -20,7 +20,8 @@ const MapContainer = () => {
       onMove={(evt) => setViewState(evt.viewState)}
       maxPitch={60}
       reuseMaps
-      mapStyle="mapbox://styles/mapbox/streets-v9"
+      // mapStyle="mapbox://styles/mapbox/streets-v9"
+      mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
       onClick={(e) => {
         console.log(e.lngLat);
