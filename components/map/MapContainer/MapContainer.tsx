@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
-import Map, { MapRef, Marker, NavigationControl, Popup } from 'react-map-gl';
+import Map, { MapRef, Marker, NavigationControl } from 'react-map-gl';
+import MapPopup from '../MapPopup';
 
 // interface MapContainerProps {
 //   prop: string;
@@ -75,19 +76,13 @@ const MapContainer = () => {
       }}
     >
       {popupInfo && (
-        <Popup
-          latitude={popupInfo.lngLat.lat}
-          longitude={popupInfo.lngLat.lng}
-          anchor="bottom"
+        <MapPopup
+          lngLat={popupInfo.lngLat}
+          features={popupInfo.features}
           onClose={() => {
             setPopupInfo(null);
           }}
-          closeOnClick={false}
-        >
-          <div style={{ color: 'black' }}>
-            {popupInfo.features[0].properties?.name}
-          </div>
-        </Popup>
+        />
       )}
       <NavigationControl />
       <Marker longitude={19.93} latitude={49.23} color="red" />
