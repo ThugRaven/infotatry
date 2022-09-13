@@ -18,7 +18,6 @@ const MapContainer = () => {
     zoom: 11,
   });
   const [cursor, setCursor] = useState('auto');
-  const [showPopup, setShowPopup] = useState(false);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
   const onMouseEnter = useCallback(() => setCursor('pointer'), []);
@@ -39,33 +38,23 @@ const MapContainer = () => {
       onMouseLeave={onMouseLeave}
       cursor={cursor}
       onClick={(e) => {
-        console.log('click');
-
-        console.log(e);
-        console.log(e.features);
         // console.log(mapRef.current?.getStyle().layers);
         if (
           !mapRef.current ||
           !e.features ||
           e.features.length === 0 ||
           e.features[0].layer.id !== 'trails-data-layer'
-        )
+        ) {
+          setPopupInfo(null);
           return;
-
-        // const trialName = e.features[0].properties.name;
+        }
 
         let trailInfo = {
           lngLat: e.lngLat,
           features: e.features,
         };
 
-        console.log(trailInfo.lngLat, popupInfo?.lngLat);
-        console.log(
-          popupInfo &&
-            trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
-            trailInfo.lngLat.lat === popupInfo.lngLat.lat,
-        );
-
+        // Return when the coordinates are the same to skip unnecessary render
         if (
           popupInfo &&
           trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
@@ -73,7 +62,6 @@ const MapContainer = () => {
         )
           return;
 
-        console.log(trailInfo);
         setPopupInfo(trailInfo);
 
         // mapRef.current.flyTo({
@@ -88,17 +76,16 @@ const MapContainer = () => {
     >
       {popupInfo && (
         <Popup
-          longitude={popupInfo.lngLat.lng}
           latitude={popupInfo.lngLat.lat}
+          longitude={popupInfo.lngLat.lng}
           anchor="bottom"
-          key={`${popupInfo.lngLat.lng}-${popupInfo.lngLat.lat}`}
           onClose={() => {
-            console.log('close');
             setPopupInfo(null);
           }}
+          closeOnClick={false}
         >
           <div style={{ color: 'black' }}>
-            {popupInfo.features[0].properties.name}
+            {popupInfo.features[0].properties?.name}
           </div>
         </Popup>
       )}
