@@ -18,11 +18,13 @@ const MapContainer = () => {
     longitude: 19.93,
     zoom: 11,
   });
-  const [cursor, setCursor] = useState('auto');
+  const [cursor, setCursor] = useState('grab');
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
   const onMouseEnter = useCallback(() => setCursor('pointer'), []);
-  const onMouseLeave = useCallback(() => setCursor('auto'), []);
+  const onMouseLeave = useCallback(() => setCursor('grab'), []);
+  const onDragStart = useCallback(() => setCursor('grabbing'), []);
+  const onDragEnd = useCallback(() => setCursor('grab'), []);
 
   return (
     <Map
@@ -37,6 +39,8 @@ const MapContainer = () => {
       interactiveLayerIds={['trails-data-layer']}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
       cursor={cursor}
       onClick={(e) => {
         // console.log(mapRef.current?.getStyle().layers);
