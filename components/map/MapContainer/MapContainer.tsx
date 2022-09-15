@@ -1,17 +1,22 @@
-import { useCallback, useRef, useState } from 'react';
-import Map, { MapRef, Marker, NavigationControl } from 'react-map-gl';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Map, {
+  MapRef,
+  Marker,
+  NavigationControl,
+  PaddingOptions,
+} from 'react-map-gl';
 import MapPopup from '../MapPopup';
 
-// interface MapContainerProps {
-//   prop: string;
-// }
+interface MapContainerProps {
+  padding: number;
+}
 
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const MapContainer = () => {
+const MapContainer = ({ padding }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
@@ -25,6 +30,20 @@ const MapContainer = () => {
   const onMouseLeave = useCallback(() => setCursor('grab'), []);
   const onDragStart = useCallback(() => setCursor('grabbing'), []);
   const onDragEnd = useCallback(() => setCursor('grab'), []);
+
+  useEffect(() => {
+    let mapPadding: PaddingOptions = { left: 0, right: 0, bottom: 0, top: 0 };
+    if (padding > 0) {
+      mapPadding.right = padding;
+    } else {
+      mapPadding.left = padding;
+    }
+
+    mapRef.current?.easeTo({
+      padding: mapPadding,
+      duration: 250,
+    });
+  }, [padding]);
 
   return (
     <Map
