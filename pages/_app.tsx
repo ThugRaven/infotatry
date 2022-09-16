@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
+import { SEO } from '../components/common';
 import '../styles/globals.css';
 import '../styles/reset.css';
 
@@ -22,8 +23,19 @@ export default function MyApp({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <SessionProvider session={session}>
-      <ChakraProvider>{getLayout(<Component {...pageProps} />)}</ChakraProvider>
-    </SessionProvider>
+    <>
+      <SEO>
+        <meta
+          key="viewport"
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+      </SEO>
+      <SessionProvider session={session}>
+        <ChakraProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </ChakraProvider>
+      </SessionProvider>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import { Button, useColorMode } from '@chakra-ui/react';
 import Image from 'next/image';
 import { ReactElement } from 'react';
-import { SEO } from '../components/common';
 import { MainLayout } from '../components/layouts';
 import styles from '../styles/Home.module.css';
 import { NextPageWithLayout } from './_app';
@@ -11,10 +10,6 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className={styles.container}>
-      <SEO>
-        <link rel="icon" href="/favicon.ico" />
-      </SEO>
-
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
