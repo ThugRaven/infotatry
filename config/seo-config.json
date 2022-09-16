@@ -1,0 +1,12 @@
+{
+  "title": "Mapa szlaków Tatrzańskiego Parku Narodowego | InfoTatry",
+  "titleTemplate": "%s | InfoTatry",
+  "description": "desc",
+  "openGraph": {
+    "title": "Mapa szlaków Tatrzańskiego Parku Narodowego | InfoTatry",
+    "description": "desc",
+    "type": "website",
+    "url": "",
+    "site_name": "InfoTatry"
+  }
+}
