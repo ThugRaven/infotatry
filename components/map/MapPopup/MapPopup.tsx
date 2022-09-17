@@ -1,5 +1,5 @@
 import { Popup, PopupEvent } from 'react-map-gl';
-import styles from './MapPopup.module.css';
+import s from './MapPopup.module.css';
 
 interface MapPopupProps {
   lngLat: mapboxgl.LngLat;
@@ -18,7 +18,7 @@ const MapPopup = ({ lngLat, features, onClose }: MapPopupProps) => {
       closeButton={false}
     >
       {features.length > 0 && features[0].properties ? (
-        <div className={styles.container}>{features[0].properties.name}</div>
+        <div className={s.container}>{features[0].properties.name}</div>
       ) : (
         <div>Brak informacji</div>
       )}

@@ -2,7 +2,7 @@ import { Avatar, Button, Text } from '@chakra-ui/react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import styles from './DashboardLayout.module.css';
+import s from './DashboardLayout.module.css';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -12,10 +12,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { data: session, status } = useSession();
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
+    <div className={s.container}>
+      <header className={s.header}>
         <nav>
-          <ul className={styles.nav}>
+          <ul className={s.nav}>
             <li>
               <Link href="/">Home</Link>
             </li>
@@ -31,7 +31,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </li>
           </ul>
         </nav>
-        <div className={styles.auth}>
+        <div className={s.auth}>
           {status === 'authenticated' ? (
             <>
               {session.user?.image && <Avatar src={session.user.image} />}
