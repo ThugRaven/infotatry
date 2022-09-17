@@ -20,10 +20,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/map">Mapa</Link>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+            <div>Admin</div>
+            <li>
+              <Link href="/dashboard/admin">Admin Dashboard</Link>
             </li>
             <li>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard/admin/map">Map</Link>
             </li>
           </ul>
         </nav>
