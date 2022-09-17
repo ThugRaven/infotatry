@@ -1,8 +1,8 @@
+import { MainLayout } from '@components/layouts';
+import { MapContainer, MapSidebar } from '@components/map';
+import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement, useState } from 'react';
-import { MainLayout } from '../../components/layouts';
-import { MapContainer, MapSidebar } from '../../components/map';
-import styles from '../../styles/MapPage.module.css';
 
 const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,7 +18,7 @@ const MapPage = () => {
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={s.container}>
         <MapSidebar
           isOpen={isOpen}
           onToggle={onToggle}

@@ -1,9 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { SEO } from '@components/common';
 import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
-import { SEO } from '../components/common';
 import '../styles/globals.css';
 import '../styles/reset.css';
 

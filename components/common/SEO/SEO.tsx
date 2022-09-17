@@ -1,6 +1,6 @@
+import config from '@config/seo-config.json';
 import Head from 'next/head';
 import { ReactNode } from 'react';
-import config from '../../../config/seo-config.json';
 
 interface SEOProps {
   title?: string;
