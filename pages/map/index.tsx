@@ -1,5 +1,4 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Head from 'next/head';
 import { ReactElement, useState } from 'react';
 import { MainLayout } from '../../components/layouts';
 import { MapContainer, MapSidebar } from '../../components/map';
@@ -19,9 +18,6 @@ const MapPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Map view</title>
-      </Head>
       <div className={styles.container}>
         <MapSidebar
           isOpen={isOpen}
