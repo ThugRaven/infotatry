@@ -1,7 +1,7 @@
 import { Avatar, Button, Text } from '@chakra-ui/react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import styles from './MainLayout.module.css';
 
 interface MainLayoutProps {
@@ -9,16 +9,24 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
-  const [count, setCount] = useState(0);
   const { data: session, status } = useSession();
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        Header
-        <Button onClick={() => setCount((state) => state + 1)}>
-          Count {count}
-        </Button>
+        <nav>
+          <ul className={styles.nav}>
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/map">Mapa</Link>
+            </li>
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        </nav>
         <div className={styles.auth}>
           {status === 'authenticated' ? (
             <>
@@ -30,16 +38,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             <Button onClick={() => signIn()}>Zaloguj się</Button>
           )}
         </div>
-        <nav>
-          <ul>
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/map">Mapa</Link>
-            </li>
-          </ul>
-        </nav>
       </header>
       {children}
     </div>
