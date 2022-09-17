@@ -20,14 +20,14 @@ const MapSidebar = ({ isOpen, onToggle, onWidthChange }: MapSidebarProps) => {
   return (
     <div className={styles.wrapper}>
       <div
-        className={`${styles.container} ${!isOpen && styles.collapsed}`}
+        className={`${styles.container} ${!isOpen ? styles.collapsed : ''}`}
         ref={ref}
       >
         <button className={styles.toggle} onClick={onToggle}>
           <ChevronLeftIcon
             w={6}
             h={6}
-            className={`${styles.toggle__icon} ${!isOpen && styles.rotate}`}
+            className={`${styles.toggle__icon} ${!isOpen ? styles.rotate : ''}`}
           />
         </button>
         <InputGroup>
