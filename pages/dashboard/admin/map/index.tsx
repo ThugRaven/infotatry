@@ -38,8 +38,10 @@ const DashboardAdminMap = () => {
   const onDragEnd = useCallback(() => setCursor('grab'), []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [type, setType] = useState('trail');
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
+    setType(e.currentTarget.name);
     onOpen();
   };
 
@@ -119,7 +121,9 @@ const DashboardAdminMap = () => {
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
+            <ModalHeader>
+              {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
+            </ModalHeader>
             <ModalCloseButton />
             <ModalBody></ModalBody>
 
