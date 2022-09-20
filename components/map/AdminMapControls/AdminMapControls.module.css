@@ -1,0 +1,27 @@
+.container {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  transform: translateX(-50%);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: hsl(0, 0%, 13%);
+  transition: background-color 250ms ease-in-out;
+}
+
+.button:hover {
+  background-color: hsl(0, 0%, 23%);
+}
+
+.button:active {
+  background-color: hsl(0, 0%, 33%);
+}

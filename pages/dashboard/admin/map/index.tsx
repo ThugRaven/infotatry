@@ -1,9 +1,20 @@
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import { CoordinatesBox, MapPopup } from '@components/map';
+import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
 import s from '@styles/DashboardAdminMap.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { ReactElement, useCallback, useRef, useState } from 'react';
+import React, { ReactElement, useCallback, useRef, useState } from 'react';
 import Map, { MapRef, NavigationControl } from 'react-map-gl';
 
 interface PopupInfo {
@@ -25,6 +36,12 @@ const DashboardAdminMap = () => {
   const onMouseLeave = useCallback(() => setCursor('grab'), []);
   const onDragStart = useCallback(() => setCursor('grabbing'), []);
   const onDragEnd = useCallback(() => setCursor('grab'), []);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(e.currentTarget.name);
+    onOpen();
+  };
 
   return (
     <>
@@ -98,6 +115,21 @@ const DashboardAdminMap = () => {
           )}
           <NavigationControl />
         </Map>
+        <AdminMapControls onClick={handleClick} />
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Modal Title</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody></ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     </>
   );
