@@ -1,5 +1,8 @@
 import {
   Button,
+  FormControl,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   useDisclosure,
 } from '@chakra-ui/react';
 import { SEO } from '@components/common';
@@ -21,6 +25,13 @@ interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
+
+const initialValues = {
+  name: '',
+  latitude: '',
+  longitude: '',
+  nodeType: 'node',
+};
 
 const DashboardAdminMap = () => {
   const mapRef = useRef<MapRef>(null);
@@ -43,6 +54,29 @@ const DashboardAdminMap = () => {
     console.log(e.currentTarget.name);
     setType(e.currentTarget.name);
     onOpen();
+  };
+
+  const [values, setValues] = useState(initialValues);
+
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(values);
+    setValues(initialValues);
+    onClose();
   };
 
   return (
@@ -118,22 +152,74 @@ const DashboardAdminMap = () => {
           <NavigationControl />
         </Map>
         <AdminMapControls onClick={handleClick} />
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody></ModalBody>
+        {type === 'trail' ? (
+          <></>
+        ) : (
+          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
+              </ModalHeader>
+              <ModalCloseButton />
+              <form onSubmit={handleSubmit}>
+                <ModalBody>
+                  <FormControl isRequired>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      type="text"
+                      name="name"
+                      mb={2}
+                      value={values.name}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>Latitude</FormLabel>
+                    <Input
+                      type="text"
+                      name="latitude"
+                      mb={2}
+                      value={values.latitude}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>Longitude</FormLabel>
+                    <Input
+                      type="text"
+                      name="longitude"
+                      mb={2}
+                      value={values.longitude}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel>Type</FormLabel>
+                    <Select
+                      placeholder="Select type"
+                      name="nodeType"
+                      value={values.nodeType}
+                      onChange={handleChange}
+                    >
+                      <option value="node">node</option>
+                      <option value="peak">peak</option>
+                      <option value="shelter">shelter</option>
+                      <option value="cave">cave</option>
+                    </Select>
+                  </FormControl>
+                </ModalBody>
 
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} type="submit">
+                    Save
+                  </Button>
+                  <Button onClick={onClose}>Cancel</Button>
+                </ModalFooter>
+              </form>
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     </>
   );
