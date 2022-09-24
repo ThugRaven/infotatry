@@ -16,10 +16,13 @@ import {
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
+import { nodesDataLayer, nodesDrawLayer } from '@config/layer-styles';
+import { createPoint } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useCallback, useRef, useState } from 'react';
-import Map, { MapRef, NavigationControl } from 'react-map-gl';
+import Map, { Layer, MapRef, NavigationControl, Source } from 'react-map-gl';
 
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
@@ -28,8 +31,8 @@ interface PopupInfo {
 
 const initialValues = {
   name: '',
-  latitude: '',
-  longitude: '',
+  latitude: 0,
+  longitude: 0,
   nodeType: 'node',
 };
 
@@ -50,13 +53,25 @@ const DashboardAdminMap = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [type, setType] = useState('trail');
+  const [values, setValues] = useState(initialValues);
+  // const [trailsData, setTrailsData] = useState<GeoJSON.FeatureCollection>({
+  const [nodesData, setNodesData] = useState<GeoJSON.FeatureCollection>({
+    type: 'FeatureCollection',
+    features: [],
+  });
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
     setType(e.currentTarget.name);
+    const lat = parseFloat(viewState.latitude.toFixed(5));
+    const lng = parseFloat(viewState.longitude.toFixed(5));
+    setValues((values) => ({
+      ...values,
+      latitude: lat,
+      longitude: lng,
+    }));
     onOpen();
   };
-
-  const [values, setValues] = useState(initialValues);
 
   const handleChange = (
     e:
@@ -76,6 +91,14 @@ const DashboardAdminMap = () => {
     e.preventDefault();
     console.log(values);
     setValues(initialValues);
+    const features = [...nodesData.features];
+    const node = createPoint(
+      values.name,
+      new mapboxgl.LngLat(values.longitude, values.latitude),
+    );
+    features.push(node);
+    setNodesData((state) => ({ ...state, features }));
+    console.log(nodesData);
     onClose();
   };
 
@@ -149,6 +172,16 @@ const DashboardAdminMap = () => {
               }}
             />
           )}
+          {/* <Source type="geojson" data={trailsData}>
+            <Layer {...trailsDataLayer} />
+            <Layer {...trailsDrawLayer} />
+          </Source> */}
+          <Source type="geojson" data={nodesData}>
+            <Layer {...nodesDataLayer} />
+          </Source>
+          <Source type="geojson" data={nodesData}>
+            <Layer {...nodesDrawLayer} />
+          </Source>
           <NavigationControl />
         </Map>
         <AdminMapControls onClick={handleClick} />
