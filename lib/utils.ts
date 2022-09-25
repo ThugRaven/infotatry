@@ -15,3 +15,21 @@ export function createPoint(
     },
   };
 }
+
+export function createLineString(
+  name: string,
+  color: string,
+  path: GeoJSON.Position[],
+): GeoJSON.Feature<GeoJSON.LineString> {
+  return {
+    type: 'Feature',
+    properties: {
+      name,
+      color,
+    },
+    geometry: {
+      type: 'LineString',
+      coordinates: path,
+    },
+  };
+}

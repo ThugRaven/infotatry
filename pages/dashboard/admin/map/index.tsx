@@ -16,8 +16,13 @@ import {
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
-import { nodesDataLocalLayer, nodesDrawLocalLayer } from '@config/layer-styles';
-import { createPoint } from '@lib/utils';
+import {
+  nodesDataLocalLayer,
+  nodesDrawLocalLayer,
+  trailsDataLocalLayer,
+  trailsDrawLocalLayer,
+} from '@config/layer-styles';
+import { createLineString, createPoint } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -29,15 +34,23 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const initialValues = {
+const initialNodeValues = {
   name: '',
   latitude: 0,
   longitude: 0,
   nodeType: 'node',
 };
 
+const initialTrailValues = {
+  nameStart: '',
+  nameEnd: '',
+  path: '',
+  color: '',
+};
+
 const interactiveLayerIds = [
   'trails-data-layer',
+  'trails-data-local-layer',
   'nodes-data-layer',
   'nodes-data-local-layer',
 ];
@@ -59,8 +72,12 @@ const DashboardAdminMap = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [type, setType] = useState('trail');
-  const [values, setValues] = useState(initialValues);
-  // const [trailsData, setTrailsData] = useState<GeoJSON.FeatureCollection>({
+  const [nodeForm, setNodeForm] = useState(initialNodeValues);
+  const [trailForm, setTrailForm] = useState(initialTrailValues);
+  const [trailsData, setTrailsData] = useState<GeoJSON.FeatureCollection>({
+    type: 'FeatureCollection',
+    features: [],
+  });
   const [nodesData, setNodesData] = useState<GeoJSON.FeatureCollection>({
     type: 'FeatureCollection',
     features: [],
@@ -71,7 +88,7 @@ const DashboardAdminMap = () => {
     setType(e.currentTarget.name);
     const lat = parseFloat(viewState.latitude.toFixed(5));
     const lng = parseFloat(viewState.longitude.toFixed(5));
-    setValues((values) => ({
+    setNodeForm((values) => ({
       ...values,
       latitude: lat,
       longitude: lng,
@@ -79,7 +96,7 @@ const DashboardAdminMap = () => {
     onOpen();
   };
 
-  const handleChange = (
+  const handleChangeNode = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>,
@@ -87,24 +104,57 @@ const DashboardAdminMap = () => {
     const { name, value } = e.target;
     console.log(name, value);
 
-    setValues({
-      ...values,
+    setNodeForm({
+      ...nodeForm,
       [name]: value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChangeTrail = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    setTrailForm({
+      ...trailForm,
+      [name]: value,
+    });
+  };
+
+  const handleSubmitNode = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(values);
-    setValues(initialValues);
+    console.log(nodeForm);
+    setNodeForm(initialNodeValues);
     const features = [...nodesData.features];
     const node = createPoint(
-      values.name,
-      new mapboxgl.LngLat(values.longitude, values.latitude),
+      nodeForm.name,
+      new mapboxgl.LngLat(nodeForm.longitude, nodeForm.latitude),
     );
     features.push(node);
     setNodesData((state) => ({ ...state, features }));
     console.log(nodesData);
+    onClose();
+  };
+
+  const handleSubmitTrail = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(trailForm);
+    setTrailForm(initialTrailValues);
+    const features = [...trailsData.features];
+    const trail = createLineString(
+      `${trailForm.nameStart} - ${trailForm.nameEnd}`,
+      trailForm.color,
+      JSON.parse(trailForm.path),
+    );
+    features.push(trail);
+    console.log(trail);
+
+    setTrailsData((state) => ({ ...state, features }));
+    console.log(trailsData);
+
     onClose();
   };
 
@@ -179,87 +229,144 @@ const DashboardAdminMap = () => {
               }}
             />
           )}
-          {/* <Source type="geojson" data={trailsData}>
-            <Layer {...trailsDataLayer} />
-            <Layer {...trailsDrawLayer} />
-          </Source> */}
-          <Source type="geojson" data={nodesData}>
-            <Layer {...nodesDataLocalLayer} />
+          <Source type="geojson" data={trailsData}>
+            <Layer {...trailsDataLocalLayer} />
+            <Layer {...trailsDrawLocalLayer} />
           </Source>
           <Source type="geojson" data={nodesData}>
+            <Layer {...nodesDataLocalLayer} />
             <Layer {...nodesDrawLocalLayer} />
           </Source>
           <NavigationControl />
         </Map>
         <AdminMapControls onClick={handleClick} />
-        {type === 'trail' ? (
-          <></>
-        ) : (
-          <Modal isOpen={isOpen} onClose={onClose} isCentered>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>
-                {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
-              </ModalHeader>
-              <ModalCloseButton />
-              <form onSubmit={handleSubmit}>
-                <ModalBody>
-                  <FormControl isRequired>
-                    <FormLabel>Name</FormLabel>
-                    <Input
-                      type="text"
-                      name="name"
-                      mb={2}
-                      value={values.name}
-                      onChange={handleChange}
-                    />
-                  </FormControl>
-                  <FormControl isRequired>
-                    <FormLabel>Latitude</FormLabel>
-                    <Input
-                      type="text"
-                      name="latitude"
-                      mb={2}
-                      value={values.latitude}
-                      onChange={handleChange}
-                    />
-                  </FormControl>
-                  <FormControl isRequired>
-                    <FormLabel>Longitude</FormLabel>
-                    <Input
-                      type="text"
-                      name="longitude"
-                      mb={2}
-                      value={values.longitude}
-                      onChange={handleChange}
-                    />
-                  </FormControl>
-                  <FormControl isRequired>
-                    <FormLabel>Type</FormLabel>
-                    <Select
-                      placeholder="Select type"
-                      name="nodeType"
-                      value={values.nodeType}
-                      onChange={handleChange}
-                    >
-                      <option value="node">node</option>
-                      <option value="peak">peak</option>
-                      <option value="shelter">shelter</option>
-                      <option value="cave">cave</option>
-                    </Select>
-                  </FormControl>
-                </ModalBody>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
+              {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
+            </ModalHeader>
+            <ModalCloseButton />
+            {type === 'trail' ? (
+              <>
+                <form onSubmit={handleSubmitTrail}>
+                  <ModalBody>
+                    <FormControl isRequired>
+                      <FormLabel>Name start</FormLabel>
+                      <Input
+                        type="text"
+                        name="nameStart"
+                        mb={2}
+                        value={trailForm.nameStart}
+                        onChange={handleChangeTrail}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Name end</FormLabel>
+                      <Input
+                        type="text"
+                        name="nameEnd"
+                        mb={2}
+                        value={trailForm.nameEnd}
+                        onChange={handleChangeTrail}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Path</FormLabel>
+                      <Input
+                        type="text"
+                        name="path"
+                        mb={2}
+                        value={trailForm.path}
+                        onChange={handleChangeTrail}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Color</FormLabel>
+                      <Select
+                        placeholder="Select colors"
+                        name="color"
+                        value={trailForm.color}
+                        onChange={handleChangeTrail}
+                      >
+                        <option value="red">red</option>
+                        <option value="blue">blue</option>
+                        <option value="yellow">yellow</option>
+                        <option value="green">green</option>
+                        <option value="black">black</option>
+                      </Select>
+                    </FormControl>
+                  </ModalBody>
 
-                <ModalFooter>
-                  <Button colorScheme="blue" mr={3} type="submit">
-                    Save
-                  </Button>
-                  <Button onClick={onClose}>Cancel</Button>
-                </ModalFooter>
-              </form>
-            </ModalContent>
-          </Modal>
-        )}
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} type="submit">
+                      Save
+                    </Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                  </ModalFooter>
+                </form>
+              </>
+            ) : (
+              <>
+                <form onSubmit={handleSubmitNode}>
+                  <ModalBody>
+                    <FormControl isRequired>
+                      <FormLabel>Name</FormLabel>
+                      <Input
+                        type="text"
+                        name="name"
+                        mb={2}
+                        value={nodeForm.name}
+                        onChange={handleChangeNode}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Latitude</FormLabel>
+                      <Input
+                        type="text"
+                        name="latitude"
+                        mb={2}
+                        value={nodeForm.latitude}
+                        onChange={handleChangeNode}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Longitude</FormLabel>
+                      <Input
+                        type="text"
+                        name="longitude"
+                        mb={2}
+                        value={nodeForm.longitude}
+                        onChange={handleChangeNode}
+                      />
+                    </FormControl>
+                    <FormControl isRequired>
+                      <FormLabel>Type</FormLabel>
+                      <Select
+                        placeholder="Select type"
+                        name="nodeType"
+                        value={nodeForm.nodeType}
+                        onChange={handleChangeNode}
+                      >
+                        <option value="node">node</option>
+                        <option value="peak">peak</option>
+                        <option value="shelter">shelter</option>
+                        <option value="cave">cave</option>
+                      </Select>
+                    </FormControl>
+                  </ModalBody>
+
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} type="submit">
+                      Save
+                    </Button>
+                    <Button onClick={onClose}>Cancel</Button>
+                  </ModalFooter>
+                </form>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     </>
   );

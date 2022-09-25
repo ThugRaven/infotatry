@@ -4,11 +4,10 @@ export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
   type: 'line',
   source: 'composite',
-  'source-layer': 'Trails',
   paint: {
     'line-color': [
       'match',
-      ['get', 'colour'],
+      ['get', 'color'],
       ['red'],
       'hsl(0, 100%, 55%)',
       '#000000',
@@ -18,15 +17,24 @@ export const trailsDrawLayer: LineLayer = {
   },
 };
 
+export const trailsDrawLocalLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-local-layer',
+};
+
 export const trailsDataLayer: LineLayer = {
   id: 'trails-data-layer',
   type: 'line',
   source: 'composite',
-  'source-layer': 'Trails',
   paint: {
     'line-width': ['interpolate', ['linear'], ['zoom'], 0, 2, 10, 10, 22, 15],
     'line-opacity': 0,
   },
+};
+
+export const trailsDataLocalLayer: LineLayer = {
+  ...trailsDataLayer,
+  id: 'trails-data-local-layer',
 };
 
 export const nodesDrawLayer: CircleLayer = {
