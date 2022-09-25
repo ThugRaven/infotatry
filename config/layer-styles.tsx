@@ -1,5 +1,23 @@
 import { CircleLayer, LineLayer } from 'mapbox-gl';
 
+export const trailsDrawLayer: LineLayer = {
+  id: 'trails-draw-layer',
+  type: 'line',
+  source: 'composite',
+  'source-layer': 'Trails',
+  paint: {
+    'line-color': [
+      'match',
+      ['get', 'colour'],
+      ['red'],
+      'hsl(0, 100%, 55%)',
+      '#000000',
+    ],
+    'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
+    'line-dasharray': [4, 2],
+  },
+};
+
 export const trailsDataLayer: LineLayer = {
   id: 'trails-data-layer',
   type: 'line',
@@ -11,21 +29,14 @@ export const trailsDataLayer: LineLayer = {
   },
 };
 
-export const trailsDrawLayer: LineLayer = {
-  id: 'trails-draw-layer',
-  type: 'line',
+export const nodesDrawLayer: CircleLayer = {
+  id: 'nodes-draw-layer',
+  type: 'circle',
   source: 'composite',
-  'source-layer': 'Trails',
+  'source-layer': 'Nodes',
   paint: {
-    'line-color': [
-      'match',
-      ['get', 'color'],
-      ['red'],
-      'hsl(0, 99%, 56%)',
-      '#000000',
-    ],
-    'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
-    'line-dasharray': [4, 2],
+    'circle-color': 'hsl(0, 100%, 100%)',
+    'circle-stroke-width': 1,
   },
 };
 
@@ -33,19 +44,7 @@ export const nodesDataLayer: CircleLayer = {
   id: 'nodes-data-layer',
   type: 'circle',
   source: 'composite',
-  paint: {
-    'circle-color': 'hsl(0, 100%, 56%)',
-    'circle-radius': 5,
-  },
-};
-
-export const nodesDrawLayer: CircleLayer = {
-  id: 'nodes-draw-layer',
-  type: 'circle',
-  source: 'composite',
-  paint: {
-    'circle-color': 'black',
-    'circle-radius': 10,
-    'circle-opacity': 0,
-  },
+  'source-layer': 'Nodes',
+  layout: {},
+  paint: { 'circle-radius': 10, 'circle-opacity': 0 },
 };
