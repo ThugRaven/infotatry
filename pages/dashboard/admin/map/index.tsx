@@ -230,8 +230,8 @@ const DashboardAdminMap = () => {
             />
           )}
           <Source type="geojson" data={trailsData}>
-            <Layer {...trailsDataLocalLayer} />
-            <Layer {...trailsDrawLocalLayer} />
+            <Layer {...trailsDataLocalLayer} beforeId="trails-data-layer" />
+            <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
           </Source>
           <Source type="geojson" data={nodesData}>
             <Layer {...nodesDataLocalLayer} />
