@@ -36,6 +36,12 @@ const initialValues = {
   nodeType: 'node',
 };
 
+const interactiveLayerIds = [
+  'trails-data-layer',
+  'nodes-data-layer',
+  'nodes-data-local-layer',
+];
+
 const DashboardAdminMap = () => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
@@ -120,7 +126,7 @@ const DashboardAdminMap = () => {
           // mapStyle="mapbox://styles/mapbox/streets-v9"
           mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-          interactiveLayerIds={['trails-data-layer', 'nodes-data-local-layer']}
+          interactiveLayerIds={interactiveLayerIds}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onDragStart={onDragStart}
@@ -128,11 +134,12 @@ const DashboardAdminMap = () => {
           cursor={cursor}
           onClick={(e) => {
             // console.log(mapRef.current?.getStyle().layers);
+            const features = e.features;
             if (
               !mapRef.current ||
-              !e.features ||
-              e.features.length === 0 ||
-              e.features[0].layer.id !== 'trails-data-layer'
+              !features ||
+              features.length === 0 ||
+              !interactiveLayerIds.some((id) => id === features[0].layer.id)
             ) {
               setPopupInfo(null);
               return;
@@ -140,7 +147,7 @@ const DashboardAdminMap = () => {
 
             let trailInfo = {
               lngLat: e.lngLat,
-              features: e.features,
+              features,
             };
 
             // Return when the coordinates are the same to skip unnecessary render
