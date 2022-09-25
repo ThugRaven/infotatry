@@ -16,7 +16,7 @@ import {
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
-import { nodesDataLayer, nodesDrawLayer } from '@config/layer-styles';
+import { nodesDataLocalLayer, nodesDrawLocalLayer } from '@config/layer-styles';
 import { createPoint } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
 import mapboxgl from 'mapbox-gl';
@@ -120,7 +120,7 @@ const DashboardAdminMap = () => {
           // mapStyle="mapbox://styles/mapbox/streets-v9"
           mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-          interactiveLayerIds={['trails-data-layer']}
+          interactiveLayerIds={['trails-data-layer', 'nodes-data-local-layer']}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onDragStart={onDragStart}
@@ -177,10 +177,10 @@ const DashboardAdminMap = () => {
             <Layer {...trailsDrawLayer} />
           </Source> */}
           <Source type="geojson" data={nodesData}>
-            <Layer {...nodesDataLayer} />
+            <Layer {...nodesDataLocalLayer} />
           </Source>
           <Source type="geojson" data={nodesData}>
-            <Layer {...nodesDrawLayer} />
+            <Layer {...nodesDrawLocalLayer} />
           </Source>
           <NavigationControl />
         </Map>

@@ -33,18 +33,26 @@ export const nodesDrawLayer: CircleLayer = {
   id: 'nodes-draw-layer',
   type: 'circle',
   source: 'composite',
-  'source-layer': 'Nodes',
   paint: {
     'circle-color': 'hsl(0, 100%, 100%)',
     'circle-stroke-width': 1,
   },
 };
 
+export const nodesDrawLocalLayer: CircleLayer = {
+  ...nodesDrawLayer,
+  id: 'nodes-draw-local-layer',
+};
+
 export const nodesDataLayer: CircleLayer = {
   id: 'nodes-data-layer',
   type: 'circle',
   source: 'composite',
-  'source-layer': 'Nodes',
   layout: {},
   paint: { 'circle-radius': 10, 'circle-opacity': 0 },
+};
+
+export const nodesDataLocalLayer: CircleLayer = {
+  ...nodesDataLayer,
+  id: 'nodes-data-local-layer',
 };
