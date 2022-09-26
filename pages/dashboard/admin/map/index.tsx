@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
 import { SEO } from '@components/common';
@@ -22,17 +23,43 @@ import {
   trailsDataLocalLayer,
   trailsDrawLocalLayer,
 } from '@config/layer-styles';
-import { createLineString, createPoint } from '@lib/utils';
+import {
+  createLineString,
+  createPoint,
+  decode,
+  encode,
+  swapCoordinates,
+} from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React, { ReactElement, useCallback, useRef, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Map, { Layer, MapRef, NavigationControl, Source } from 'react-map-gl';
 
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
+
+type Trail = {
+  name: {
+    start: string;
+    end: string;
+  };
+  color: string[];
+  distance: number;
+  time: {
+    start_end: number;
+    end_start: number;
+  };
+  encoded: string;
+};
 
 const initialNodeValues = {
   name: '',
@@ -74,14 +101,32 @@ const DashboardAdminMap = () => {
   const [type, setType] = useState('trail');
   const [nodeForm, setNodeForm] = useState(initialNodeValues);
   const [trailForm, setTrailForm] = useState(initialTrailValues);
-  const [trailsData, setTrailsData] = useState<GeoJSON.FeatureCollection>({
-    type: 'FeatureCollection',
-    features: [],
-  });
+  const [trails, setTrails] = useState<Trail[]>([]);
   const [nodesData, setNodesData] = useState<GeoJSON.FeatureCollection>({
     type: 'FeatureCollection',
     features: [],
   });
+
+  const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    trails.forEach((trail) => {
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+      const lineString = createLineString(
+        `${trail.name.start} - ${trail.name.end}`,
+        trail.color[0],
+        decoded,
+      );
+      features.push(lineString);
+    });
+    console.log('Recalculate trailsData');
+
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [trails]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
@@ -113,7 +158,8 @@ const DashboardAdminMap = () => {
   const handleChangeTrail = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
+      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -143,17 +189,42 @@ const DashboardAdminMap = () => {
     e.preventDefault();
     console.log(trailForm);
     setTrailForm(initialTrailValues);
-    const features = [...trailsData.features];
-    const trail = createLineString(
-      `${trailForm.nameStart} - ${trailForm.nameEnd}`,
-      trailForm.color,
-      JSON.parse(trailForm.path),
-    );
-    features.push(trail);
-    console.log(trail);
 
-    setTrailsData((state) => ({ ...state, features }));
-    console.log(trailsData);
+    const path = JSON.parse(trailForm.path);
+    const swapped = swapCoordinates(path);
+    const newTrail: Trail = {
+      name: {
+        start: trailForm.nameStart,
+        end: trailForm.nameEnd,
+      },
+      color: [trailForm.color],
+      distance: 0,
+      time: {
+        start_end: 0,
+        end_start: 0,
+      },
+      encoded: encode(swapped),
+    };
+
+    setTrails((state) => [...state, newTrail]);
+    console.log(trails);
+
+    // const features = [...trailsData.features];
+    // console.log(trailForm.path);
+    // const trail = createLineString(
+    //   `${trailForm.nameStart} - ${trailForm.nameEnd}`,
+    //   trailForm.color,
+    //   JSON.parse(trailForm.path),
+    // );
+    // features.push(trail);
+    // console.log(trail);
+    // const path = JSON.parse(trailForm.path);
+    // const swapped = swapCoordinates(path);
+    // // console.log(polyline.encode(JSON.parse(trailForm.path)));
+    // console.log(polyline.encode(swapped));
+
+    // setTrailsData((state) => ({ ...state, features }));
+    // console.log(trailsData);
 
     onClose();
   };
@@ -273,8 +344,7 @@ const DashboardAdminMap = () => {
                     </FormControl>
                     <FormControl isRequired>
                       <FormLabel>Path</FormLabel>
-                      <Input
-                        type="text"
+                      <Textarea
                         name="path"
                         mb={2}
                         value={trailForm.path}
