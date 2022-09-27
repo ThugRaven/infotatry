@@ -1,1 +1,1 @@
-export const ENCODING_PRECISION = 3;
+export const ENCODING_PRECISION = 6;
