@@ -31,7 +31,7 @@ import {
   swapCoordinates,
 } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLat } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, {
   ReactElement,
@@ -59,6 +59,13 @@ type Trail = {
     end_start: number;
   };
   encoded: string;
+};
+
+type Node = {
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
 };
 
 const initialNodeValues = {
@@ -102,10 +109,7 @@ const DashboardAdminMap = () => {
   const [nodeForm, setNodeForm] = useState(initialNodeValues);
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trails, setTrails] = useState<Trail[]>([]);
-  const [nodesData, setNodesData] = useState<GeoJSON.FeatureCollection>({
-    type: 'FeatureCollection',
-    features: [],
-  });
+  const [nodes, setNodes] = useState<Node[]>([]);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -127,6 +131,21 @@ const DashboardAdminMap = () => {
       features,
     };
   }, [trails]);
+
+  const nodesData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
+
+    nodes.forEach((node) => {
+      const point = createPoint(node.name, new LngLat(node.lng, node.lat));
+      features.push(point);
+    });
+    console.log('Recalculate nodesData');
+
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [nodes]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
@@ -174,14 +193,16 @@ const DashboardAdminMap = () => {
     e.preventDefault();
     console.log(nodeForm);
     setNodeForm(initialNodeValues);
-    const features = [...nodesData.features];
-    const node = createPoint(
-      nodeForm.name,
-      new mapboxgl.LngLat(nodeForm.longitude, nodeForm.latitude),
-    );
-    features.push(node);
-    setNodesData((state) => ({ ...state, features }));
-    console.log(nodesData);
+
+    const newNode: Node = {
+      name: nodeForm.name,
+      type: 'node',
+      lat: nodeForm.latitude,
+      lng: nodeForm.longitude,
+    };
+
+    setNodes((state) => [...state, newNode]);
+    console.log(nodes);
     onClose();
   };
 
@@ -208,24 +229,6 @@ const DashboardAdminMap = () => {
 
     setTrails((state) => [...state, newTrail]);
     console.log(trails);
-
-    // const features = [...trailsData.features];
-    // console.log(trailForm.path);
-    // const trail = createLineString(
-    //   `${trailForm.nameStart} - ${trailForm.nameEnd}`,
-    //   trailForm.color,
-    //   JSON.parse(trailForm.path),
-    // );
-    // features.push(trail);
-    // console.log(trail);
-    // const path = JSON.parse(trailForm.path);
-    // const swapped = swapCoordinates(path);
-    // // console.log(polyline.encode(JSON.parse(trailForm.path)));
-    // console.log(polyline.encode(swapped));
-
-    // setTrailsData((state) => ({ ...state, features }));
-    // console.log(trailsData);
-
     onClose();
   };
 
