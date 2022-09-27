@@ -31,6 +31,7 @@ import {
   swapCoordinates,
 } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
+import { saveAs } from 'file-saver';
 import mapboxgl, { LngLat } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, {
@@ -232,214 +233,233 @@ const DashboardAdminMap = () => {
     onClose();
   };
 
+  const handleSave = () => {
+    const data = {
+      nodes: [...nodes],
+      trails: [...trails],
+    };
+    console.log(data);
+
+    const blob = new Blob([JSON.stringify(data, null, 0)], {
+      type: 'application/json',
+    });
+
+    saveAs(blob, 'features.json');
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
-      <div className={s.wrapper}>
-        <CoordinatesBox
-          latitude={viewState.latitude}
-          longitude={viewState.longitude}
-          zoom={viewState.zoom}
-        />
-        <Map
-          ref={mapRef}
-          {...viewState}
-          onMove={(evt) => setViewState(evt.viewState)}
-          maxPitch={60}
-          reuseMaps
-          // mapStyle="mapbox://styles/mapbox/streets-v9"
-          mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
-          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-          interactiveLayerIds={interactiveLayerIds}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          cursor={cursor}
-          onClick={(e) => {
-            // console.log(mapRef.current?.getStyle().layers);
-            const features = e.features;
-            if (
-              !mapRef.current ||
-              !features ||
-              features.length === 0 ||
-              !interactiveLayerIds.some((id) => id === features[0].layer.id)
-            ) {
-              setPopupInfo(null);
-              return;
-            }
-
-            let trailInfo = {
-              lngLat: e.lngLat,
-              features,
-            };
-
-            // Return when the coordinates are the same to skip unnecessary render
-            if (
-              popupInfo &&
-              trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
-              trailInfo.lngLat.lat === popupInfo.lngLat.lat
-            )
-              return;
-
-            setPopupInfo(trailInfo);
-
-            // mapRef.current.flyTo({
-            //   center: e.lngLat,
-            //   zoom: 12,
-            //   duration: 500,
-            // });
-          }}
-          onZoom={(e) => {
-            // console.log(e.viewState);
-          }}
-        >
-          {popupInfo && (
-            <MapPopup
-              lngLat={popupInfo.lngLat}
-              features={popupInfo.features}
-              onClose={() => {
+      <div className={s.container}>
+        <div className={s.header}>
+          <Button onClick={handleSave}>Save file</Button>
+        </div>
+        <div className={s.wrapper}>
+          <CoordinatesBox
+            latitude={viewState.latitude}
+            longitude={viewState.longitude}
+            zoom={viewState.zoom}
+          />
+          <Map
+            ref={mapRef}
+            {...viewState}
+            onMove={(evt) => setViewState(evt.viewState)}
+            maxPitch={60}
+            reuseMaps
+            // mapStyle="mapbox://styles/mapbox/streets-v9"
+            mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+            interactiveLayerIds={interactiveLayerIds}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            cursor={cursor}
+            onClick={(e) => {
+              // console.log(mapRef.current?.getStyle().layers);
+              const features = e.features;
+              if (
+                !mapRef.current ||
+                !features ||
+                features.length === 0 ||
+                !interactiveLayerIds.some((id) => id === features[0].layer.id)
+              ) {
                 setPopupInfo(null);
-              }}
-            />
-          )}
-          <Source type="geojson" data={trailsData}>
-            <Layer {...trailsDataLocalLayer} beforeId="trails-data-layer" />
-            <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
-          </Source>
-          <Source type="geojson" data={nodesData}>
-            <Layer {...nodesDataLocalLayer} />
-            <Layer {...nodesDrawLocalLayer} />
-          </Source>
-          <NavigationControl />
-        </Map>
-        <AdminMapControls onClick={handleClick} />
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
-            </ModalHeader>
-            <ModalCloseButton />
-            {type === 'trail' ? (
-              <>
-                <form onSubmit={handleSubmitTrail}>
-                  <ModalBody>
-                    <FormControl isRequired>
-                      <FormLabel>Name start</FormLabel>
-                      <Input
-                        type="text"
-                        name="nameStart"
-                        mb={2}
-                        value={trailForm.nameStart}
-                        onChange={handleChangeTrail}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Name end</FormLabel>
-                      <Input
-                        type="text"
-                        name="nameEnd"
-                        mb={2}
-                        value={trailForm.nameEnd}
-                        onChange={handleChangeTrail}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Path</FormLabel>
-                      <Textarea
-                        name="path"
-                        mb={2}
-                        value={trailForm.path}
-                        onChange={handleChangeTrail}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Color</FormLabel>
-                      <Select
-                        placeholder="Select colors"
-                        name="color"
-                        value={trailForm.color}
-                        onChange={handleChangeTrail}
-                      >
-                        <option value="red">red</option>
-                        <option value="blue">blue</option>
-                        <option value="yellow">yellow</option>
-                        <option value="green">green</option>
-                        <option value="black">black</option>
-                      </Select>
-                    </FormControl>
-                  </ModalBody>
+                return;
+              }
 
-                  <ModalFooter>
-                    <Button colorScheme="blue" mr={3} type="submit">
-                      Save
-                    </Button>
-                    <Button onClick={onClose}>Cancel</Button>
-                  </ModalFooter>
-                </form>
-              </>
-            ) : (
-              <>
-                <form onSubmit={handleSubmitNode}>
-                  <ModalBody>
-                    <FormControl isRequired>
-                      <FormLabel>Name</FormLabel>
-                      <Input
-                        type="text"
-                        name="name"
-                        mb={2}
-                        value={nodeForm.name}
-                        onChange={handleChangeNode}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Latitude</FormLabel>
-                      <Input
-                        type="text"
-                        name="latitude"
-                        mb={2}
-                        value={nodeForm.latitude}
-                        onChange={handleChangeNode}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Longitude</FormLabel>
-                      <Input
-                        type="text"
-                        name="longitude"
-                        mb={2}
-                        value={nodeForm.longitude}
-                        onChange={handleChangeNode}
-                      />
-                    </FormControl>
-                    <FormControl isRequired>
-                      <FormLabel>Type</FormLabel>
-                      <Select
-                        placeholder="Select type"
-                        name="nodeType"
-                        value={nodeForm.nodeType}
-                        onChange={handleChangeNode}
-                      >
-                        <option value="node">node</option>
-                        <option value="peak">peak</option>
-                        <option value="shelter">shelter</option>
-                        <option value="cave">cave</option>
-                      </Select>
-                    </FormControl>
-                  </ModalBody>
+              let trailInfo = {
+                lngLat: e.lngLat,
+                features,
+              };
 
-                  <ModalFooter>
-                    <Button colorScheme="blue" mr={3} type="submit">
-                      Save
-                    </Button>
-                    <Button onClick={onClose}>Cancel</Button>
-                  </ModalFooter>
-                </form>
-              </>
+              // Return when the coordinates are the same to skip unnecessary render
+              if (
+                popupInfo &&
+                trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
+                trailInfo.lngLat.lat === popupInfo.lngLat.lat
+              )
+                return;
+
+              setPopupInfo(trailInfo);
+
+              // mapRef.current.flyTo({
+              //   center: e.lngLat,
+              //   zoom: 12,
+              //   duration: 500,
+              // });
+            }}
+            onZoom={(e) => {
+              // console.log(e.viewState);
+            }}
+          >
+            {popupInfo && (
+              <MapPopup
+                lngLat={popupInfo.lngLat}
+                features={popupInfo.features}
+                onClose={() => {
+                  setPopupInfo(null);
+                }}
+              />
             )}
-          </ModalContent>
-        </Modal>
+            <Source type="geojson" data={trailsData}>
+              <Layer {...trailsDataLocalLayer} beforeId="trails-data-layer" />
+              <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
+            </Source>
+            <Source type="geojson" data={nodesData}>
+              <Layer {...nodesDataLocalLayer} />
+              <Layer {...nodesDrawLocalLayer} />
+            </Source>
+            <NavigationControl />
+          </Map>
+          <AdminMapControls onClick={handleClick} />
+          <Modal isOpen={isOpen} onClose={onClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                {type === 'trail' ? 'Add a new trail' : 'Add a new node'}
+              </ModalHeader>
+              <ModalCloseButton />
+              {type === 'trail' ? (
+                <>
+                  <form onSubmit={handleSubmitTrail}>
+                    <ModalBody>
+                      <FormControl isRequired>
+                        <FormLabel>Name start</FormLabel>
+                        <Input
+                          type="text"
+                          name="nameStart"
+                          mb={2}
+                          value={trailForm.nameStart}
+                          onChange={handleChangeTrail}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Name end</FormLabel>
+                        <Input
+                          type="text"
+                          name="nameEnd"
+                          mb={2}
+                          value={trailForm.nameEnd}
+                          onChange={handleChangeTrail}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Path</FormLabel>
+                        <Textarea
+                          name="path"
+                          mb={2}
+                          value={trailForm.path}
+                          onChange={handleChangeTrail}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Color</FormLabel>
+                        <Select
+                          placeholder="Select colors"
+                          name="color"
+                          value={trailForm.color}
+                          onChange={handleChangeTrail}
+                        >
+                          <option value="red">red</option>
+                          <option value="blue">blue</option>
+                          <option value="yellow">yellow</option>
+                          <option value="green">green</option>
+                          <option value="black">black</option>
+                        </Select>
+                      </FormControl>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} type="submit">
+                        Save
+                      </Button>
+                      <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <form onSubmit={handleSubmitNode}>
+                    <ModalBody>
+                      <FormControl isRequired>
+                        <FormLabel>Name</FormLabel>
+                        <Input
+                          type="text"
+                          name="name"
+                          mb={2}
+                          value={nodeForm.name}
+                          onChange={handleChangeNode}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Latitude</FormLabel>
+                        <Input
+                          type="text"
+                          name="latitude"
+                          mb={2}
+                          value={nodeForm.latitude}
+                          onChange={handleChangeNode}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Longitude</FormLabel>
+                        <Input
+                          type="text"
+                          name="longitude"
+                          mb={2}
+                          value={nodeForm.longitude}
+                          onChange={handleChangeNode}
+                        />
+                      </FormControl>
+                      <FormControl isRequired>
+                        <FormLabel>Type</FormLabel>
+                        <Select
+                          placeholder="Select type"
+                          name="nodeType"
+                          value={nodeForm.nodeType}
+                          onChange={handleChangeNode}
+                        >
+                          <option value="node">node</option>
+                          <option value="peak">peak</option>
+                          <option value="shelter">shelter</option>
+                          <option value="cave">cave</option>
+                        </Select>
+                      </FormControl>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} type="submit">
+                        Save
+                      </Button>
+                      <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                  </form>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
     </>
   );

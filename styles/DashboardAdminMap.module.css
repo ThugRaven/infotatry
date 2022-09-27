@@ -1,3 +1,14 @@
 .wrapper {
   position: relative;
 }
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem;
+}
