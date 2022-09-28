@@ -197,7 +197,7 @@ const DashboardAdminMap = () => {
 
     const newNode: Node = {
       name: nodeForm.name,
-      type: 'node',
+      type: nodeForm.nodeType,
       lat: nodeForm.latitude,
       lng: nodeForm.longitude,
     };
