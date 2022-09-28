@@ -1,4 +1,5 @@
 import { CircleLayer, LineLayer } from 'mapbox-gl';
+import { TRAIL_COLORS } from '../constants';
 
 export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
@@ -9,8 +10,16 @@ export const trailsDrawLayer: LineLayer = {
       'match',
       ['get', 'color'],
       ['red'],
-      'hsl(0, 100%, 55%)',
-      '#000000',
+      TRAIL_COLORS.RED,
+      ['blue'],
+      TRAIL_COLORS.BLUE,
+      ['yellow'],
+      TRAIL_COLORS.YELLOW,
+      ['green'],
+      TRAIL_COLORS.GREEN,
+      ['black'],
+      TRAIL_COLORS.BLACK,
+      '#FFFFFF',
     ],
     'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
     'line-dasharray': [4, 2],
