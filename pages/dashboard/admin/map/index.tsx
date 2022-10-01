@@ -18,7 +18,6 @@ import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
 import {
-  nodesDataLocalLayer,
   nodesDrawLocalLayer,
   trailsDataLocalLayer,
   trailsDrawLocalLayer,
@@ -86,8 +85,8 @@ const initialTrailValues = {
 const interactiveLayerIds = [
   'trails-data-layer',
   'trails-data-local-layer',
-  'nodes-data-layer',
-  'nodes-data-local-layer',
+  'nodes-draw-layer',
+  'nodes-draw-local-layer',
 ];
 
 const DashboardAdminMap = () => {
@@ -327,7 +326,6 @@ const DashboardAdminMap = () => {
               <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
             </Source>
             <Source type="geojson" data={nodesData}>
-              <Layer {...nodesDataLocalLayer} />
               <Layer {...nodesDrawLocalLayer} />
             </Source>
             <NavigationControl />

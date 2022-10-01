@@ -1,4 +1,4 @@
-import { CircleLayer, LineLayer } from 'mapbox-gl';
+import { LineLayer, SymbolLayer } from 'mapbox-gl';
 import { TRAIL_COLORS } from '../constants';
 
 export const trailsDrawLayer: LineLayer = {
@@ -46,30 +46,28 @@ export const trailsDataLocalLayer: LineLayer = {
   id: 'trails-data-local-layer',
 };
 
-export const nodesDrawLayer: CircleLayer = {
+export const nodesDrawLayer: SymbolLayer = {
   id: 'nodes-draw-layer',
-  type: 'circle',
+  type: 'symbol',
   source: 'composite',
+  minzoom: 11,
+  layout: {
+    'icon-image': 'node',
+    'icon-size': ['interpolate', ['linear'], ['zoom'], 12, 0.5, 18, 1],
+    'text-field': ['step', ['zoom'], '', 16, ['to-string', ['get', 'name']]],
+    'text-letter-spacing': 0.05,
+    'text-offset': [0, 0.5],
+    'text-size': 14,
+    'text-anchor': 'top',
+  },
   paint: {
-    'circle-color': 'hsl(0, 100%, 100%)',
-    'circle-stroke-width': 1,
+    'text-halo-color': 'hsl(0, 0%, 100%)',
+    'text-halo-width': 2,
+    'text-translate': [0, 0],
   },
 };
 
-export const nodesDrawLocalLayer: CircleLayer = {
+export const nodesDrawLocalLayer: SymbolLayer = {
   ...nodesDrawLayer,
   id: 'nodes-draw-local-layer',
-};
-
-export const nodesDataLayer: CircleLayer = {
-  id: 'nodes-data-layer',
-  type: 'circle',
-  source: 'composite',
-  layout: {},
-  paint: { 'circle-radius': 10, 'circle-opacity': 0 },
-};
-
-export const nodesDataLocalLayer: CircleLayer = {
-  ...nodesDataLayer,
-  id: 'nodes-data-local-layer',
 };
