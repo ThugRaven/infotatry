@@ -19,6 +19,7 @@ import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
 import {
   nodesDrawLocalLayer,
+  trailNodesLocalLayer,
   trailsDataLocalLayer,
   trailsDrawLocalLayer,
 } from '@config/layer-styles';
@@ -87,6 +88,7 @@ const interactiveLayerIds = [
   'trails-data-local-layer',
   'nodes-draw-layer',
   'nodes-draw-local-layer',
+  'trail-nodes-local-layer',
 ];
 
 const DashboardAdminMap = () => {
@@ -110,6 +112,7 @@ const DashboardAdminMap = () => {
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
+  const [selectedTrail, setSelectedTrail] = useState('');
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -118,8 +121,10 @@ const DashboardAdminMap = () => {
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
       const lineString = createLineString(
-        `${trail.name.start} - ${trail.name.end}`,
-        trail.color[0],
+        {
+          name: `${trail.name.start} - ${trail.name.end}`,
+          color: trail.color[0],
+        },
         decoded,
       );
       features.push(lineString);
@@ -136,7 +141,10 @@ const DashboardAdminMap = () => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
 
     nodes.forEach((node) => {
-      const point = createPoint(node.name, new LngLat(node.lng, node.lat));
+      const point = createPoint(
+        { name: node.name },
+        new LngLat(node.lng, node.lat),
+      );
       features.push(point);
     });
     console.log('Recalculate nodesData');
@@ -146,6 +154,35 @@ const DashboardAdminMap = () => {
       features,
     };
   }, [nodes]);
+
+  const trailNodesData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
+    const trail = trails.find(
+      (trail) => `${trail.name.start} - ${trail.name.end}` === selectedTrail,
+    );
+
+    if (trail) {
+      let decoded = decode(trail.encoded);
+
+      decoded.forEach((node, index) => {
+        const point = createPoint(
+          {
+            index,
+            lat: node[0],
+            lng: node[1],
+          },
+          new LngLat(node[1], node[0]),
+        );
+        features.push(point);
+      });
+      console.log('Recalculate trailNodesData');
+    }
+
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [selectedTrail]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
@@ -277,6 +314,8 @@ const DashboardAdminMap = () => {
             onClick={(e) => {
               // console.log(mapRef.current?.getStyle().layers);
               const features = e.features;
+              // console.log(features);
+
               if (
                 !mapRef.current ||
                 !features ||
@@ -285,6 +324,14 @@ const DashboardAdminMap = () => {
               ) {
                 setPopupInfo(null);
                 return;
+              }
+
+              if (
+                features.length > 0 &&
+                features[0].properties &&
+                features[0].layer.id !== 'trail-nodes-local-layer'
+              ) {
+                setSelectedTrail(features[0].properties.name);
               }
 
               let trailInfo = {
@@ -327,6 +374,9 @@ const DashboardAdminMap = () => {
             </Source>
             <Source type="geojson" data={nodesData}>
               <Layer {...nodesDrawLocalLayer} />
+            </Source>
+            <Source type="geojson" data={trailNodesData}>
+              <Layer {...trailNodesLocalLayer} />
             </Source>
             <NavigationControl />
           </Map>

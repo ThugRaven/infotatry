@@ -1,4 +1,4 @@
-import { LineLayer, SymbolLayer } from 'mapbox-gl';
+import { CircleLayer, LineLayer, SymbolLayer } from 'mapbox-gl';
 import { TRAIL_COLORS } from '../constants';
 
 export const trailsDrawLayer: LineLayer = {
@@ -70,4 +70,37 @@ export const nodesDrawLayer: SymbolLayer = {
 export const nodesDrawLocalLayer: SymbolLayer = {
   ...nodesDrawLayer,
   id: 'nodes-draw-local-layer',
+};
+
+export const trailNodesLayer: CircleLayer = {
+  id: 'trail-nodes-layer',
+  type: 'circle',
+  source: 'composite',
+  paint: {
+    'circle-radius': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      4,
+      22,
+      8,
+    ],
+    'circle-color': '#ffa631',
+    'circle-stroke-color': '#ffffff',
+    'circle-stroke-width': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      1.5,
+      22,
+      3,
+    ],
+  },
+};
+
+export const trailNodesLocalLayer: CircleLayer = {
+  ...trailNodesLayer,
+  id: 'trail-nodes-local-layer',
 };
