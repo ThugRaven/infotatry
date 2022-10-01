@@ -3,14 +3,12 @@ import { LngLat } from 'mapbox-gl';
 import { ENCODING_PRECISION } from '../constants';
 
 export function createPoint(
-  name: string,
+  properties: GeoJSON.GeoJsonProperties,
   lngLat: LngLat,
 ): GeoJSON.Feature<GeoJSON.Point> {
   return {
     type: 'Feature',
-    properties: {
-      name,
-    },
+    properties: properties,
     geometry: {
       type: 'Point',
       coordinates: [lngLat.lng, lngLat.lat],
@@ -19,16 +17,12 @@ export function createPoint(
 }
 
 export function createLineString(
-  name: string,
-  color: string,
+  properties: GeoJSON.GeoJsonProperties,
   path: GeoJSON.Position[],
 ): GeoJSON.Feature<GeoJSON.LineString> {
   return {
     type: 'Feature',
-    properties: {
-      name,
-      color,
-    },
+    properties: properties,
     geometry: {
       type: 'LineString',
       coordinates: path,
