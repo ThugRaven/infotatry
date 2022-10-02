@@ -17,6 +17,7 @@ import {
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
+import TrailNodePopup from '@components/map/TrailNodePopup';
 import {
   nodesDrawLocalLayer,
   trailNodesLocalLayer,
@@ -46,9 +47,10 @@ import Map, { Layer, MapRef, NavigationControl, Source } from 'react-map-gl';
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
+  trail: Trail | null;
 }
 
-type Trail = {
+export type Trail = {
   name: {
     start: string;
     end: string;
@@ -112,7 +114,7 @@ const DashboardAdminMap = () => {
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
-  const [selectedTrail, setSelectedTrail] = useState('');
+  const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -157,25 +159,30 @@ const DashboardAdminMap = () => {
 
   const trailNodesData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
-    const trail = trails.find(
-      (trail) => `${trail.name.start} - ${trail.name.end}` === selectedTrail,
-    );
 
-    if (trail) {
-      let decoded = decode(trail.encoded);
+    if (selectedTrail) {
+      const trail = trails.find(
+        (trail) =>
+          `${trail.name.start} - ${trail.name.end}` ===
+          `${selectedTrail.name.start} - ${selectedTrail.name.end}`,
+      );
 
-      decoded.forEach((node, index) => {
-        const point = createPoint(
-          {
-            index,
-            lat: node[0],
-            lng: node[1],
-          },
-          new LngLat(node[1], node[0]),
-        );
-        features.push(point);
-      });
-      console.log('Recalculate trailNodesData');
+      if (trail) {
+        let decoded = decode(trail.encoded);
+
+        decoded.forEach((node, index) => {
+          const point = createPoint(
+            {
+              index,
+              lat: node[0],
+              lng: node[1],
+            },
+            new LngLat(node[1], node[0]),
+          );
+          features.push(point);
+        });
+        console.log('Recalculate trailNodesData');
+      }
     }
 
     return {
@@ -331,13 +338,23 @@ const DashboardAdminMap = () => {
                 features[0].properties &&
                 features[0].layer.id !== 'trail-nodes-local-layer'
               ) {
-                setSelectedTrail(features[0].properties.name);
+                const name = features[0].properties.name;
+                const trail =
+                  trails.find(
+                    (trail) =>
+                      `${trail.name.start} - ${trail.name.end}` === name,
+                  ) ?? null;
+
+                setSelectedTrail(trail);
               }
 
               let trailInfo = {
                 lngLat: e.lngLat,
-                features,
+                features: features,
+                trail: selectedTrail,
               };
+
+              console.log(trailInfo);
 
               // Return when the coordinates are the same to skip unnecessary render
               if (
@@ -359,15 +376,27 @@ const DashboardAdminMap = () => {
               // console.log(e.viewState);
             }}
           >
-            {popupInfo && (
-              <MapPopup
-                lngLat={popupInfo.lngLat}
-                features={popupInfo.features}
-                onClose={() => {
-                  setPopupInfo(null);
-                }}
-              />
-            )}
+            {popupInfo &&
+              (popupInfo.features[0] &&
+              popupInfo.features[0].layer.id === 'trail-nodes-local-layer' &&
+              popupInfo.trail ? (
+                <TrailNodePopup
+                  lngLat={popupInfo.lngLat}
+                  features={popupInfo.features}
+                  trail={popupInfo.trail}
+                  onClose={() => {
+                    setPopupInfo(null);
+                  }}
+                />
+              ) : (
+                <MapPopup
+                  lngLat={popupInfo.lngLat}
+                  features={popupInfo.features}
+                  onClose={() => {
+                    setPopupInfo(null);
+                  }}
+                />
+              ))}
             <Source type="geojson" data={trailsData}>
               <Layer {...trailsDataLocalLayer} beforeId="trails-data-layer" />
               <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
