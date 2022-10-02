@@ -9,6 +9,9 @@ interface TrailNodePopupProps {
   features: mapboxgl.MapboxGeoJSONFeature[];
   trail: Trail;
   onClose: (e: PopupEvent) => void;
+  onStartSelection: (index: number) => void;
+  onEndSelection: (index: number) => void;
+  onCopySelection: () => void;
 }
 
 const TrailNodePopup = ({
@@ -16,6 +19,9 @@ const TrailNodePopup = ({
   features,
   trail,
   onClose,
+  onStartSelection,
+  onEndSelection,
+  onCopySelection,
 }: TrailNodePopupProps) => {
   const feature = features[0];
 
@@ -94,6 +100,18 @@ const TrailNodePopup = ({
     );
   };
 
+  const handleStartSelection = () => {
+    onStartSelection(feature.properties?.index);
+  };
+
+  const handleEndSelection = () => {
+    onEndSelection(feature.properties?.index);
+  };
+
+  const handleCopySelection = () => {
+    onCopySelection();
+  };
+
   return (
     <Popup
       latitude={lngLat.lat}
@@ -115,6 +133,9 @@ const TrailNodePopup = ({
             <Button onClick={handleCopyPathToPoint}>
               Copy path from end to this point
             </Button>
+            <Button onClick={handleStartSelection}>Start selection</Button>
+            <Button onClick={handleEndSelection}>End selection</Button>
+            <Button onClick={handleCopySelection}>Copy selected path</Button>
           </ButtonGroup>
         </div>
       ) : (

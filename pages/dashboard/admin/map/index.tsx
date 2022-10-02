@@ -38,6 +38,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import React, {
   ReactElement,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -115,6 +116,8 @@ const DashboardAdminMap = () => {
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
+  const [startNodeIndex, setStartNodeIndex] = useState<number | null>(null);
+  const [endNodeIndex, setEndNodeIndex] = useState<number | null>(null);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -290,6 +293,42 @@ const DashboardAdminMap = () => {
     saveAs(blob, 'features.json');
   };
 
+  const handleStartSelection = (index: number) => {
+    setStartNodeIndex(index);
+  };
+
+  const handleEndSelection = (index: number) => {
+    setEndNodeIndex(index);
+  };
+
+  useEffect(() => {
+    setStartNodeIndex(null);
+    setEndNodeIndex(null);
+  }, [selectedTrail]);
+
+  const handleOnCopySelection = () => {
+    const nodes: Array<[number, number]> = [];
+    if (!selectedTrail || !startNodeIndex || !endNodeIndex) {
+      return;
+    }
+
+    const decoded = decode(selectedTrail.encoded);
+
+    for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
+      const point = decoded[i];
+      nodes.push([point[1], point[0]]);
+    }
+
+    navigator.clipboard.writeText(JSON.stringify(nodes, null, 2)).then(
+      () => {
+        console.log('Copied to clipboard!');
+      },
+      () => {
+        console.log('Failed to copy!');
+      },
+    );
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -334,7 +373,6 @@ const DashboardAdminMap = () => {
               }
 
               if (
-                features.length > 0 &&
                 features[0].properties &&
                 features[0].layer.id !== 'trail-nodes-local-layer'
               ) {
@@ -387,6 +425,9 @@ const DashboardAdminMap = () => {
                   onClose={() => {
                     setPopupInfo(null);
                   }}
+                  onStartSelection={handleStartSelection}
+                  onEndSelection={handleEndSelection}
+                  onCopySelection={handleOnCopySelection}
                 />
               ) : (
                 <MapPopup
