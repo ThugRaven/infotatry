@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   FormControl,
   FormLabel,
   Input,
@@ -118,6 +119,10 @@ const DashboardAdminMap = () => {
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
   const [startNodeIndex, setStartNodeIndex] = useState<number | null>(null);
   const [endNodeIndex, setEndNodeIndex] = useState<number | null>(null);
+  const [visibility, setVisibility] = useState({
+    server: true,
+    local: true,
+  });
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -329,11 +334,31 @@ const DashboardAdminMap = () => {
     );
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVisibility((state) => ({ ...state, [e.target.name]: e.target.checked }));
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
       <div className={s.container}>
         <div className={s.header}>
+          <div className={s.layer__visibility}>
+            <Checkbox
+              name="server"
+              isChecked={visibility['server']}
+              onChange={handleChange}
+            >
+              Server layer
+            </Checkbox>
+            <Checkbox
+              name="local"
+              isChecked={visibility['local']}
+              onChange={handleChange}
+            >
+              Local layer
+            </Checkbox>
+          </div>
           <Button onClick={handleSave}>Save file</Button>
         </div>
         <div className={s.wrapper}>
@@ -439,8 +464,20 @@ const DashboardAdminMap = () => {
                 />
               ))}
             <Source type="geojson" data={trailsData}>
-              <Layer {...trailsDataLocalLayer} beforeId="trails-data-layer" />
-              <Layer {...trailsDrawLocalLayer} beforeId="trails-data-layer" />
+              <Layer
+                {...trailsDataLocalLayer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
+              <Layer
+                {...trailsDrawLocalLayer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
             </Source>
             <Source type="geojson" data={nodesData}>
               <Layer {...nodesDrawLocalLayer} />
