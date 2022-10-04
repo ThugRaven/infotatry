@@ -17,7 +17,8 @@ import {
 } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import { AdminMapControls, CoordinatesBox, MapPopup } from '@components/map';
+import { AdminMapControls, CoordinatesBox } from '@components/map';
+import TrailAdminPopup from '@components/map/TrailAdminPopup';
 import TrailNodePopup from '@components/map/TrailNodePopup';
 import {
   nodesDrawLocalLayer,
@@ -348,6 +349,16 @@ const DashboardAdminMap = () => {
     onOpen();
   };
 
+  const handleRemove = (name: string) => {
+    setTrails((state) =>
+      state.filter(
+        (trail) => `${trail.name.start} - ${trail.name.end}` !== name,
+      ),
+    );
+    setSelectedTrail(null);
+    setPopupInfo(null);
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -407,12 +418,14 @@ const DashboardAdminMap = () => {
                 return;
               }
 
+              let trail = selectedTrail;
+
               if (
                 features[0].properties &&
                 features[0].layer.id !== 'trail-nodes-local-layer'
               ) {
                 const name = features[0].properties.name;
-                const trail =
+                trail =
                   trails.find(
                     (trail) =>
                       `${trail.name.start} - ${trail.name.end}` === name,
@@ -424,7 +437,7 @@ const DashboardAdminMap = () => {
               let trailInfo = {
                 lngLat: e.lngLat,
                 features: features,
-                trail: selectedTrail,
+                trail: trail,
               };
 
               console.log(trailInfo);
@@ -450,9 +463,9 @@ const DashboardAdminMap = () => {
             }}
           >
             {popupInfo &&
+              popupInfo.trail &&
               (popupInfo.features[0] &&
-              popupInfo.features[0].layer.id === 'trail-nodes-local-layer' &&
-              popupInfo.trail ? (
+              popupInfo.features[0].layer.id === 'trail-nodes-local-layer' ? (
                 <TrailNodePopup
                   lngLat={popupInfo.lngLat}
                   features={popupInfo.features}
@@ -466,12 +479,14 @@ const DashboardAdminMap = () => {
                   onAddNode={handleAddNode}
                 />
               ) : (
-                <MapPopup
+                <TrailAdminPopup
                   lngLat={popupInfo.lngLat}
                   features={popupInfo.features}
+                  trail={popupInfo.trail}
                   onClose={() => {
                     setPopupInfo(null);
                   }}
+                  onRemove={handleRemove}
                 />
               ))}
             <Source type="geojson" data={trailsData}>
