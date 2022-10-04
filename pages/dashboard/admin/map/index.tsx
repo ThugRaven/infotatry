@@ -338,6 +338,16 @@ const DashboardAdminMap = () => {
     setVisibility((state) => ({ ...state, [e.target.name]: e.target.checked }));
   };
 
+  const handleAddNode = (lat: number, lng: number) => {
+    setType('node');
+    setNodeForm((values) => ({
+      ...values,
+      latitude: lat,
+      longitude: lng,
+    }));
+    onOpen();
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -453,6 +463,7 @@ const DashboardAdminMap = () => {
                   onStartSelection={handleStartSelection}
                   onEndSelection={handleEndSelection}
                   onCopySelection={handleOnCopySelection}
+                  onAddNode={handleAddNode}
                 />
               ) : (
                 <MapPopup
