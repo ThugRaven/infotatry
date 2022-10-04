@@ -314,7 +314,7 @@ const DashboardAdminMap = () => {
 
   const handleOnCopySelection = () => {
     const nodes: Array<[number, number]> = [];
-    if (!selectedTrail || !startNodeIndex || !endNodeIndex) {
+    if (!selectedTrail || startNodeIndex == null || endNodeIndex == null) {
       return;
     }
 
