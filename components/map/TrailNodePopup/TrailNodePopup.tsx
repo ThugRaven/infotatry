@@ -12,7 +12,7 @@ interface TrailNodePopupProps {
   onStartSelection: (index: number) => void;
   onEndSelection: (index: number) => void;
   onCopySelection: () => void;
-  onAddNode: (lat: number, lng: number) => void;
+  onAddNode: (lat: number, lng: number, name: string) => void;
 }
 
 const TrailNodePopup = ({
@@ -116,7 +116,16 @@ const TrailNodePopup = ({
 
   const handleAddNode = () => {
     if (feature && feature.properties) {
-      onAddNode(feature.properties.lat, feature.properties.lng);
+      const decoded = decode(trail.encoded);
+
+      let name = '';
+      if (feature.properties.index === 0) {
+        name = trail.name.start;
+      } else if (feature.properties.index === decoded.length - 1) {
+        name = trail.name.end;
+      }
+
+      onAddNode(feature.properties.lat, feature.properties.lng, name);
     }
   };
 

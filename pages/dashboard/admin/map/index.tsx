@@ -339,10 +339,11 @@ const DashboardAdminMap = () => {
     setVisibility((state) => ({ ...state, [e.target.name]: e.target.checked }));
   };
 
-  const handleAddNode = (lat: number, lng: number) => {
+  const handleAddNode = (lat: number, lng: number, name: string) => {
     setType('node');
     setNodeForm((values) => ({
       ...values,
+      name: name,
       latitude: lat,
       longitude: lng,
     }));
