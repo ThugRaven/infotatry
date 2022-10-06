@@ -18,6 +18,7 @@ import {
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { AdminMapControls, CoordinatesBox } from '@components/map';
+import NodeAdminPopup from '@components/map/NodeAdminPopup';
 import TrailAdminPopup from '@components/map/TrailAdminPopup';
 import TrailNodePopup from '@components/map/TrailNodePopup';
 import {
@@ -357,13 +358,18 @@ const DashboardAdminMap = () => {
     onOpen();
   };
 
-  const handleRemove = (name: string) => {
+  const handleRemoveTrail = (name: string) => {
     setTrails((state) =>
       state.filter(
         (trail) => `${trail.name.start} - ${trail.name.end}` !== name,
       ),
     );
     setSelectedTrail(null);
+    setPopupInfo(null);
+  };
+
+  const handleRemoveNode = (name: string) => {
+    setNodes((state) => state.filter((node) => node.name !== name));
     setPopupInfo(null);
   };
 
@@ -471,30 +477,40 @@ const DashboardAdminMap = () => {
             }}
           >
             {popupInfo &&
-              popupInfo.trail &&
-              (popupInfo.features[0] &&
-              popupInfo.features[0].layer.id === 'trail-nodes-local-layer' ? (
-                <TrailNodePopup
-                  lngLat={popupInfo.lngLat}
-                  features={popupInfo.features}
-                  trail={popupInfo.trail}
-                  onClose={() => {
-                    setPopupInfo(null);
-                  }}
-                  onStartSelection={handleStartSelection}
-                  onEndSelection={handleEndSelection}
-                  onCopySelection={handleOnCopySelection}
-                  onAddNode={handleAddNode}
-                />
+              (popupInfo.trail ? (
+                popupInfo.features[0] &&
+                popupInfo.features[0].layer.id === 'trail-nodes-local-layer' ? (
+                  <TrailNodePopup
+                    lngLat={popupInfo.lngLat}
+                    features={popupInfo.features}
+                    trail={popupInfo.trail}
+                    onClose={() => {
+                      setPopupInfo(null);
+                    }}
+                    onStartSelection={handleStartSelection}
+                    onEndSelection={handleEndSelection}
+                    onCopySelection={handleOnCopySelection}
+                    onAddNode={handleAddNode}
+                  />
+                ) : (
+                  <TrailAdminPopup
+                    lngLat={popupInfo.lngLat}
+                    features={popupInfo.features}
+                    trail={popupInfo.trail}
+                    onClose={() => {
+                      setPopupInfo(null);
+                    }}
+                    onRemove={handleRemoveTrail}
+                  />
+                )
               ) : (
-                <TrailAdminPopup
+                <NodeAdminPopup
                   lngLat={popupInfo.lngLat}
                   features={popupInfo.features}
-                  trail={popupInfo.trail}
                   onClose={() => {
                     setPopupInfo(null);
                   }}
-                  onRemove={handleRemove}
+                  onRemove={handleRemoveNode}
                 />
               ))}
             <Source type="geojson" data={trailsData}>
