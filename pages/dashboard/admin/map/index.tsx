@@ -46,6 +46,7 @@ import React, {
   useState,
 } from 'react';
 import Map, { Layer, MapRef, NavigationControl, Source } from 'react-map-gl';
+import features from '../../../../public/features.json';
 
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
@@ -124,6 +125,12 @@ const DashboardAdminMap = () => {
     server: true,
     local: true,
   });
+
+  useEffect(() => {
+    const data = features;
+    setTrails(data.trails);
+    setNodes(data.nodes);
+  }, []);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
