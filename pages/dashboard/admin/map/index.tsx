@@ -17,10 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import { AdminMapControls, CoordinatesBox } from '@components/map';
-import NodeAdminPopup from '@components/map/NodeAdminPopup';
-import TrailAdminPopup from '@components/map/TrailAdminPopup';
-import TrailNodePopup from '@components/map/TrailNodePopup';
+import {
+  AdminMapControls,
+  CoordinatesBox,
+  NodeAdminPopup,
+  TrailAdminPopup,
+  TrailNodePopup,
+} from '@components/map';
 import {
   nodesDrawLocalLayer,
   trailNodesLocalLayer,
