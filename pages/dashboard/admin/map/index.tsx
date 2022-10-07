@@ -27,6 +27,7 @@ import {
 import {
   nodesDrawLocalLayer,
   trailNodesLocalLayer,
+  trailNodesSelectedLayer,
   trailsDataLocalLayer,
   trailsDrawLocalLayer,
 } from '@config/layer-styles';
@@ -210,6 +211,34 @@ const DashboardAdminMap = () => {
       features,
     };
   }, [selectedTrail]);
+
+  const trailNodesSelectedData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
+
+    if (selectedTrail && startNodeIndex != null && endNodeIndex != null) {
+      const decoded = decode(selectedTrail.encoded);
+
+      for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
+        const node = decoded[i];
+        const point = createPoint(
+          {
+            i,
+            lat: node[0],
+            lng: node[1],
+          },
+          new LngLat(node[1], node[0]),
+        );
+        features.push(point);
+      }
+    }
+
+    console.log('Recalculate trailNodesSelectedData');
+
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [selectedTrail, startNodeIndex, endNodeIndex]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
@@ -579,6 +608,9 @@ const DashboardAdminMap = () => {
             </Source>
             <Source type="geojson" data={trailNodesData}>
               <Layer {...trailNodesLocalLayer} />
+            </Source>
+            <Source type="geojson" data={trailNodesSelectedData}>
+              <Layer {...trailNodesSelectedLayer} />
             </Source>
             <NavigationControl />
           </Map>

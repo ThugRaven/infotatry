@@ -104,3 +104,12 @@ export const trailNodesLocalLayer: CircleLayer = {
   ...trailNodesLayer,
   id: 'trail-nodes-local-layer',
 };
+
+export const trailNodesSelectedLayer: CircleLayer = {
+  ...trailNodesLayer,
+  id: 'trail-nodes-selected-layer',
+  paint: {
+    ...trailNodesLayer.paint,
+    'circle-color': '#09ADC3',
+  },
+};
