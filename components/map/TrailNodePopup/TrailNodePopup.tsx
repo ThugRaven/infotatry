@@ -12,6 +12,7 @@ interface TrailNodePopupProps {
   onStartSelection: (index: number) => void;
   onEndSelection: (index: number) => void;
   onCopySelection: () => void;
+  onAddSelected: () => void;
   onAddNode: (lat: number, lng: number, name: string) => void;
 }
 
@@ -23,6 +24,7 @@ const TrailNodePopup = ({
   onStartSelection,
   onEndSelection,
   onCopySelection,
+  onAddSelected,
   onAddNode,
 }: TrailNodePopupProps) => {
   const feature = features[0];
@@ -114,6 +116,10 @@ const TrailNodePopup = ({
     onCopySelection();
   };
 
+  const handleAddSelected = () => {
+    onAddSelected();
+  };
+
   const handleAddNode = () => {
     if (feature && feature.properties) {
       const decoded = decode(trail.encoded);
@@ -153,6 +159,9 @@ const TrailNodePopup = ({
             <Button onClick={handleStartSelection}>Start selection</Button>
             <Button onClick={handleEndSelection}>End selection</Button>
             <Button onClick={handleCopySelection}>Copy selected path</Button>
+            <Button onClick={handleAddSelected}>
+              Add selected path as trail
+            </Button>
             <Button onClick={handleAddNode}>Add as node</Button>
           </ButtonGroup>
         </div>

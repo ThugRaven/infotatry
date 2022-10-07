@@ -350,6 +350,47 @@ const DashboardAdminMap = () => {
     setVisibility((state) => ({ ...state, [e.target.name]: e.target.checked }));
   };
 
+  const handleAddSelected = () => {
+    const nodes: Array<[number, number]> = [];
+    if (!selectedTrail || startNodeIndex == null || endNodeIndex == null) {
+      return;
+    }
+
+    const decoded = decode(selectedTrail.encoded);
+
+    for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
+      const point = decoded[i];
+      nodes.push([point[1], point[0]]);
+    }
+
+    let nameStart = '';
+    let nameEnd = '';
+
+    if (nodes.length > 0) {
+      nodes.forEach((node) => {
+        if (node[0] === decoded[0][1] && node[1] === decoded[0][0]) {
+          nameEnd = selectedTrail.name.end;
+        }
+        if (
+          node[0] === decoded[decoded.length - 1][1] &&
+          node[1] === decoded[decoded.length - 1][0]
+        ) {
+          nameStart = selectedTrail.name.start;
+        }
+      });
+    }
+
+    setType('trail');
+    setTrailForm((values) => ({
+      ...values,
+      nameStart: nameStart,
+      nameEnd: nameEnd,
+      path: JSON.stringify(nodes, null, 2),
+      color: selectedTrail.color[0],
+    }));
+    onOpen();
+  };
+
   const handleAddNode = (lat: number, lng: number, name: string) => {
     setType('node');
     setNodeForm((values) => ({
@@ -493,6 +534,7 @@ const DashboardAdminMap = () => {
                     onStartSelection={handleStartSelection}
                     onEndSelection={handleEndSelection}
                     onCopySelection={handleOnCopySelection}
+                    onAddSelected={handleAddSelected}
                     onAddNode={handleAddNode}
                   />
                 ) : (
