@@ -218,17 +218,19 @@ const DashboardAdminMap = () => {
     if (selectedTrail && startNodeIndex != null && endNodeIndex != null) {
       const decoded = decode(selectedTrail.encoded);
 
-      for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
-        const node = decoded[i];
-        const point = createPoint(
-          {
-            i,
-            lat: node[0],
-            lng: node[1],
-          },
-          new LngLat(node[1], node[0]),
-        );
-        features.push(point);
+      if (startNodeIndex < decoded.length && endNodeIndex < decoded.length) {
+        for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
+          const node = decoded[i];
+          const point = createPoint(
+            {
+              i,
+              lat: node[0],
+              lng: node[1],
+            },
+            new LngLat(node[1], node[0]),
+          );
+          features.push(point);
+        }
       }
     }
 
