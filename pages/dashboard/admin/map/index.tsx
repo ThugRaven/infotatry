@@ -606,10 +606,21 @@ const DashboardAdminMap = () => {
               />
             </Source>
             <Source type="geojson" data={nodesData}>
-              <Layer {...nodesDrawLocalLayer} />
+              <Layer
+                {...nodesDrawLocalLayer}
+                layout={{
+                  ...nodesDrawLocalLayer.layout,
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
             </Source>
             <Source type="geojson" data={trailNodesData}>
-              <Layer {...trailNodesLocalLayer} />
+              <Layer
+                {...trailNodesLocalLayer}
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
             </Source>
             <Source type="geojson" data={trailNodesSelectedData}>
               <Layer {...trailNodesSelectedLayer} />
