@@ -448,6 +448,14 @@ const DashboardAdminMap = () => {
     setPopupInfo(null);
   };
 
+  const handleFeatureChange = (name: string) => {
+    const trail =
+      trails.find(
+        (trail) => `${trail.name.start} - ${trail.name.end}` === name,
+      ) ?? null;
+    setSelectedTrail(trail);
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -577,6 +585,7 @@ const DashboardAdminMap = () => {
                       setPopupInfo(null);
                     }}
                     onRemove={handleRemoveTrail}
+                    onChange={handleFeatureChange}
                   />
                 )
               ) : (

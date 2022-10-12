@@ -1,5 +1,6 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
 import { Trail } from 'pages/dashboard/admin/map';
+import { useState } from 'react';
 import { Popup, PopupEvent } from 'react-map-gl';
 import s from './TrailAdminPopup.module.css';
 
@@ -9,6 +10,7 @@ interface TrailAdminPopupProps {
   trail: Trail;
   onClose: (e: PopupEvent) => void;
   onRemove: (name: string) => void;
+  onChange: (name: string) => void;
 }
 
 const TrailAdminPopup = ({
@@ -17,14 +19,34 @@ const TrailAdminPopup = ({
   trail,
   onClose,
   onRemove,
+  onChange,
 }: TrailAdminPopupProps) => {
-  const feature = features[0];
+  const [index, setIndex] = useState(0);
 
   const handleRemove = () => {
     if (feature && feature.properties) {
       onRemove(feature.properties.name);
     }
   };
+
+  const handlePreviousFeature = () => {
+    if (index > 0) {
+      const idx = index - 1;
+      setIndex(idx);
+      onChange(features[idx].properties?.name);
+    }
+  };
+
+  const handleNextFeature = () => {
+    const length = features.length;
+    if (index < length - 1) {
+      const idx = index + 1;
+      setIndex(idx);
+      onChange(features[idx].properties?.name);
+    }
+  };
+
+  const feature = features[index];
 
   return (
     <Popup
@@ -35,6 +57,14 @@ const TrailAdminPopup = ({
       closeOnClick={false}
       closeButton={false}
     >
+      <div className={s.controls}>
+        <div>
+          <Button onClick={handlePreviousFeature}>{'<'}</Button>
+          <Button onClick={handleNextFeature}>{'>'}</Button>
+        </div>
+        {index + 1} | {features.length}
+      </div>
+
       {feature && feature.properties ? (
         <div className={s.container}>
           {feature.properties.name}
