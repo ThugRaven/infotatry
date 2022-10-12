@@ -1,6 +1,6 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
 import { Trail } from 'pages/dashboard/admin/map';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Popup, PopupEvent } from 'react-map-gl';
 import s from './TrailAdminPopup.module.css';
 
@@ -22,6 +22,15 @@ const TrailAdminPopup = ({
   onChange,
 }: TrailAdminPopupProps) => {
   const [index, setIndex] = useState(0);
+  const [feature, setFeature] = useState(features[0]);
+
+  useEffect(() => {
+    setIndex(0);
+  }, [trail]);
+
+  useEffect(() => {
+    setFeature(features[index]);
+  }, [index]);
 
   const handleRemove = () => {
     if (feature && feature.properties) {
@@ -45,8 +54,6 @@ const TrailAdminPopup = ({
       onChange(features[idx].properties?.name);
     }
   };
-
-  const feature = features[index];
 
   return (
     <Popup
