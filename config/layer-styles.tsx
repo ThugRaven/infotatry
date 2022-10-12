@@ -26,9 +26,37 @@ export const trailsDrawLayer: LineLayer = {
   },
 };
 
+export const trailsDrawOffsetLeftLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-offset-left-layer',
+  paint: {
+    ...trailsDrawLayer.paint,
+    'line-offset': -5,
+  },
+};
+
+export const trailsDrawOffsetRightLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-offset-right-layer',
+  paint: {
+    ...trailsDrawLayer.paint,
+    'line-offset': 5,
+  },
+};
+
 export const trailsDrawLocalLayer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-local-layer',
+};
+
+export const trailsDrawOffsetLeftLocalLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-offset-left-local-layer',
+};
+
+export const trailsDrawOffsetRightLocalLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-offset-right-local-layer',
 };
 
 export const trailsDataLayer: LineLayer = {
