@@ -581,6 +581,7 @@ const DashboardAdminMap = () => {
                     lngLat={popupInfo.lngLat}
                     features={popupInfo.features}
                     trail={popupInfo.trail}
+                    key={popupInfo.trail.name.start + popupInfo.trail.name.end}
                     onClose={() => {
                       setPopupInfo(null);
                     }}
