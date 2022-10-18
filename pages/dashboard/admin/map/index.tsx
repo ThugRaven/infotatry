@@ -215,11 +215,18 @@ const DashboardAdminMap = () => {
   const trailNodesSelectedData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
 
-    if (selectedTrail && startNodeIndex != null && endNodeIndex != null) {
+    let startIndex = startNodeIndex;
+    let endIndex = endNodeIndex;
+
+    if (startIndex != null && endIndex == null) {
+      endIndex = startIndex;
+    }
+
+    if (selectedTrail && startIndex != null && endIndex != null) {
       const decoded = decode(selectedTrail.encoded);
 
-      if (startNodeIndex < decoded.length && endNodeIndex < decoded.length) {
-        for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
+      if (startIndex < decoded.length && endIndex < decoded.length) {
+        for (let i = startIndex; i < endIndex + 1; i++) {
           const node = decoded[i];
           const point = createPoint(
             {
