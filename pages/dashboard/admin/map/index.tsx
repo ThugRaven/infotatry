@@ -30,6 +30,10 @@ import {
   trailNodesSelectedLayer,
   trailsDataLocalLayer,
   trailsDrawLocalLayer,
+  trailsDrawOffset1in2Layer,
+  trailsDrawOffset1in3Layer,
+  trailsDrawOffset2in2Layer,
+  trailsDrawOffset3in3Layer,
 } from '@config/layer-styles';
 import {
   createLineString,
@@ -78,6 +82,14 @@ type Node = {
   type: string;
   lat: number;
   lng: number;
+};
+
+type TrailsData = {
+  normal: GeoJSON.FeatureCollection;
+  'offset-1-2': GeoJSON.FeatureCollection;
+  'offset-2-2': GeoJSON.FeatureCollection;
+  'offset-1-3': GeoJSON.FeatureCollection;
+  'offset-3-3': GeoJSON.FeatureCollection;
 };
 
 const initialNodeValues = {
@@ -137,26 +149,90 @@ const DashboardAdminMap = () => {
     setNodes(data.nodes);
   }, []);
 
-  const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
+  const trailsData: TrailsData = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    const featuresOffset1in2: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+    const featuresOffset2in2: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    const featuresOffset1in3: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+    const featuresOffset3in3: GeoJSON.Feature<GeoJSON.LineString>[] = [];
 
     trails.forEach((trail) => {
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
-      const lineString = createLineString(
-        {
-          name: `${trail.name.start} - ${trail.name.end}`,
-          color: trail.color[0],
-        },
-        decoded,
-      );
-      features.push(lineString);
+      if (trail.color.length === 1) {
+        const lineString = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[0],
+          },
+          decoded,
+        );
+        features.push(lineString);
+      } else if (trail.color.length === 2) {
+        const lineString1in2 = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[0],
+          },
+          decoded,
+        );
+        const lineString2in2 = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[1],
+          },
+          decoded,
+        );
+        featuresOffset1in2.push(lineString1in2);
+        featuresOffset2in2.push(lineString2in2);
+      } else if (trail.color.length === 3) {
+        const lineString1in3 = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[0],
+          },
+          decoded,
+        );
+        const lineString = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[1],
+          },
+          decoded,
+        );
+        const lineString3in3 = createLineString(
+          {
+            name: `${trail.name.start} - ${trail.name.end}`,
+            color: trail.color[2],
+          },
+          decoded,
+        );
+        features.push(lineString);
+        featuresOffset1in3.push(lineString1in3);
+        featuresOffset3in3.push(lineString3in3);
+      }
     });
     console.log('Recalculate trailsData');
-
     return {
-      type: 'FeatureCollection',
-      features,
+      normal: { type: 'FeatureCollection', features },
+      'offset-1-2': {
+        type: 'FeatureCollection',
+        features: featuresOffset1in2,
+      },
+      'offset-2-2': {
+        type: 'FeatureCollection',
+        features: featuresOffset2in2,
+      },
+      'offset-1-3': {
+        type: 'FeatureCollection',
+        features: featuresOffset1in3,
+      },
+      'offset-3-3': {
+        type: 'FeatureCollection',
+        features: featuresOffset3in3,
+      },
     };
   }, [trails]);
 
@@ -606,7 +682,7 @@ const DashboardAdminMap = () => {
                   onRemove={handleRemoveNode}
                 />
               ))}
-            <Source type="geojson" data={trailsData}>
+            <Source type="geojson" data={trailsData.normal}>
               <Layer
                 {...trailsDataLocalLayer}
                 beforeId="trails-data-layer"
@@ -614,8 +690,46 @@ const DashboardAdminMap = () => {
                   visibility: visibility['local'] ? 'visible' : 'none',
                 }}
               />
+            </Source>
+            <Source type="geojson" data={trailsData.normal}>
               <Layer
                 {...trailsDrawLocalLayer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
+            </Source>
+            <Source type="geojson" data={trailsData['offset-1-2']}>
+              <Layer
+                {...trailsDrawOffset1in2Layer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
+            </Source>
+            <Source type="geojson" data={trailsData['offset-2-2']}>
+              <Layer
+                {...trailsDrawOffset2in2Layer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
+            </Source>
+            <Source type="geojson" data={trailsData['offset-1-3']}>
+              <Layer
+                {...trailsDrawOffset1in3Layer}
+                beforeId="trails-data-layer"
+                layout={{
+                  visibility: visibility['local'] ? 'visible' : 'none',
+                }}
+              />
+            </Source>
+            <Source type="geojson" data={trailsData['offset-3-3']}>
+              <Layer
+                {...trailsDrawOffset3in3Layer}
                 beforeId="trails-data-layer"
                 layout={{
                   visibility: visibility['local'] ? 'visible' : 'none',
