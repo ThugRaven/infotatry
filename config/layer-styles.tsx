@@ -5,6 +5,7 @@ export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
   type: 'line',
   source: 'composite',
+  filter: ['match', ['get', 'offset'], ['1-1'], true, false],
   paint: {
     'line-color': [
       'match',
@@ -29,6 +30,7 @@ export const trailsDrawLayer: LineLayer = {
 export const trailsDrawOffset1in3Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-1-3-layer',
+  filter: ['match', ['get', 'offset'], ['1-3'], true, false],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': -5,
@@ -38,6 +40,7 @@ export const trailsDrawOffset1in3Layer: LineLayer = {
 export const trailsDrawOffset3in3Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-3-3-layer',
+  filter: ['match', ['get', 'offset'], ['3-3'], true, false],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': 5,
@@ -47,6 +50,7 @@ export const trailsDrawOffset3in3Layer: LineLayer = {
 export const trailsDrawOffset1in2Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-1-2-layer',
+  filter: ['match', ['get', 'offset'], ['1-2'], true, false],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': -2.5,
@@ -56,6 +60,7 @@ export const trailsDrawOffset1in2Layer: LineLayer = {
 export const trailsDrawOffset2in2Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-2-2-layer',
+  filter: ['match', ['get', 'offset'], ['2-2'], true, false],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': 2.5,
