@@ -92,10 +92,12 @@ const initialNodeValues = {
 };
 
 const initialTrailValues = {
-  nameStart: '',
-  nameEnd: '',
+  name_start: '',
+  name_end: '',
   path: '',
-  color: '',
+  color_1: '',
+  color_2: '',
+  color_3: '',
 };
 
 const interactiveLayerIds = [
@@ -338,12 +340,19 @@ const DashboardAdminMap = () => {
 
     const path = JSON.parse(trailForm.path);
     const swapped = swapCoordinates(path);
+    let colors = [trailForm.color_1];
+    if (trailForm.color_2) {
+      colors.push(trailForm.color_2);
+    }
+    if (trailForm.color_3) {
+      colors.push(trailForm.color_3);
+    }
     const newTrail: Trail = {
       name: {
-        start: trailForm.nameStart,
-        end: trailForm.nameEnd,
+        start: trailForm.name_start,
+        end: trailForm.name_end,
       },
-      color: [trailForm.color],
+      color: colors,
       distance: 0,
       time: {
         start_end: 0,
@@ -447,7 +456,9 @@ const DashboardAdminMap = () => {
       nameStart: nameStart,
       nameEnd: nameEnd,
       path: JSON.stringify(nodes, null, 2),
-      color: selectedTrail.color[0],
+      color_1: selectedTrail.color[0],
+      color_2: selectedTrail.color[1],
+      color_3: selectedTrail.color[2],
     }));
     onOpen();
   };
@@ -711,9 +722,9 @@ const DashboardAdminMap = () => {
                         <FormLabel>Name start</FormLabel>
                         <Input
                           type="text"
-                          name="nameStart"
+                          name="name_start"
+                          value={trailForm.name_start}
                           mb={2}
-                          value={trailForm.nameStart}
                           onChange={handleChangeTrail}
                         />
                       </FormControl>
@@ -721,9 +732,9 @@ const DashboardAdminMap = () => {
                         <FormLabel>Name end</FormLabel>
                         <Input
                           type="text"
-                          name="nameEnd"
+                          name="name_end"
+                          value={trailForm.name_end}
                           mb={2}
-                          value={trailForm.nameEnd}
                           onChange={handleChangeTrail}
                         />
                       </FormControl>
@@ -731,17 +742,18 @@ const DashboardAdminMap = () => {
                         <FormLabel>Path</FormLabel>
                         <Textarea
                           name="path"
-                          mb={2}
                           value={trailForm.path}
+                          mb={2}
                           onChange={handleChangeTrail}
                         />
                       </FormControl>
                       <FormControl isRequired>
                         <FormLabel>Color</FormLabel>
                         <Select
-                          placeholder="Select colors"
-                          name="color"
-                          value={trailForm.color}
+                          placeholder="Select color"
+                          name="color_1"
+                          value={trailForm.color_1}
+                          mb={2}
                           onChange={handleChangeTrail}
                         >
                           <option value="red">red</option>
@@ -751,6 +763,32 @@ const DashboardAdminMap = () => {
                           <option value="black">black</option>
                         </Select>
                       </FormControl>
+                      <Select
+                        placeholder="Select color"
+                        name="color_2"
+                        value={trailForm.color_2}
+                        mb={2}
+                        onChange={handleChangeTrail}
+                      >
+                        <option value="red">red</option>
+                        <option value="blue">blue</option>
+                        <option value="yellow">yellow</option>
+                        <option value="green">green</option>
+                        <option value="black">black</option>
+                      </Select>
+                      <Select
+                        placeholder="Select color"
+                        name="color_3"
+                        value={trailForm.color_3}
+                        mb={2}
+                        onChange={handleChangeTrail}
+                      >
+                        <option value="red">red</option>
+                        <option value="blue">blue</option>
+                        <option value="yellow">yellow</option>
+                        <option value="green">green</option>
+                        <option value="black">black</option>
+                      </Select>
                     </ModalBody>
 
                     <ModalFooter>
