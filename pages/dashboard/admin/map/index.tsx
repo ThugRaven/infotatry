@@ -64,6 +64,7 @@ interface PopupInfo {
 }
 
 export type Trail = {
+  id: number;
   name: {
     start: string;
     end: string;
@@ -78,6 +79,7 @@ export type Trail = {
 };
 
 type Node = {
+  id: number;
   name: string;
   type: string;
   lat: number;
@@ -321,7 +323,9 @@ const DashboardAdminMap = () => {
     console.log(nodeForm);
     setNodeForm(initialNodeValues);
 
+    const lastId = nodes[nodes.length - 1].id;
     const newNode: Node = {
+      id: lastId + 1,
       name: nodeForm.name,
       type: nodeForm.nodeType,
       lat: nodeForm.latitude,
@@ -338,8 +342,6 @@ const DashboardAdminMap = () => {
     console.log(trailForm);
     setTrailForm(initialTrailValues);
 
-    const path = JSON.parse(trailForm.path);
-    const swapped = swapCoordinates(path);
     let colors = [trailForm.color_1];
     if (trailForm.color_2) {
       colors.push(trailForm.color_2);
@@ -347,7 +349,12 @@ const DashboardAdminMap = () => {
     if (trailForm.color_3) {
       colors.push(trailForm.color_3);
     }
+
+    const path = JSON.parse(trailForm.path);
+    const swapped = swapCoordinates(path);
+    const lastId = trails[trails.length - 1].id;
     const newTrail: Trail = {
+      id: lastId + 1,
       name: {
         start: trailForm.name_start,
         end: trailForm.name_end,
