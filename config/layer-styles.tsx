@@ -22,7 +22,7 @@ export const trailsDrawLayer: LineLayer = {
       '#FFFFFF',
     ],
     'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
-    'line-dasharray': [4, 2],
+    'line-dasharray': [6, 2],
   },
 };
 
