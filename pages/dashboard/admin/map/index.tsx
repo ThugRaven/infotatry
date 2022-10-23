@@ -152,33 +152,36 @@ const DashboardAdminMap = () => {
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
       let offsets = [];
+
+      let properties: GeoJSON.GeoJsonProperties = {
+        id: trail.id,
+        name: `${trail.name.start} - ${trail.name.end}`,
+      };
       if (trail.color.length === 1) {
-        offsets.push({ offset: '1-1', colorIndex: 0 });
+        properties = {
+          ...properties,
+          offset: '1-1',
+          color: trail.color[0],
+        };
       } else if (trail.color.length === 2) {
-        offsets.push(
-          { offset: '1-2', colorIndex: 0 },
-          { offset: '2-2', colorIndex: 1 },
-        );
+        properties = {
+          ...properties,
+          offset: ['1-2', '2-2'],
+          color_left: trail.color[0],
+          color_right: trail.color[1],
+        };
       } else if (trail.color.length === 3) {
-        offsets.push(
-          { offset: '1-3', colorIndex: 0 },
-          { offset: '1-1', colorIndex: 1 },
-          { offset: '3-3', colorIndex: 2 },
-        );
+        properties = {
+          ...properties,
+          offset: ['1-3', '1-1', '3-3'],
+          color_left: trail.color[0],
+          color: trail.color[1],
+          color_right: trail.color[2],
+        };
       }
 
-      offsets.forEach((offset) => {
-        const lineString = createLineString(
-          {
-            id: trail.id,
-            name: `${trail.name.start} - ${trail.name.end}`,
-            color: trail.color[offset.colorIndex],
-            offset: offset.offset,
-          },
-          decoded,
-        );
-        features.push(lineString);
-      });
+      const lineString = createLineString(properties, decoded);
+      features.push(lineString);
     });
 
     console.log('Recalculate trailsData');

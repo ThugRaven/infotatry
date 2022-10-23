@@ -1,27 +1,31 @@
-import { CircleLayer, LineLayer, SymbolLayer } from 'mapbox-gl';
+import { CircleLayer, Expression, LineLayer, SymbolLayer } from 'mapbox-gl';
 import { TRAIL_COLORS } from '../constants';
+
+function getColors(property: string): Expression {
+  return [
+    'match',
+    ['get', property],
+    ['red'],
+    TRAIL_COLORS.RED,
+    ['blue'],
+    TRAIL_COLORS.BLUE,
+    ['yellow'],
+    TRAIL_COLORS.YELLOW,
+    ['green'],
+    TRAIL_COLORS.GREEN,
+    ['black'],
+    TRAIL_COLORS.BLACK,
+    '#FFFFFF',
+  ];
+}
 
 export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
   type: 'line',
   source: 'composite',
-  filter: ['match', ['get', 'offset'], ['1-1'], true, false],
+  filter: ['in', '1-1', ['get', 'offset']],
   paint: {
-    'line-color': [
-      'match',
-      ['get', 'color'],
-      ['red'],
-      TRAIL_COLORS.RED,
-      ['blue'],
-      TRAIL_COLORS.BLUE,
-      ['yellow'],
-      TRAIL_COLORS.YELLOW,
-      ['green'],
-      TRAIL_COLORS.GREEN,
-      ['black'],
-      TRAIL_COLORS.BLACK,
-      '#FFFFFF',
-    ],
+    'line-color': getColors('color'),
     'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
     'line-dasharray': [6, 2],
   },
@@ -30,40 +34,44 @@ export const trailsDrawLayer: LineLayer = {
 export const trailsDrawOffset1in3Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-1-3-layer',
-  filter: ['match', ['get', 'offset'], ['1-3'], true, false],
+  filter: ['in', '1-3', ['get', 'offset']],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': -5,
+    'line-color': getColors('color_left'),
   },
 };
 
 export const trailsDrawOffset3in3Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-3-3-layer',
-  filter: ['match', ['get', 'offset'], ['3-3'], true, false],
+  filter: ['in', '3-3', ['get', 'offset']],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': 5,
+    'line-color': getColors('color_right'),
   },
 };
 
 export const trailsDrawOffset1in2Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-1-2-layer',
-  filter: ['match', ['get', 'offset'], ['1-2'], true, false],
+  filter: ['in', '1-2', ['get', 'offset']],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': -2.5,
+    'line-color': getColors('color_left'),
   },
 };
 
 export const trailsDrawOffset2in2Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-2-2-layer',
-  filter: ['match', ['get', 'offset'], ['2-2'], true, false],
+  filter: ['in', '2-2', ['get', 'offset']],
   paint: {
     ...trailsDrawLayer.paint,
     'line-offset': 2.5,
+    'line-color': getColors('color_right'),
   },
 };
 
