@@ -9,7 +9,7 @@ interface TrailAdminPopupProps {
   features: mapboxgl.MapboxGeoJSONFeature[];
   trail: Trail;
   onClose: (e: PopupEvent) => void;
-  onRemove: (name: string) => void;
+  onRemove: (id: number) => void;
   onChange: (name: string) => void;
 }
 
@@ -26,7 +26,7 @@ const TrailAdminPopup = ({
   const handleRemove = () => {
     const feature = features[index];
     if (feature && feature.properties) {
-      onRemove(feature.properties.name);
+      onRemove(feature.properties.id);
     }
   };
 

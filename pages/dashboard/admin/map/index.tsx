@@ -170,6 +170,7 @@ const DashboardAdminMap = () => {
       offsets.forEach((offset) => {
         const lineString = createLineString(
           {
+            id: trail.id,
             name: `${trail.name.start} - ${trail.name.end}`,
             color: trail.color[offset.colorIndex],
             offset: offset.offset,
@@ -481,12 +482,8 @@ const DashboardAdminMap = () => {
     onOpen();
   };
 
-  const handleRemoveTrail = (name: string) => {
-    setTrails((state) =>
-      state.filter(
-        (trail) => `${trail.name.start} - ${trail.name.end}` !== name,
-      ),
-    );
+  const handleRemoveTrail = (id: number) => {
+    setTrails((state) => state.filter((trail) => trail.id !== id));
     setSelectedTrail(null);
     setPopupInfo(null);
   };
