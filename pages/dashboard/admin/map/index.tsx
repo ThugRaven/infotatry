@@ -378,13 +378,30 @@ const DashboardAdminMap = () => {
   };
 
   const handleSave = () => {
-    const data = {
+    const data = features;
+    const newData = {
       nodes: [...nodes],
       trails: [...trails],
     };
-    console.log(data);
 
-    const blob = new Blob([JSON.stringify(data, null, 0)], {
+    let lastNodeId = data.nodes[data.nodes.length - 1].id;
+    let lastTrailId = data.trails[data.trails.length - 1].id;
+
+    for (let i = 0; i < newData.nodes.length; i++) {
+      const node = newData.nodes[i];
+      if (node.id > lastNodeId) {
+        node.id = ++lastNodeId;
+      }
+    }
+
+    for (let i = 0; i < newData.trails.length; i++) {
+      const trail = newData.trails[i];
+      if (trail.id > lastTrailId) {
+        trail.id = ++lastTrailId;
+      }
+    }
+
+    const blob = new Blob([JSON.stringify(newData, null, 0)], {
       type: 'application/json',
     });
 
