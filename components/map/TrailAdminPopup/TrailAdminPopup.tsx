@@ -1,4 +1,5 @@
-import { Button, ButtonGroup } from '@chakra-ui/react';
+import { Search2Icon } from '@chakra-ui/icons';
+import { Button, ButtonGroup, IconButton } from '@chakra-ui/react';
 import { Trail } from 'pages/dashboard/admin/map';
 import { useMemo, useState } from 'react';
 import { Popup, PopupEvent } from 'react-map-gl';
@@ -11,6 +12,7 @@ interface TrailAdminPopupProps {
   onClose: (e: PopupEvent) => void;
   onRemove: (id: number) => void;
   onChange: (id: number) => void;
+  onZoomOnFeature: (id: number) => void;
 }
 
 const TrailAdminPopup = ({
@@ -20,6 +22,7 @@ const TrailAdminPopup = ({
   onClose,
   onRemove,
   onChange,
+  onZoomOnFeature,
 }: TrailAdminPopupProps) => {
   const [index, setIndex] = useState(0);
 
@@ -44,6 +47,13 @@ const TrailAdminPopup = ({
       const idx = index + 1;
       setIndex(idx);
       onChange(features[idx].properties?.id);
+    }
+  };
+
+  const handleZoomOnFeature = () => {
+    const feature = features[index];
+    if (feature && feature.properties) {
+      onZoomOnFeature(feature.properties.id);
     }
   };
 
@@ -78,6 +88,12 @@ const TrailAdminPopup = ({
           <ButtonGroup size="xs" display={'flex'} flexWrap={'wrap'} spacing={0}>
             <Button onClick={handleRemove}>Remove trail</Button>
           </ButtonGroup>
+          <IconButton
+            icon={<Search2Icon />}
+            size={'sm'}
+            aria-label={'Zoom'}
+            onClick={handleZoomOnFeature}
+          />
         </div>
       ) : (
         <div>Brak informacji</div>

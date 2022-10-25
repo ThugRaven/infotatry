@@ -44,7 +44,7 @@ import {
 } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
 import { saveAs } from 'file-saver';
-import mapboxgl, { LngLat } from 'mapbox-gl';
+import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, {
   ReactElement,
@@ -514,6 +514,24 @@ const DashboardAdminMap = () => {
     setSelectedTrail(trail);
   };
 
+  const handleZoomOnFeature = (id: number) => {
+    const trail = trails.find((trail) => trail.id === id) ?? null;
+
+    if (trail) {
+      let decoded = decode(trail.encoded);
+      const bounds = new LngLatBounds(
+        new LngLat(decoded[0][1], decoded[0][0]),
+        new LngLat(decoded[0][1], decoded[0][0]),
+      );
+
+      decoded.forEach((node) => {
+        bounds.extend([node[1], node[0]]);
+      });
+
+      mapRef.current?.fitBounds(bounds, { padding: 50 });
+    }
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -645,6 +663,7 @@ const DashboardAdminMap = () => {
                     }}
                     onRemove={handleRemoveTrail}
                     onChange={handleFeatureChange}
+                    onZoomOnFeature={handleZoomOnFeature}
                   />
                 )
               ) : (
