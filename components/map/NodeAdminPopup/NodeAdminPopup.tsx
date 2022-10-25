@@ -6,7 +6,7 @@ interface NodeAdminPopupProps {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
   onClose: (e: PopupEvent) => void;
-  onRemove: (name: string) => void;
+  onRemove: (id: number) => void;
 }
 
 const NodeAdminPopup = ({
@@ -19,7 +19,7 @@ const NodeAdminPopup = ({
 
   const handleRemove = () => {
     if (feature && feature.properties) {
-      onRemove(feature.properties.name);
+      onRemove(feature.properties.id);
     }
   };
 

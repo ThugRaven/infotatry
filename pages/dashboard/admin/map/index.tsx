@@ -196,7 +196,7 @@ const DashboardAdminMap = () => {
 
     nodes.forEach((node) => {
       const point = createPoint(
-        { name: node.name },
+        { id: node.id, name: node.name },
         new LngLat(node.lng, node.lat),
       );
       features.push(point);
@@ -213,11 +213,7 @@ const DashboardAdminMap = () => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
 
     if (selectedTrail) {
-      const trail = trails.find(
-        (trail) =>
-          `${trail.name.start} - ${trail.name.end}` ===
-          `${selectedTrail.name.start} - ${selectedTrail.name.end}`,
-      );
+      const trail = trails.find((trail) => trail.id === selectedTrail.id);
 
       if (trail) {
         let decoded = decode(trail.encoded);
@@ -508,16 +504,13 @@ const DashboardAdminMap = () => {
     setPopupInfo(null);
   };
 
-  const handleRemoveNode = (name: string) => {
-    setNodes((state) => state.filter((node) => node.name !== name));
+  const handleRemoveNode = (id: number) => {
+    setNodes((state) => state.filter((node) => node.id !== id));
     setPopupInfo(null);
   };
 
-  const handleFeatureChange = (name: string) => {
-    const trail =
-      trails.find(
-        (trail) => `${trail.name.start} - ${trail.name.end}` === name,
-      ) ?? null;
+  const handleFeatureChange = (id: number) => {
+    const trail = trails.find((trail) => trail.id === id) ?? null;
     setSelectedTrail(trail);
   };
 
@@ -584,16 +577,15 @@ const DashboardAdminMap = () => {
 
               if (
                 features[0].properties &&
-                features[0].layer.id !== 'trail-nodes-local-layer'
+                features[0].layer.id !== 'trail-nodes-local-layer' &&
+                features[0].layer.id !== 'nodes-draw-local-layer'
               ) {
-                const name = features[0].properties.name;
-                trail =
-                  trails.find(
-                    (trail) =>
-                      `${trail.name.start} - ${trail.name.end}` === name,
-                  ) ?? null;
+                const id = features[0].properties.id;
+                trail = trails.find((trail) => trail.id === id) ?? null;
 
                 setSelectedTrail(trail);
+              } else {
+                setSelectedTrail(null);
               }
 
               let trailInfo = {
@@ -625,7 +617,8 @@ const DashboardAdminMap = () => {
             }}
           >
             {popupInfo &&
-              (popupInfo.trail ? (
+              (popupInfo.trail &&
+              popupInfo.features[0].layer.id !== 'nodes-draw-local-layer' ? (
                 popupInfo.features[0] &&
                 popupInfo.features[0].layer.id === 'trail-nodes-local-layer' ? (
                   <TrailNodePopup

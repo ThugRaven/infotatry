@@ -10,7 +10,7 @@ interface TrailAdminPopupProps {
   trail: Trail;
   onClose: (e: PopupEvent) => void;
   onRemove: (id: number) => void;
-  onChange: (name: string) => void;
+  onChange: (id: number) => void;
 }
 
 const TrailAdminPopup = ({
@@ -34,7 +34,7 @@ const TrailAdminPopup = ({
     if (index > 0) {
       const idx = index - 1;
       setIndex(idx);
-      onChange(features[idx].properties?.name);
+      onChange(features[idx].properties?.id);
     }
   };
 
@@ -43,7 +43,7 @@ const TrailAdminPopup = ({
     if (index < length - 1) {
       const idx = index + 1;
       setIndex(idx);
-      onChange(features[idx].properties?.name);
+      onChange(features[idx].properties?.id);
     }
   };
 
