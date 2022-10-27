@@ -1,9 +1,12 @@
+import { SearchIcon } from '@chakra-ui/icons';
 import {
   Button,
   Checkbox,
   FormControl,
   FormLabel,
   Input,
+  InputGroup,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -86,6 +89,11 @@ type Node = {
   lng: number;
 };
 
+type Results = {
+  nodes: Node[];
+  trails: Trail[];
+};
+
 const initialNodeValues = {
   name: '',
   latitude: 0,
@@ -137,6 +145,10 @@ const DashboardAdminMap = () => {
   const [visibility, setVisibility] = useState({
     server: true,
     local: true,
+  });
+  const [filteredResults, setFilteredResults] = useState<Results>({
+    nodes: [],
+    trails: [],
   });
 
   useEffect(() => {
@@ -532,28 +544,80 @@ const DashboardAdminMap = () => {
     }
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim().toLowerCase();
+
+    if (!value) {
+      return setFilteredResults({ nodes: [], trails: [] });
+    }
+
+    let resultNodes = nodes.filter((node) =>
+      node.name.trim().toLowerCase().includes(value),
+    );
+    let resultTrails = trails.filter((trail) =>
+      `${trail.name.start} - ${trail.name.end}`
+        .trim()
+        .toLowerCase()
+        .includes(value),
+    );
+
+    setFilteredResults({
+      nodes: resultNodes.slice(0, 5),
+      trails: resultTrails.slice(0, 5),
+    });
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
       <div className={s.container}>
         <div className={s.header}>
-          <div className={s.layer__visibility}>
-            <Checkbox
-              name="server"
-              isChecked={visibility['server']}
-              onChange={handleChange}
-            >
-              Server layer
-            </Checkbox>
-            <Checkbox
-              name="local"
-              isChecked={visibility['local']}
-              onChange={handleChange}
-            >
-              Local layer
-            </Checkbox>
+          <div className={s.search}>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<SearchIcon />}
+              />
+              <Input
+                type="text"
+                placeholder="Szukaj..."
+                onChange={handleSearch}
+              />
+            </InputGroup>
+            <ul>
+              {filteredResults.nodes.length > 0 &&
+                filteredResults.nodes.map((node) => (
+                  <li key={`node-${node.id}`}>
+                    Node {`${node.name} - ${node.type}`}
+                  </li>
+                ))}
+              {filteredResults.trails.length > 0 &&
+                filteredResults.trails.map((trail) => (
+                  <li key={`trail-${trail.id}`}>
+                    Trail {`${trail.name.start} - ${trail.name.end}`}
+                  </li>
+                ))}
+            </ul>
           </div>
-          <Button onClick={handleSave}>Save file</Button>
+          <div className={s.options}>
+            <div className={s.layer__visibility}>
+              <Checkbox
+                name="server"
+                isChecked={visibility['server']}
+                onChange={handleChange}
+              >
+                Server layer
+              </Checkbox>
+              <Checkbox
+                name="local"
+                isChecked={visibility['local']}
+                onChange={handleChange}
+              >
+                Local layer
+              </Checkbox>
+            </div>
+            <Button onClick={handleSave}>Save file</Button>
+          </div>
         </div>
         <div className={s.wrapper}>
           <CoordinatesBox
