@@ -584,17 +584,21 @@ const DashboardAdminMap = () => {
                 onChange={handleSearch}
               />
             </InputGroup>
-            <ul>
+            <ul className={s.search__results}>
               {filteredResults.nodes.length > 0 &&
                 filteredResults.nodes.map((node) => (
                   <li key={`node-${node.id}`}>
-                    Node {`${node.name} - ${node.type}`}
+                    <a className={s.search__result}>
+                      Node {`${node.name} - ${node.type}`}
+                    </a>
                   </li>
                 ))}
               {filteredResults.trails.length > 0 &&
                 filteredResults.trails.map((trail) => (
                   <li key={`trail-${trail.id}`}>
-                    Trail {`${trail.name.start} - ${trail.name.end}`}
+                    <a className={s.search__result}>
+                      Trail {`${trail.name.start} - ${trail.name.end}`}
+                    </a>
                   </li>
                 ))}
             </ul>
