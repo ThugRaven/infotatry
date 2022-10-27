@@ -540,7 +540,7 @@ const DashboardAdminMap = () => {
         bounds.extend([node[1], node[0]]);
       });
 
-      mapRef.current?.fitBounds(bounds, { padding: 50 });
+      mapRef.current?.fitBounds(bounds, { padding: 100 });
     }
   };
 
@@ -567,6 +567,35 @@ const DashboardAdminMap = () => {
     });
   };
 
+  const handleSearchResultOnClick = (type: 'node' | 'trail', id: number) => {
+    if (type === 'node') {
+      let node = nodes.find((node) => node.id === id);
+
+      if (node) {
+        mapRef.current?.flyTo({
+          center: new LngLat(node.lng, node.lat),
+          zoom: 19,
+        });
+      }
+    } else if (type === 'trail') {
+      let trail = trails.find((trail) => trail.id === id);
+
+      if (trail) {
+        let decoded = decode(trail.encoded);
+        const bounds = new LngLatBounds(
+          new LngLat(decoded[0][1], decoded[0][0]),
+          new LngLat(decoded[0][1], decoded[0][0]),
+        );
+
+        decoded.forEach((node) => {
+          bounds.extend([node[1], node[0]]);
+        });
+
+        mapRef.current?.fitBounds(bounds, { padding: 100, maxZoom: 18 });
+      }
+    }
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -588,7 +617,10 @@ const DashboardAdminMap = () => {
               {filteredResults.nodes.length > 0 &&
                 filteredResults.nodes.map((node) => (
                   <li key={`node-${node.id}`}>
-                    <a className={s.search__result}>
+                    <a
+                      className={s.search__result}
+                      onClick={() => handleSearchResultOnClick('node', node.id)}
+                    >
                       Node {`${node.name} - ${node.type}`}
                     </a>
                   </li>
@@ -596,7 +628,12 @@ const DashboardAdminMap = () => {
               {filteredResults.trails.length > 0 &&
                 filteredResults.trails.map((trail) => (
                   <li key={`trail-${trail.id}`}>
-                    <a className={s.search__result}>
+                    <a
+                      className={s.search__result}
+                      onClick={() =>
+                        handleSearchResultOnClick('trail', trail.id)
+                      }
+                    >
                       Trail {`${trail.name.start} - ${trail.name.end}`}
                     </a>
                   </li>
