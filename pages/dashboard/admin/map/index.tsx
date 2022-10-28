@@ -1,12 +1,9 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Button,
   Checkbox,
   FormControl,
   FormLabel,
   Input,
-  InputGroup,
-  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -27,6 +24,8 @@ import {
   TrailAdminPopup,
   TrailNodePopup,
 } from '@components/map';
+import { SearchInput } from '@components/ui';
+import { CameraAction } from '@components/ui/SearchInput/SearchInput';
 import {
   nodesDrawLocalLayer,
   trailNodesLocalLayer,
@@ -81,7 +80,7 @@ export type Trail = {
   encoded: string;
 };
 
-type Node = {
+export type Node = {
   id: number;
   name: string;
   type: string;
@@ -544,21 +543,19 @@ const DashboardAdminMap = () => {
     }
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim().toLowerCase();
-
-    if (!value) {
+  const handleSearch = (query: string) => {
+    if (!query) {
       return setFilteredResults({ nodes: [], trails: [] });
     }
 
-    let resultNodes = nodes.filter((node) =>
-      node.name.trim().toLowerCase().includes(value),
+    const resultNodes = nodes.filter((node) =>
+      node.name.trim().toLowerCase().includes(query),
     );
-    let resultTrails = trails.filter((trail) =>
+    const resultTrails = trails.filter((trail) =>
       `${trail.name.start} - ${trail.name.end}`
         .trim()
         .toLowerCase()
-        .includes(value),
+        .includes(query),
     );
 
     setFilteredResults({
@@ -567,33 +564,8 @@ const DashboardAdminMap = () => {
     });
   };
 
-  const handleSearchResultOnClick = (type: 'node' | 'trail', id: number) => {
-    if (type === 'node') {
-      let node = nodes.find((node) => node.id === id);
-
-      if (node) {
-        mapRef.current?.flyTo({
-          center: new LngLat(node.lng, node.lat),
-          zoom: 19,
-        });
-      }
-    } else if (type === 'trail') {
-      let trail = trails.find((trail) => trail.id === id);
-
-      if (trail) {
-        let decoded = decode(trail.encoded);
-        const bounds = new LngLatBounds(
-          new LngLat(decoded[0][1], decoded[0][0]),
-          new LngLat(decoded[0][1], decoded[0][0]),
-        );
-
-        decoded.forEach((node) => {
-          bounds.extend([node[1], node[0]]);
-        });
-
-        mapRef.current?.fitBounds(bounds, { padding: 100, maxZoom: 18 });
-      }
-    }
+  const handleSearchResultClick = (cameraAction: CameraAction) => {
+    mapRef.current?.fitBounds(cameraAction.bounds, cameraAction.options);
   };
 
   return (
@@ -601,45 +573,11 @@ const DashboardAdminMap = () => {
       <SEO title="Admin Dashboard - Map" />
       <div className={s.container}>
         <div className={s.header}>
-          <div className={s.search}>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<SearchIcon />}
-              />
-              <Input
-                type="text"
-                placeholder="Szukaj..."
-                onChange={handleSearch}
-              />
-            </InputGroup>
-            <ul className={s.search__results}>
-              {filteredResults.nodes.length > 0 &&
-                filteredResults.nodes.map((node) => (
-                  <li key={`node-${node.id}`}>
-                    <a
-                      className={s.search__result}
-                      onClick={() => handleSearchResultOnClick('node', node.id)}
-                    >
-                      Node {`${node.name} - ${node.type}`}
-                    </a>
-                  </li>
-                ))}
-              {filteredResults.trails.length > 0 &&
-                filteredResults.trails.map((trail) => (
-                  <li key={`trail-${trail.id}`}>
-                    <a
-                      className={s.search__result}
-                      onClick={() =>
-                        handleSearchResultOnClick('trail', trail.id)
-                      }
-                    >
-                      Trail {`${trail.name.start} - ${trail.name.end}`}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </div>
+          <SearchInput
+            results={filteredResults}
+            onSearch={handleSearch}
+            onClick={handleSearchResultClick}
+          />
           <div className={s.options}>
             <div className={s.layer__visibility}>
               <Checkbox
