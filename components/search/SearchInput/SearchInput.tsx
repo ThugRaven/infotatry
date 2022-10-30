@@ -4,6 +4,7 @@ import { decode } from '@lib/utils';
 import { FitBoundsOptions, LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { useEffect, useRef, useState } from 'react';
+import SearchResult from '../SearchResult';
 import s from './SearchInput.module.css';
 
 type Results = {
@@ -101,25 +102,23 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
         <ul className={s.search__results}>
           {results.nodes.length > 0 &&
             results.nodes.map((node) => (
-              <li key={`node-${node.id}`}>
-                <a
-                  className={s.search__result}
-                  onClick={() => handleClick('node', node.id)}
-                >
-                  Node {`${node.name} - ${node.type}`}
-                </a>
-              </li>
+              <SearchResult
+                id={node.id}
+                name={node.name}
+                type="node"
+                icon={`node - ${node.type}`}
+                onClick={handleClick}
+              />
             ))}
           {results.trails.length > 0 &&
             results.trails.map((trail) => (
-              <li key={`trail-${trail.id}`}>
-                <a
-                  className={s.search__result}
-                  onClick={() => handleClick('trail', trail.id)}
-                >
-                  Trail {`${trail.name.start} - ${trail.name.end}`}
-                </a>
-              </li>
+              <SearchResult
+                id={trail.id}
+                name={`${trail.name.start} - ${trail.name.end}`}
+                type="trail"
+                icon={'trail'}
+                onClick={handleClick}
+              />
             ))}
         </ul>
       )}

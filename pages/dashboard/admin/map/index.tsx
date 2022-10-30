@@ -24,8 +24,8 @@ import {
   TrailAdminPopup,
   TrailNodePopup,
 } from '@components/map';
-import { SearchInput } from '@components/ui';
-import { CameraAction } from '@components/ui/SearchInput/SearchInput';
+import { SearchInput } from '@components/search';
+import { CameraAction } from '@components/search/SearchInput/SearchInput';
 import {
   nodesDrawLocalLayer,
   trailNodesLocalLayer,
