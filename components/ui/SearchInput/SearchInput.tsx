@@ -3,7 +3,7 @@ import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { decode } from '@lib/utils';
 import { FitBoundsOptions, LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import s from './SearchInput.module.css';
 
 type Results = {
@@ -24,7 +24,9 @@ interface SearchInputProps {
 
 const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
   const [query, setQuery] = useState('');
-  const isOpen = results.nodes.length > 0 && results.trails.length > 0;
+  const [isOpen, setIsOpen] = useState(false);
+  const hasResults = results.nodes.length > 0 || results.trails.length > 0;
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -41,6 +43,7 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
           bounds: new LngLat(node.lng, node.lat).toBounds(0),
           options: { maxZoom: 19 },
         });
+        setIsOpen(false);
       }
     } else if (type === 'trail') {
       let trail = results.trails.find((trail) => trail.id === id);
@@ -60,12 +63,30 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
             maxZoom: 18,
           },
         });
+        setIsOpen(false);
       }
     }
   };
 
+  const handleFocus = () => {
+    setIsOpen(true);
+  };
+
+  const handleDocumentClick = (e: MouseEvent) => {
+    if (!searchRef.current?.contains(e.target as HTMLElement)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, []);
+
   return (
-    <div className={s.search__wrapper}>
+    <div className={s.search__wrapper} ref={searchRef}>
       <InputGroup>
         <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
         <Input
@@ -73,9 +94,10 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
           placeholder="Szukaj..."
           value={query}
           onChange={handleChange}
+          onFocus={handleFocus}
         />
       </InputGroup>
-      {isOpen && (
+      {hasResults && isOpen && (
         <ul className={s.search__results}>
           {results.nodes.length > 0 &&
             results.nodes.map((node) => (
