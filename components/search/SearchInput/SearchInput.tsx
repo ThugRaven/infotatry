@@ -1,5 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { TrailMarking } from '@components/common';
 import { decode } from '@lib/utils';
 import { FitBoundsOptions, LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
@@ -111,15 +112,21 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
               />
             ))}
           {results.trails.length > 0 &&
-            results.trails.map((trail) => (
-              <SearchResult
-                id={trail.id}
-                name={`${trail.name.start} - ${trail.name.end}`}
-                type="trail"
-                icon={'trail'}
-                onClick={handleClick}
-              />
-            ))}
+            results.trails.map((trail) => {
+              const markings = trail.color.map((color) => (
+                <TrailMarking color={color} size={'md'} />
+              ));
+
+              return (
+                <SearchResult
+                  id={trail.id}
+                  name={`${trail.name.start} - ${trail.name.end}`}
+                  type="trail"
+                  icon={markings}
+                  onClick={handleClick}
+                />
+              );
+            })}
         </ul>
       )}
     </div>

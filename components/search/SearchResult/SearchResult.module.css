@@ -10,3 +10,8 @@
 .search__result:hover {
   background-color: hsl(0, 0%, 85%);
 }
+
+.result__icon {
+  display: flex;
+  gap: 0.25rem;
+}
