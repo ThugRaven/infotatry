@@ -154,7 +154,7 @@ const DashboardAdminMap = () => {
 
   useEffect(() => {
     const data = features;
-    setTrails(data.trails);
+    setTrails(data.trails as Trail[]);
     setNodes(data.nodes);
   }, []);
 
