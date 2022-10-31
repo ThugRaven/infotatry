@@ -647,7 +647,7 @@ const DashboardAdminMap = () => {
                 trail = trails.find((trail) => trail.id === id) ?? null;
 
                 setSelectedTrail(trail);
-              } else {
+              } else if (features[0].layer.id === 'nodes-draw-local-layer') {
                 setSelectedTrail(null);
               }
 
