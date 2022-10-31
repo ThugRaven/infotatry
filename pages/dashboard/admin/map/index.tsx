@@ -65,13 +65,15 @@ interface PopupInfo {
   trail: Trail | null;
 }
 
+export type TrailColor = 'red' | 'blue' | 'green' | 'yellow' | 'black';
+
 export type Trail = {
   id: number;
   name: {
     start: string;
     end: string;
   };
-  color: string[];
+  color: TrailColor[];
   distance: number;
   time: {
     start_end: number;
@@ -370,7 +372,7 @@ const DashboardAdminMap = () => {
         start: trailForm.name_start,
         end: trailForm.name_end,
       },
-      color: colors,
+      color: colors as TrailColor[],
       distance: 0,
       time: {
         start_end: 0,
