@@ -1,0 +1,48 @@
+.marking {
+  position: relative;
+  width: var(--width);
+  height: calc(var(--width) * 0.75);
+  background-color: white;
+  border: 1px solid hsl(0, 0%, 75%);
+}
+
+.marking::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  height: calc(var(--width) * 0.75 / 3);
+  margin: auto;
+  background-color: var(--color);
+}
+
+.marking--sm {
+  --width: 1rem;
+}
+
+.marking--md {
+  --width: 2rem;
+}
+
+.marking--lg {
+  --width: 3rem;
+}
+
+.marking--red {
+  --color: #ff0000;
+}
+
+.marking--blue {
+  --color: #0095da;
+}
+
+.marking--green {
+  --color: #00a650;
+}
+
+.marking--yellow {
+  --color: #ffcb04;
+}
+
+.marking--black {
+  --color: #000000;
+}
