@@ -164,7 +164,6 @@ const DashboardAdminMap = () => {
     trails.forEach((trail) => {
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
-      let offsets = [];
 
       let properties: GeoJSON.GeoJsonProperties = {
         id: trail.id,
