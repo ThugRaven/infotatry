@@ -138,6 +138,7 @@ const DashboardAdminMap = () => {
   const [type, setType] = useState('trail');
   const [nodeForm, setNodeForm] = useState(initialNodeValues);
   const [trailForm, setTrailForm] = useState(initialTrailValues);
+  const [trailEditForm, setTrailEditForm] = useState(initialTrailValues);
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
@@ -569,6 +570,79 @@ const DashboardAdminMap = () => {
     mapRef.current?.fitBounds(cameraAction.bounds, cameraAction.options);
   };
 
+  const handleChangeEditTrail = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setTrailEditForm({
+      ...trailEditForm,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    if (selectedTrail) {
+      const trail = selectedTrail;
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+      setTrailEditForm({
+        name_start: trail.name.start,
+        name_end: trail.name.end,
+        path: JSON.stringify(decoded, null, 2),
+        color_1: trail.color[0],
+        color_2: trail.color[1],
+        color_3: trail.color[2],
+      });
+    } else {
+      setTrailEditForm(initialTrailValues);
+    }
+  }, [selectedTrail]);
+
+  const handleEditTrail = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedTrail) {
+      return;
+    }
+    const index = trails.findIndex((trail) => trail.id === selectedTrail.id);
+
+    let colors = [trailEditForm.color_1];
+    if (trailEditForm.color_2) {
+      colors.push(trailEditForm.color_2);
+    }
+    if (trailEditForm.color_3) {
+      colors.push(trailEditForm.color_3);
+    }
+
+    const path = JSON.parse(trailEditForm.path);
+    const swapped = swapCoordinates(path);
+    const editedTrail: Trail = {
+      id: selectedTrail.id,
+      name: {
+        start: trailEditForm.name_start,
+        end: trailEditForm.name_end,
+      },
+      color: colors as TrailColor[],
+      distance: 0,
+      time: {
+        start_end: 0,
+        end_start: 0,
+      },
+      encoded: encode(swapped),
+    };
+    const updatedTrails = [...trails];
+    updatedTrails[index] = editedTrail;
+    setTrails(updatedTrails);
+    setTrailEditForm(initialTrailValues);
+  };
+
+  const handleCancelEdit = () => {
+    setSelectedTrail(null);
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -941,6 +1015,86 @@ const DashboardAdminMap = () => {
             </ModalContent>
           </Modal>
         </div>
+        <aside className={s.sidebar}>
+          <form onSubmit={handleEditTrail}>
+            <FormControl isRequired>
+              <FormLabel>Name start</FormLabel>
+              <Input
+                type="text"
+                name="name_start"
+                value={trailEditForm.name_start}
+                mb={2}
+                onChange={handleChangeEditTrail}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Name end</FormLabel>
+              <Input
+                type="text"
+                name="name_end"
+                value={trailEditForm.name_end}
+                mb={2}
+                onChange={handleChangeEditTrail}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Path</FormLabel>
+              <Textarea
+                name="path"
+                value={trailEditForm.path}
+                mb={2}
+                onChange={handleChangeEditTrail}
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Color</FormLabel>
+              <Select
+                placeholder="Select color"
+                name="color_1"
+                value={trailEditForm.color_1}
+                mb={2}
+                onChange={handleChangeEditTrail}
+              >
+                <option value="red">red</option>
+                <option value="blue">blue</option>
+                <option value="yellow">yellow</option>
+                <option value="green">green</option>
+                <option value="black">black</option>
+              </Select>
+            </FormControl>
+            <Select
+              placeholder="Select color"
+              name="color_2"
+              value={trailEditForm.color_2}
+              mb={2}
+              onChange={handleChangeEditTrail}
+            >
+              <option value="red">red</option>
+              <option value="blue">blue</option>
+              <option value="yellow">yellow</option>
+              <option value="green">green</option>
+              <option value="black">black</option>
+            </Select>
+            <Select
+              placeholder="Select color"
+              name="color_3"
+              value={trailEditForm.color_3}
+              mb={2}
+              onChange={handleChangeEditTrail}
+            >
+              <option value="red">red</option>
+              <option value="blue">blue</option>
+              <option value="yellow">yellow</option>
+              <option value="green">green</option>
+              <option value="black">black</option>
+            </Select>
+
+            <Button colorScheme="blue" mr={3} type="submit">
+              Save
+            </Button>
+            <Button onClick={handleCancelEdit}>Cancel</Button>
+          </form>
+        </aside>
       </div>
     </>
   );

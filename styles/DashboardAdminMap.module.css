@@ -1,16 +1,19 @@
-.wrapper {
-  position: relative;
-}
-
 .container {
   display: grid;
   grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr auto;
+}
+
+.wrapper {
+  position: relative;
+  grid-column: 1 / 1;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem;
+  grid-column: 1 / -1;
 }
 
 .layer__visibility {
@@ -52,4 +55,8 @@
 
 .search__result:hover {
   background-color: hsl(0, 0%, 85%);
+}
+
+.sidebar {
+  margin: 0.5rem 1rem;
 }
