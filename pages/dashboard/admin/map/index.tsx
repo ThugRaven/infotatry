@@ -1077,6 +1077,8 @@ const DashboardAdminMap = () => {
         <aside className={s.sidebar}>
           {selectedTrail ? (
             <form onSubmit={handleEditTrail}>
+              <FormLabel>ID</FormLabel>
+              <Input type="text" mb={2} value={selectedTrail.id} disabled />
               <FormControl isRequired>
                 <FormLabel>Name start</FormLabel>
                 <Input
@@ -1156,6 +1158,8 @@ const DashboardAdminMap = () => {
             </form>
           ) : selectedNode ? (
             <form onSubmit={handleEditNode}>
+              <FormLabel>ID</FormLabel>
+              <Input type="text" mb={2} value={selectedNode.id} disabled />
               <FormControl isRequired>
                 <FormLabel>Name</FormLabel>
                 <Input
