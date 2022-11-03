@@ -139,8 +139,10 @@ const DashboardAdminMap = () => {
   const [nodeForm, setNodeForm] = useState(initialNodeValues);
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trailEditForm, setTrailEditForm] = useState(initialTrailValues);
+  const [nodeEditForm, setNodeEditForm] = useState(initialNodeValues);
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
   const [startNodeIndex, setStartNodeIndex] = useState<number | null>(null);
   const [endNodeIndex, setEndNodeIndex] = useState<number | null>(null);
@@ -584,6 +586,20 @@ const DashboardAdminMap = () => {
     });
   };
 
+  const handleChangeEditNode = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setNodeEditForm({
+      ...nodeEditForm,
+      [name]: value,
+    });
+  };
+
   useEffect(() => {
     if (selectedTrail) {
       const trail = selectedTrail;
@@ -601,6 +617,20 @@ const DashboardAdminMap = () => {
       setTrailEditForm(initialTrailValues);
     }
   }, [selectedTrail]);
+
+  useEffect(() => {
+    if (selectedNode) {
+      const node = selectedNode;
+      setNodeEditForm({
+        name: node.name,
+        latitude: node.lat,
+        longitude: node.lng,
+        nodeType: node.type,
+      });
+    } else {
+      setNodeEditForm(initialNodeValues);
+    }
+  }, [selectedNode]);
 
   const handleEditTrail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -639,8 +669,29 @@ const DashboardAdminMap = () => {
     setTrailEditForm(initialTrailValues);
   };
 
+  const handleEditNode = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedNode) {
+      return;
+    }
+    const index = nodes.findIndex((node) => node.id === selectedNode.id);
+
+    const editedNode: Node = {
+      id: selectedNode.id,
+      name: nodeEditForm.name,
+      type: nodeEditForm.nodeType,
+      lat: nodeEditForm.latitude,
+      lng: nodeEditForm.longitude,
+    };
+    const updatedNodes = [...nodes];
+    updatedNodes[index] = editedNode;
+    setNodes(updatedNodes);
+    setNodeEditForm(initialNodeValues);
+  };
+
   const handleCancelEdit = () => {
     setSelectedTrail(null);
+    setSelectedNode(null);
   };
 
   return (
@@ -720,8 +771,16 @@ const DashboardAdminMap = () => {
                 trail = trails.find((trail) => trail.id === id) ?? null;
 
                 setSelectedTrail(trail);
-              } else if (features[0].layer.id === 'nodes-draw-local-layer') {
+                setSelectedNode(null);
+              } else if (
+                features[0].properties &&
+                features[0].layer.id === 'nodes-draw-local-layer'
+              ) {
+                const id = features[0].properties.id;
+                const node = nodes.find((node) => node.id === id) ?? null;
+
                 setSelectedTrail(null);
+                setSelectedNode(node);
               }
 
               let trailInfo = {
@@ -1016,42 +1075,57 @@ const DashboardAdminMap = () => {
           </Modal>
         </div>
         <aside className={s.sidebar}>
-          <form onSubmit={handleEditTrail}>
-            <FormControl isRequired>
-              <FormLabel>Name start</FormLabel>
-              <Input
-                type="text"
-                name="name_start"
-                value={trailEditForm.name_start}
-                mb={2}
-                onChange={handleChangeEditTrail}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Name end</FormLabel>
-              <Input
-                type="text"
-                name="name_end"
-                value={trailEditForm.name_end}
-                mb={2}
-                onChange={handleChangeEditTrail}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Path</FormLabel>
-              <Textarea
-                name="path"
-                value={trailEditForm.path}
-                mb={2}
-                onChange={handleChangeEditTrail}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Color</FormLabel>
+          {selectedTrail ? (
+            <form onSubmit={handleEditTrail}>
+              <FormControl isRequired>
+                <FormLabel>Name start</FormLabel>
+                <Input
+                  type="text"
+                  name="name_start"
+                  value={trailEditForm.name_start}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Name end</FormLabel>
+                <Input
+                  type="text"
+                  name="name_end"
+                  value={trailEditForm.name_end}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Path</FormLabel>
+                <Textarea
+                  name="path"
+                  value={trailEditForm.path}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Color</FormLabel>
+                <Select
+                  placeholder="Select color"
+                  name="color_1"
+                  value={trailEditForm.color_1}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                >
+                  <option value="red">red</option>
+                  <option value="blue">blue</option>
+                  <option value="yellow">yellow</option>
+                  <option value="green">green</option>
+                  <option value="black">black</option>
+                </Select>
+              </FormControl>
               <Select
                 placeholder="Select color"
-                name="color_1"
-                value={trailEditForm.color_1}
+                name="color_2"
+                value={trailEditForm.color_2}
                 mb={2}
                 onChange={handleChangeEditTrail}
               >
@@ -1061,39 +1135,79 @@ const DashboardAdminMap = () => {
                 <option value="green">green</option>
                 <option value="black">black</option>
               </Select>
-            </FormControl>
-            <Select
-              placeholder="Select color"
-              name="color_2"
-              value={trailEditForm.color_2}
-              mb={2}
-              onChange={handleChangeEditTrail}
-            >
-              <option value="red">red</option>
-              <option value="blue">blue</option>
-              <option value="yellow">yellow</option>
-              <option value="green">green</option>
-              <option value="black">black</option>
-            </Select>
-            <Select
-              placeholder="Select color"
-              name="color_3"
-              value={trailEditForm.color_3}
-              mb={2}
-              onChange={handleChangeEditTrail}
-            >
-              <option value="red">red</option>
-              <option value="blue">blue</option>
-              <option value="yellow">yellow</option>
-              <option value="green">green</option>
-              <option value="black">black</option>
-            </Select>
+              <Select
+                placeholder="Select color"
+                name="color_3"
+                value={trailEditForm.color_3}
+                mb={2}
+                onChange={handleChangeEditTrail}
+              >
+                <option value="red">red</option>
+                <option value="blue">blue</option>
+                <option value="yellow">yellow</option>
+                <option value="green">green</option>
+                <option value="black">black</option>
+              </Select>
 
-            <Button colorScheme="blue" mr={3} type="submit">
-              Save
-            </Button>
-            <Button onClick={handleCancelEdit}>Cancel</Button>
-          </form>
+              <Button colorScheme="blue" mr={3} type="submit">
+                Save
+              </Button>
+              <Button onClick={handleCancelEdit}>Cancel</Button>
+            </form>
+          ) : selectedNode ? (
+            <form onSubmit={handleEditNode}>
+              <FormControl isRequired>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  type="text"
+                  name="name"
+                  mb={2}
+                  value={nodeEditForm.name}
+                  onChange={handleChangeEditNode}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Latitude</FormLabel>
+                <Input
+                  type="text"
+                  name="latitude"
+                  mb={2}
+                  value={nodeEditForm.latitude}
+                  onChange={handleChangeEditNode}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Longitude</FormLabel>
+                <Input
+                  type="text"
+                  name="longitude"
+                  mb={2}
+                  value={nodeEditForm.longitude}
+                  onChange={handleChangeEditNode}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Type</FormLabel>
+                <Select
+                  placeholder="Select type"
+                  name="nodeType"
+                  value={nodeEditForm.nodeType}
+                  mb={2}
+                  onChange={handleChangeEditNode}
+                >
+                  <option value="node">node</option>
+                  <option value="peak">peak</option>
+                  <option value="shelter">shelter</option>
+                  <option value="cave">cave</option>
+                </Select>
+              </FormControl>
+
+              <Button colorScheme="blue" mr={3} type="submit">
+                Save
+              </Button>
+              <Button onClick={handleCancelEdit}>Cancel</Button>
+            </form>
+          ) : null}
         </aside>
       </div>
     </>
