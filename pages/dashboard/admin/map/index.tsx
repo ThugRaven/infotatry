@@ -767,6 +767,21 @@ const DashboardAdminMap = () => {
     }
   };
 
+  const handleReversePath = () => {
+    if (!selectedTrail) {
+      return;
+    }
+
+    let decoded = decode(selectedTrail.encoded);
+    decoded = swapCoordinates(decoded);
+    decoded.reverse();
+
+    setTrailEditForm({
+      ...trailEditForm,
+      path: JSON.stringify(decoded, null, 2),
+    });
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1181,6 +1196,9 @@ const DashboardAdminMap = () => {
                   onChange={handleChangeEditTrail}
                 />
               </FormControl>
+              <Button colorScheme="blue" mr={3} onClick={handleReversePath}>
+                Reverse path
+              </Button>
               <FormControl isRequired>
                 <FormLabel>Color</FormLabel>
                 <Select
