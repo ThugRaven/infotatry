@@ -45,6 +45,7 @@ import {
   swapCoordinates,
 } from '@lib/utils';
 import s from '@styles/DashboardAdminMap.module.css';
+import distance from '@turf/distance';
 import { saveAs } from 'file-saver';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -109,6 +110,7 @@ const initialTrailValues = {
   color_1: '',
   color_2: '',
   color_3: '',
+  distance: 0,
 };
 
 const interactiveLayerIds = [
@@ -612,6 +614,7 @@ const DashboardAdminMap = () => {
         color_1: trail.color[0],
         color_2: trail.color[1],
         color_3: trail.color[2],
+        distance: trail.distance,
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -692,6 +695,31 @@ const DashboardAdminMap = () => {
   const handleCancelEdit = () => {
     setSelectedTrail(null);
     setSelectedNode(null);
+  };
+
+  const handleCalculateDistance = () => {
+    if (selectedTrail) {
+      const trail = selectedTrail;
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+      let trailDistance = 0;
+      for (let i = 0; i < decoded.length - 1; i++) {
+        const node = decoded[i];
+        const nextNode = decoded[i + 1];
+        trailDistance += distance(
+          [node[0], node[1]],
+          [nextNode[0], nextNode[1]],
+          { units: 'meters' },
+        );
+      }
+
+      setTrailEditForm({
+        ...trailEditForm,
+        distance: trailDistance,
+      });
+    } else {
+      setTrailEditForm(initialTrailValues);
+    }
   };
 
   return (
@@ -1150,6 +1178,24 @@ const DashboardAdminMap = () => {
                 <option value="green">green</option>
                 <option value="black">black</option>
               </Select>
+              <FormControl isRequired>
+                <FormLabel>Distance</FormLabel>
+                <Input
+                  type="text"
+                  name="distance"
+                  value={trailEditForm.distance}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  mb={2}
+                  onClick={handleCalculateDistance}
+                >
+                  Calculate
+                </Button>
+              </FormControl>
 
               <Button colorScheme="blue" mr={3} type="submit">
                 Save
