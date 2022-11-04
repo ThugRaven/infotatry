@@ -81,6 +81,10 @@ export type Trail = {
     end_start: number;
   };
   encoded: string;
+  nodes: {
+    start: number;
+    end: number;
+  };
 };
 
 export type Node = {
@@ -111,6 +115,8 @@ const initialTrailValues = {
   color_2: '',
   color_3: '',
   distance: 0,
+  node_start: -1,
+  node_end: -1,
 };
 
 const interactiveLayerIds = [
@@ -383,6 +389,10 @@ const DashboardAdminMap = () => {
         end_start: 0,
       },
       encoded: encode(swapped),
+      nodes: {
+        start: -1,
+        end: -1,
+      },
     };
 
     setTrails((state) => [...state, newTrail]);
@@ -615,6 +625,8 @@ const DashboardAdminMap = () => {
         color_2: trail.color[1],
         color_3: trail.color[2],
         distance: trail.distance,
+        node_start: trail.nodes?.start ?? -1,
+        node_end: trail.nodes?.end ?? -1,
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -665,6 +677,10 @@ const DashboardAdminMap = () => {
         end_start: 0,
       },
       encoded: encode(swapped),
+      nodes: {
+        start: trailEditForm.node_start,
+        end: trailEditForm.node_end,
+      },
     };
     const updatedTrails = [...trails];
     updatedTrails[index] = editedTrail;
@@ -719,6 +735,33 @@ const DashboardAdminMap = () => {
       });
     } else {
       setTrailEditForm(initialTrailValues);
+    }
+  };
+
+  const handleComputeTrailNodes = () => {
+    if (!selectedTrail) {
+      return;
+    }
+
+    const trail = selectedTrail;
+    let decoded = decode(trail.encoded);
+
+    const firstNode = nodes.find(
+      (node) => node.lat === decoded[0][0] && node.lng === decoded[0][1],
+    );
+    const lastNode = nodes.find(
+      (node) =>
+        node.lat === decoded[decoded.length - 1][0] &&
+        node.lng === decoded[decoded.length - 1][1],
+    );
+    console.log(firstNode, lastNode);
+
+    if (firstNode && lastNode) {
+      setTrailEditForm({
+        ...trailEditForm,
+        node_start: firstNode?.id,
+        node_end: lastNode?.id,
+      });
     }
   };
 
@@ -1196,7 +1239,36 @@ const DashboardAdminMap = () => {
                   Calculate
                 </Button>
               </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Node start</FormLabel>
+                <Input
+                  type="text"
+                  name="node_start"
+                  value={trailEditForm.node_start}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                  disabled
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Node end</FormLabel>
+                <Input
+                  type="text"
+                  name="node_end"
+                  value={trailEditForm.node_end}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                  disabled
+                />
+              </FormControl>
 
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={handleComputeTrailNodes}
+              >
+                Compute nodes
+              </Button>
               <Button colorScheme="blue" mr={3} type="submit">
                 Save
               </Button>
