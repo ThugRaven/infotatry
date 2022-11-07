@@ -81,7 +81,7 @@ export type Trail = {
     end_start: number;
   };
   encoded: string;
-  nodes: {
+  node_id: {
     start: number;
     end: number;
   };
@@ -389,7 +389,7 @@ const DashboardAdminMap = () => {
         end_start: 0,
       },
       encoded: encode(swapped),
-      nodes: {
+      node_id: {
         start: -1,
         end: -1,
       },
@@ -625,8 +625,8 @@ const DashboardAdminMap = () => {
         color_2: trail.color[1],
         color_3: trail.color[2],
         distance: trail.distance,
-        node_start: trail.nodes?.start ?? -1,
-        node_end: trail.nodes?.end ?? -1,
+        node_start: trail.node_id?.start ?? -1,
+        node_end: trail.node_id?.end ?? -1,
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -677,7 +677,7 @@ const DashboardAdminMap = () => {
         end_start: 0,
       },
       encoded: encode(swapped),
-      nodes: {
+      node_id: {
         start: trailEditForm.node_start,
         end: trailEditForm.node_end,
       },
