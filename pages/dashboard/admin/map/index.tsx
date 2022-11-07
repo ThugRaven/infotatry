@@ -782,6 +782,18 @@ const DashboardAdminMap = () => {
     });
   };
 
+  const handleSwapNames = () => {
+    if (!selectedTrail) {
+      return;
+    }
+
+    setTrailEditForm({
+      ...trailEditForm,
+      name_start: trailEditForm.name_end,
+      name_end: trailEditForm.name_start,
+    });
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1187,6 +1199,9 @@ const DashboardAdminMap = () => {
                   onChange={handleChangeEditTrail}
                 />
               </FormControl>
+              <Button colorScheme="blue" mr={3} onClick={handleSwapNames}>
+                Swap names
+              </Button>
               <FormControl isRequired>
                 <FormLabel>Path</FormLabel>
                 <Textarea
