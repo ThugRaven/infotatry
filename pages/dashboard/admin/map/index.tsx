@@ -115,6 +115,8 @@ const initialTrailValues = {
   color_2: '',
   color_3: '',
   distance: 0,
+  time_start_end: 0,
+  time_end_start: 0,
   node_start: -1,
   node_end: -1,
 };
@@ -625,6 +627,8 @@ const DashboardAdminMap = () => {
         color_2: trail.color[1],
         color_3: trail.color[2],
         distance: trail.distance,
+        time_start_end: trail.time.start_end,
+        time_end_start: trail.time.end_start,
         node_start: trail.node_id?.start ?? -1,
         node_end: trail.node_id?.end ?? -1,
       });
@@ -673,8 +677,8 @@ const DashboardAdminMap = () => {
       color: colors as TrailColor[],
       distance: 0,
       time: {
-        start_end: 0,
-        end_start: 0,
+        start_end: trailEditForm.time_start_end,
+        end_start: trailEditForm.time_end_start,
       },
       encoded: encode(swapped),
       node_id: {
@@ -1273,6 +1277,26 @@ const DashboardAdminMap = () => {
                 >
                   Calculate
                 </Button>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Time start-end</FormLabel>
+                <Input
+                  type="text"
+                  name="time_start_end"
+                  value={trailEditForm.time_start_end}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Time end-start</FormLabel>
+                <Input
+                  type="text"
+                  name="time_end_start"
+                  value={trailEditForm.time_end_start}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Node start</FormLabel>
