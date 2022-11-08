@@ -691,6 +691,7 @@ const DashboardAdminMap = () => {
     setTrails(updatedTrails);
     setTrailEditForm(initialTrailValues);
     setSelectedTrail(null);
+    setPopupInfo(null);
   };
 
   const handleEditNode = (e: React.FormEvent<HTMLFormElement>) => {
@@ -712,6 +713,7 @@ const DashboardAdminMap = () => {
     setNodes(updatedNodes);
     setNodeEditForm(initialNodeValues);
     setSelectedNode(null);
+    setPopupInfo(null);
   };
 
   const handleCancelEdit = () => {
