@@ -93,6 +93,7 @@ export type Node = {
   type: string;
   lat: number;
   lng: number;
+  elevation: number;
 };
 
 type Results = {
@@ -105,6 +106,7 @@ const initialNodeValues = {
   latitude: 0,
   longitude: 0,
   nodeType: 'node',
+  elevation: 0,
 };
 
 const initialTrailValues = {
@@ -168,7 +170,7 @@ const DashboardAdminMap = () => {
   useEffect(() => {
     const data = features;
     setTrails(data.trails as Trail[]);
-    setNodes(data.nodes);
+    setNodes(data.nodes as Node[]);
   }, []);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
@@ -355,6 +357,7 @@ const DashboardAdminMap = () => {
       type: nodeForm.nodeType,
       lat: nodeForm.latitude,
       lng: nodeForm.longitude,
+      elevation: nodeForm.elevation,
     };
 
     setNodes((state) => [...state, newNode]);
@@ -640,11 +643,13 @@ const DashboardAdminMap = () => {
   useEffect(() => {
     if (selectedNode) {
       const node = selectedNode;
+
       setNodeEditForm({
         name: node.name,
         latitude: node.lat,
         longitude: node.lng,
         nodeType: node.type,
+        elevation: node.elevation ?? 0,
       });
     } else {
       setNodeEditForm(initialNodeValues);
@@ -707,6 +712,7 @@ const DashboardAdminMap = () => {
       type: nodeEditForm.nodeType,
       lat: nodeEditForm.latitude,
       lng: nodeEditForm.longitude,
+      elevation: nodeEditForm.elevation,
     };
     const updatedNodes = [...nodes];
     updatedNodes[index] = editedNode;
@@ -798,6 +804,24 @@ const DashboardAdminMap = () => {
       name_start: trailEditForm.name_end,
       name_end: trailEditForm.name_start,
     });
+  };
+
+  const handleCalculateNodeElevation = () => {
+    if (!selectedNode) {
+      return;
+    }
+
+    const elevation = mapRef.current?.queryTerrainElevation(
+      [selectedNode.lng, selectedNode.lat],
+      { exaggerated: false },
+    );
+
+    if (elevation) {
+      setNodeEditForm({
+        ...nodeEditForm,
+        elevation,
+      });
+    }
   };
 
   return (
@@ -1374,8 +1398,8 @@ const DashboardAdminMap = () => {
                 <Select
                   placeholder="Select type"
                   name="nodeType"
-                  value={nodeEditForm.nodeType}
                   mb={2}
+                  value={nodeEditForm.nodeType}
                   onChange={handleChangeEditNode}
                 >
                   <option value="node">node</option>
@@ -1383,6 +1407,24 @@ const DashboardAdminMap = () => {
                   <option value="shelter">shelter</option>
                   <option value="cave">cave</option>
                 </Select>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Elevation</FormLabel>
+                <Input
+                  type="text"
+                  name="elevation"
+                  mb={2}
+                  value={nodeEditForm.elevation}
+                  onChange={handleChangeEditNode}
+                  disabled
+                />
+                <Button
+                  colorScheme="blue"
+                  mb={2}
+                  onClick={handleCalculateNodeElevation}
+                >
+                  Get elevation
+                </Button>
               </FormControl>
 
               <Button colorScheme="blue" mr={3} type="submit">
