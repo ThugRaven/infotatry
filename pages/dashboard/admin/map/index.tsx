@@ -158,6 +158,7 @@ const DashboardAdminMap = () => {
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
   const [startNodeIndex, setStartNodeIndex] = useState<number | null>(null);
   const [endNodeIndex, setEndNodeIndex] = useState<number | null>(null);
+  const [terrainMode, setTerrainMode] = useState(false);
   const [visibility, setVisibility] = useState({
     server: true,
     local: true,
@@ -815,6 +816,7 @@ const DashboardAdminMap = () => {
       [selectedNode.lng, selectedNode.lat],
       { exaggerated: false },
     );
+    console.log(elevation);
 
     if (elevation) {
       setNodeEditForm({
@@ -822,6 +824,10 @@ const DashboardAdminMap = () => {
         elevation,
       });
     }
+  };
+
+  const handleChangeMapMode = () => {
+    setTerrainMode((state) => !state);
   };
 
   return (
@@ -836,6 +842,9 @@ const DashboardAdminMap = () => {
           />
           <div className={s.options}>
             <div className={s.layer__visibility}>
+              <Checkbox isChecked={terrainMode} onChange={handleChangeMapMode}>
+                3D Terrain
+              </Checkbox>
               <Checkbox
                 name="server"
                 isChecked={visibility['server']}
@@ -868,6 +877,7 @@ const DashboardAdminMap = () => {
             reuseMaps
             // mapStyle="mapbox://styles/mapbox/streets-v9"
             mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+            terrain={terrainMode ? { source: 'mapbox-dem' } : undefined}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
             interactiveLayerIds={interactiveLayerIds}
             onMouseEnter={onMouseEnter}
@@ -941,6 +951,13 @@ const DashboardAdminMap = () => {
               // console.log(e.viewState);
             }}
           >
+            <Source
+              id="mapbox-dem"
+              type="raster-dem"
+              url="mapbox://mapbox.mapbox-terrain-dem-v1"
+              tileSize={512}
+              maxzoom={14}
+            />
             {popupInfo &&
               (popupInfo.trail &&
               popupInfo.features[0].layer.id !== 'nodes-draw-local-layer' ? (
@@ -1416,7 +1433,6 @@ const DashboardAdminMap = () => {
                   mb={2}
                   value={nodeEditForm.elevation}
                   onChange={handleChangeEditNode}
-                  disabled
                 />
                 <Button
                   colorScheme="blue"
