@@ -841,10 +841,9 @@ const DashboardAdminMap = () => {
     const elevationProfile: number[] = [];
 
     let decoded = decode(selectedTrail.encoded);
-    decoded = swapCoordinates(decoded);
     decoded.forEach((node) => {
       const elevation = mapRef.current?.queryTerrainElevation(
-        [node[0], node[1]],
+        [node[1], node[0]],
         { exaggerated: false },
       );
       if (elevation) {
