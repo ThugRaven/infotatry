@@ -85,6 +85,7 @@ export type Trail = {
     start: number;
     end: number;
   };
+  elevation_profile: number[];
 };
 
 export type Node = {
@@ -121,6 +122,7 @@ const initialTrailValues = {
   time_end_start: 0,
   node_start: -1,
   node_end: -1,
+  elevation_profile: '',
 };
 
 const interactiveLayerIds = [
@@ -399,6 +401,7 @@ const DashboardAdminMap = () => {
         start: -1,
         end: -1,
       },
+      elevation_profile: [],
     };
 
     setTrails((state) => [...state, newTrail]);
@@ -623,6 +626,7 @@ const DashboardAdminMap = () => {
       const trail = selectedTrail;
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
+
       setTrailEditForm({
         name_start: trail.name.start,
         name_end: trail.name.end,
@@ -635,6 +639,8 @@ const DashboardAdminMap = () => {
         time_end_start: trail.time.end_start,
         node_start: trail.node_id?.start ?? -1,
         node_end: trail.node_id?.end ?? -1,
+        elevation_profile:
+          JSON.stringify(trail.elevation_profile, null, 2) ?? '',
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -691,6 +697,7 @@ const DashboardAdminMap = () => {
         start: trailEditForm.node_start,
         end: trailEditForm.node_end,
       },
+      elevation_profile: JSON.parse(trailEditForm.elevation_profile),
     };
     const updatedTrails = [...trails];
     updatedTrails[index] = editedTrail;
@@ -822,6 +829,35 @@ const DashboardAdminMap = () => {
       setNodeEditForm({
         ...nodeEditForm,
         elevation,
+      });
+    }
+  };
+
+  const handleCalculateTrailElevation = () => {
+    if (!selectedTrail) {
+      return;
+    }
+
+    const elevationProfile: number[] = [];
+
+    let decoded = decode(selectedTrail.encoded);
+    decoded = swapCoordinates(decoded);
+    decoded.forEach((node) => {
+      const elevation = mapRef.current?.queryTerrainElevation(
+        [node[0], node[1]],
+        { exaggerated: false },
+      );
+      if (elevation) {
+        elevationProfile.push(Math.round(elevation));
+      }
+    });
+
+    console.log(elevationProfile);
+
+    if (elevationProfile.length > 0) {
+      setTrailEditForm({
+        ...trailEditForm,
+        elevation_profile: JSON.stringify(elevationProfile, null, 2),
       });
     }
   };
@@ -1362,6 +1398,22 @@ const DashboardAdminMap = () => {
                   onChange={handleChangeEditTrail}
                   disabled
                 />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Elevation</FormLabel>
+                <Textarea
+                  name="elevation_profile"
+                  value={trailEditForm.elevation_profile}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                />
+                <Button
+                  colorScheme="blue"
+                  mb={2}
+                  onClick={handleCalculateTrailElevation}
+                >
+                  Get elevation
+                </Button>
               </FormControl>
 
               <Button
