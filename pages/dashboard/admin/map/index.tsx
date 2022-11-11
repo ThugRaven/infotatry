@@ -645,6 +645,8 @@ const DashboardAdminMap = () => {
     } else {
       setTrailEditForm(initialTrailValues);
     }
+
+    mapRef.current?.resize();
   }, [selectedTrail]);
 
   useEffect(() => {
@@ -661,6 +663,8 @@ const DashboardAdminMap = () => {
     } else {
       setNodeEditForm(initialNodeValues);
     }
+
+    mapRef.current?.resize();
   }, [selectedNode]);
 
   const handleEditTrail = (e: React.FormEvent<HTMLFormElement>) => {
