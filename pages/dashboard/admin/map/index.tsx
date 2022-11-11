@@ -736,7 +736,11 @@ const DashboardAdminMap = () => {
   };
 
   const handleCalculateDistance = () => {
-    if (selectedTrail) {
+    if (
+      selectedTrail &&
+      selectedTrail.elevation_profile &&
+      selectedTrail.elevation_profile.length > 0
+    ) {
       const trail = selectedTrail;
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
@@ -744,16 +748,18 @@ const DashboardAdminMap = () => {
       for (let i = 0; i < decoded.length - 1; i++) {
         const node = decoded[i];
         const nextNode = decoded[i + 1];
-        trailDistance += distance(
-          [node[0], node[1]],
-          [nextNode[0], nextNode[1]],
-          { units: 'meters' },
-        );
+        const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
+          units: 'meters',
+        });
+        const elevationDelta =
+          trail.elevation_profile[i] - trail.elevation_profile[i + 1];
+
+        trailDistance += Math.sqrt(dist ** 2 + elevationDelta ** 2);
       }
 
       setTrailEditForm({
         ...trailEditForm,
-        distance: trailDistance,
+        distance: Math.round(trailDistance),
       });
     } else {
       setTrailEditForm(initialTrailValues);
