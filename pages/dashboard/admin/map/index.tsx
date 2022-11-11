@@ -828,7 +828,7 @@ const DashboardAdminMap = () => {
     if (elevation) {
       setNodeEditForm({
         ...nodeEditForm,
-        elevation,
+        elevation: Math.round(elevation),
       });
     }
   };
