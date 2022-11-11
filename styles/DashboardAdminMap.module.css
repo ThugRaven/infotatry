@@ -2,6 +2,7 @@
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr auto;
+  height: 100vh;
 }
 
 .wrapper {
@@ -58,5 +59,6 @@
 }
 
 .sidebar {
-  margin: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
+  overflow-y: auto;
 }
