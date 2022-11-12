@@ -872,6 +872,8 @@ const DashboardAdminMap = () => {
         ...trailEditForm,
         elevation_profile: JSON.stringify(elevationProfile, null, 2),
       });
+    } else {
+      console.error("The terrain hasn't been fully loaded yet");
     }
   };
 
