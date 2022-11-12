@@ -691,7 +691,7 @@ const DashboardAdminMap = () => {
         end: trailEditForm.name_end,
       },
       color: colors as TrailColor[],
-      distance: 0,
+      distance: trailEditForm.distance,
       time: {
         start_end: trailEditForm.time_start_end,
         end_start: trailEditForm.time_end_start,
@@ -741,33 +741,33 @@ const DashboardAdminMap = () => {
 
   const handleCalculateDistance = () => {
     if (
-      selectedTrail &&
-      selectedTrail.elevation_profile &&
-      selectedTrail.elevation_profile.length > 0
+      !selectedTrail ||
+      !selectedTrail.elevation_profile ||
+      selectedTrail.elevation_profile.length === 0
     ) {
-      const trail = selectedTrail;
-      let decoded = decode(trail.encoded);
-      decoded = swapCoordinates(decoded);
-      let trailDistance = 0;
-      for (let i = 0; i < decoded.length - 1; i++) {
-        const node = decoded[i];
-        const nextNode = decoded[i + 1];
-        const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
-          units: 'meters',
-        });
-        const elevationDelta =
-          trail.elevation_profile[i] - trail.elevation_profile[i + 1];
-
-        trailDistance += Math.sqrt(dist ** 2 + elevationDelta ** 2);
-      }
-
-      setTrailEditForm({
-        ...trailEditForm,
-        distance: Math.round(trailDistance),
-      });
-    } else {
-      setTrailEditForm(initialTrailValues);
+      return;
     }
+
+    const trail = selectedTrail;
+    let decoded = decode(trail.encoded);
+    decoded = swapCoordinates(decoded);
+    let trailDistance = 0;
+    for (let i = 0; i < decoded.length - 1; i++) {
+      const node = decoded[i];
+      const nextNode = decoded[i + 1];
+      const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
+        units: 'meters',
+      });
+      const elevationDelta =
+        trail.elevation_profile[i] - trail.elevation_profile[i + 1];
+
+      trailDistance += Math.sqrt(dist ** 2 + elevationDelta ** 2);
+    }
+
+    setTrailEditForm({
+      ...trailEditForm,
+      distance: Math.round(trailDistance),
+    });
   };
 
   const handleComputeTrailNodes = () => {
