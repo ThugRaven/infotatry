@@ -752,6 +752,7 @@ const DashboardAdminMap = () => {
     let decoded = decode(trail.encoded);
     decoded = swapCoordinates(decoded);
     let trailDistance = 0;
+
     for (let i = 0; i < decoded.length - 1; i++) {
       const node = decoded[i];
       const nextNode = decoded[i + 1];
@@ -863,7 +864,10 @@ const DashboardAdminMap = () => {
 
     console.log(elevationProfile);
 
-    if (elevationProfile.length > 0) {
+    if (
+      elevationProfile.length > 0 &&
+      decoded.length === elevationProfile.length
+    ) {
       setTrailEditForm({
         ...trailEditForm,
         elevation_profile: JSON.stringify(elevationProfile, null, 2),
