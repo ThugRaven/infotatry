@@ -37,6 +37,7 @@ import {
   trailsDrawOffset2in2Layer,
   trailsDrawOffset3in3Layer,
 } from '@config/layer-styles';
+import Graph from '@lib/Graph';
 import {
   createLineString,
   createPoint,
@@ -881,6 +882,17 @@ const DashboardAdminMap = () => {
     setTerrainMode((state) => !state);
   };
 
+  const handleCreateGraph = () => {
+    const graph = new Graph();
+
+    nodes.forEach((node) => graph.addVertex(node.id));
+    trails.forEach((trail) =>
+      graph.addEdge(trail.node_id.start, trail.node_id.end),
+    );
+
+    console.log(graph.adjacencyList);
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -911,6 +923,7 @@ const DashboardAdminMap = () => {
                 Local layer
               </Checkbox>
             </div>
+            <Button onClick={handleCreateGraph}>Create graph</Button>
             <Button onClick={handleSave}>Save file</Button>
           </div>
         </div>
