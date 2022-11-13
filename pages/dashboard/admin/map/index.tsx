@@ -887,7 +887,18 @@ const DashboardAdminMap = () => {
 
     nodes.forEach((node) => graph.addVertex(node.id));
     trails.forEach((trail) =>
-      graph.addEdge(trail.node_id.start, trail.node_id.end),
+      graph.addEdge(
+        {
+          node_id: trail.node_id.start,
+          trail_id: trail.id,
+          distance: trail.distance,
+        },
+        {
+          node_id: trail.node_id.end,
+          trail_id: trail.id,
+          distance: trail.distance,
+        },
+      ),
     );
 
     console.log(graph.adjacencyList);

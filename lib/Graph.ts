@@ -1,3 +1,9 @@
+export type Edge = {
+  node_id: number;
+  trail_id: number;
+  distance: number;
+};
+
 export default class Graph {
   adjacencyList = new Map();
 
@@ -5,8 +11,8 @@ export default class Graph {
     this.adjacencyList.set(node, []);
   }
 
-  addEdge(origin: number, destination: number) {
-    this.adjacencyList.get(origin).push(destination);
-    this.adjacencyList.get(destination).push(origin);
+  addEdge(origin: Edge, destination: Edge) {
+    this.adjacencyList.get(origin.node_id).push(destination);
+    this.adjacencyList.get(destination.node_id).push(origin);
   }
 }
