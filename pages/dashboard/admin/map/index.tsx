@@ -103,6 +103,14 @@ type Results = {
   trails: Trail[];
 };
 
+type RouteNode = {
+  id: number;
+  g_cost: number;
+  h_cost: number;
+  f_cost: number;
+  parent: number;
+};
+
 const initialNodeValues = {
   name: '',
   latitude: 0,
@@ -155,6 +163,7 @@ const DashboardAdminMap = () => {
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trailEditForm, setTrailEditForm] = useState(initialTrailValues);
   const [nodeEditForm, setNodeEditForm] = useState(initialNodeValues);
+  const [routeForm, setRouteForm] = useState({ start: '', end: '' });
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
@@ -904,6 +913,153 @@ const DashboardAdminMap = () => {
     console.log(graph.adjacencyList);
   };
 
+  const handleChangeRoute = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setRouteForm({
+      ...routeForm,
+      [name]: value,
+    });
+  };
+
+  const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.time('search');
+    const openSet: RouteNode[] = [];
+    const closedSet: RouteNode[] = [];
+
+    if (!routeForm.start || !routeForm.end) {
+      return;
+    }
+
+    const startNode = nodes.find(
+      (node) =>
+        node.name.trim().toLowerCase() === routeForm.start.trim().toLowerCase(),
+    );
+
+    const endNode = nodes.find(
+      (node) =>
+        node.name.trim().toLowerCase() === routeForm.end.trim().toLowerCase(),
+    );
+
+    if (!startNode || !endNode) {
+      return;
+    }
+
+    const graph = new Graph();
+
+    nodes.forEach((node) => graph.addVertex(node.id));
+    trails.forEach((trail) =>
+      graph.addEdge(
+        {
+          node_id: trail.node_id.start,
+          trail_id: trail.id,
+          distance: trail.distance,
+        },
+        {
+          node_id: trail.node_id.end,
+          trail_id: trail.id,
+          distance: trail.distance,
+        },
+      ),
+    );
+    const dist = distance(
+      [startNode.lng, startNode.lat],
+      [endNode.lng, endNode.lat],
+      {
+        units: 'meters',
+      },
+    );
+    openSet.push({
+      id: startNode.id,
+      g_cost: 0,
+      h_cost: dist,
+      f_cost: 0 + dist,
+      parent: 0,
+    });
+
+    while (openSet.length > 0) {
+      let currentNode: RouteNode = openSet[0];
+
+      for (let i = 0; i < openSet.length; i++) {
+        if (
+          openSet[i].f_cost < currentNode.f_cost ||
+          (openSet[i].f_cost === currentNode.f_cost &&
+            openSet[i].h_cost < currentNode.h_cost)
+        ) {
+          currentNode = openSet[i];
+        }
+      }
+
+      openSet.filter((node) => node.id !== currentNode.id);
+      closedSet.push(currentNode);
+
+      if (currentNode.id === endNode.id) {
+        console.log('Found');
+        console.timeEnd('search');
+
+        return;
+      }
+
+      const neighbors = graph.adjacencyList
+        .get(currentNode.id)
+        ?.map((node) => ({
+          id: node.node_id,
+          g_cost: 0,
+          h_cost: 0,
+          f_cost: 0,
+          distance: node.distance,
+          parent: 0,
+        }));
+
+      neighbors?.forEach((neighbor) => {
+        if (!closedSet.find((node) => node.id === neighbor.id)) {
+          const currentNodeLngLat = nodes.find(
+            (node) => node.id === currentNode.id,
+          );
+          const neigborNodeLngLat = nodes.find(
+            (node) => node.id === neighbor.id,
+          );
+          if (!currentNodeLngLat || !neigborNodeLngLat) {
+            return;
+          }
+
+          let costToNeighbor = currentNode.g_cost + neighbor.distance;
+          console.log(costToNeighbor, neighbor.id);
+
+          if (
+            costToNeighbor < neighbor.g_cost ||
+            !openSet.find((node) => node.id === neighbor.id)
+          ) {
+            neighbor.g_cost = costToNeighbor;
+            neighbor.h_cost = distance(
+              [neigborNodeLngLat.lng, neigborNodeLngLat.lat],
+              [endNode.lng, endNode.lat],
+              {
+                units: 'meters',
+              },
+            );
+            neighbor.parent = currentNode.id;
+
+            if (!openSet.find((node) => node.id === neighbor.id)) {
+              openSet.push(neighbor);
+              console.log(neighbor);
+            }
+          }
+        }
+      });
+    }
+  };
+
+  const retracePath = (startNode: RouteNode, endNode: RouteNode) => {
+    // const path = [];
+    // let currentNode = endNode
+    // while (currentNode.id !== endNode.id) {
+    //   path.push(currentNode.id)
+    //   currentNode = currentNode.parent
+    // }
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1539,7 +1695,34 @@ const DashboardAdminMap = () => {
               </Button>
               <Button onClick={handleCancelEdit}>Cancel</Button>
             </form>
-          ) : null}
+          ) : (
+            <form onSubmit={handleSearchRoute}>
+              <FormControl isRequired>
+                <FormLabel>Start</FormLabel>
+                <Input
+                  type="text"
+                  name="start"
+                  mb={2}
+                  value={routeForm.start}
+                  onChange={handleChangeRoute}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>End</FormLabel>
+                <Input
+                  type="text"
+                  name="end"
+                  mb={2}
+                  value={routeForm.end}
+                  onChange={handleChangeRoute}
+                />
+              </FormControl>
+
+              <Button colorScheme="blue" mr={3} type="submit">
+                Save
+              </Button>
+            </form>
+          )}
         </aside>
       </div>
     </>
