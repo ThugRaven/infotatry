@@ -38,6 +38,7 @@ import {
   trailsDrawOffset3in3Layer,
 } from '@config/layer-styles';
 import Graph from '@lib/Graph';
+import RouteNode from '@lib/RouteNode';
 import {
   createLineString,
   createPoint,
@@ -103,13 +104,14 @@ type Results = {
   trails: Trail[];
 };
 
-type RouteNode = {
-  id: number;
-  g_cost: number;
-  h_cost: number;
-  f_cost: number;
-  parent: number;
-};
+// type RouteNode = {
+//   id: number;
+//   g_cost: number;
+//   h_cost: number;
+//   f_cost: number;
+//   distance: number;
+//   parent: RouteNode | null;
+// };
 
 const initialNodeValues = {
   name: '',
@@ -924,8 +926,8 @@ const DashboardAdminMap = () => {
 
   const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.time('search');
-    const openSet: RouteNode[] = [];
+    console.time('Search');
+    let openSet: RouteNode[] = [];
     const closedSet: RouteNode[] = [];
 
     if (!routeForm.start || !routeForm.end) {
@@ -970,46 +972,45 @@ const DashboardAdminMap = () => {
         units: 'meters',
       },
     );
+
     openSet.push({
       id: startNode.id,
-      g_cost: 0,
-      h_cost: dist,
-      f_cost: 0 + dist,
-      parent: 0,
+      gCost: 0,
+      hCost: 0,
+      fCost: 0,
+      parent: null,
     });
 
     while (openSet.length > 0) {
-      let currentNode: RouteNode = openSet[0];
+      let currentNode = openSet[0];
 
       for (let i = 0; i < openSet.length; i++) {
         if (
-          openSet[i].f_cost < currentNode.f_cost ||
-          (openSet[i].f_cost === currentNode.f_cost &&
-            openSet[i].h_cost < currentNode.h_cost)
+          openSet[i].fCost < currentNode.fCost ||
+          (openSet[i].fCost === currentNode.fCost &&
+            openSet[i].hCost < currentNode.hCost)
         ) {
           currentNode = openSet[i];
         }
       }
 
-      openSet.filter((node) => node.id !== currentNode.id);
+      openSet = openSet.filter((node) => node.id !== currentNode.id);
       closedSet.push(currentNode);
 
       if (currentNode.id === endNode.id) {
-        console.log('Found');
-        console.timeEnd('search');
-
+        console.timeEnd('Search');
+        retracePath(currentNode);
         return;
       }
 
       const neighbors = graph.adjacencyList
         .get(currentNode.id)
-        ?.map((node) => ({
+        ?.map<RouteNode>((node) => ({
           id: node.node_id,
-          g_cost: 0,
-          h_cost: 0,
-          f_cost: 0,
-          distance: node.distance,
-          parent: 0,
+          gCost: 0,
+          hCost: 0,
+          fCost: 0,
+          parent: null,
         }));
 
       neighbors?.forEach((neighbor) => {
@@ -1017,29 +1018,46 @@ const DashboardAdminMap = () => {
           const currentNodeLngLat = nodes.find(
             (node) => node.id === currentNode.id,
           );
-          const neigborNodeLngLat = nodes.find(
+          const neighborNodeLngLat = nodes.find(
             (node) => node.id === neighbor.id,
           );
-          if (!currentNodeLngLat || !neigborNodeLngLat) {
+          if (!currentNodeLngLat || !neighborNodeLngLat) {
             return;
           }
 
-          let costToNeighbor = currentNode.g_cost + neighbor.distance;
+          const dist = distance(
+            [currentNodeLngLat.lng, currentNodeLngLat.lat],
+            [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
+            {
+              units: 'meters',
+            },
+          );
+
+          let costToNeighbor = currentNode.gCost + dist;
           console.log(costToNeighbor, neighbor.id);
 
           if (
-            costToNeighbor < neighbor.g_cost ||
+            costToNeighbor < neighbor.gCost ||
             !openSet.find((node) => node.id === neighbor.id)
           ) {
-            neighbor.g_cost = costToNeighbor;
-            neighbor.h_cost = distance(
-              [neigborNodeLngLat.lng, neigborNodeLngLat.lat],
+            neighbor.gCost = costToNeighbor;
+            neighbor.hCost = distance(
+              [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
               [endNode.lng, endNode.lat],
               {
                 units: 'meters',
               },
             );
-            neighbor.parent = currentNode.id;
+            neighbor.parent = currentNode;
+            neighbor.fCost =
+              costToNeighbor +
+              distance(
+                [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
+                [endNode.lng, endNode.lat],
+                {
+                  units: 'meters',
+                },
+              );
 
             if (!openSet.find((node) => node.id === neighbor.id)) {
               openSet.push(neighbor);
@@ -1051,7 +1069,18 @@ const DashboardAdminMap = () => {
     }
   };
 
-  const retracePath = (startNode: RouteNode, endNode: RouteNode) => {
+  const retracePath = (current: RouteNode) => {
+    const path = [];
+    let temp = current;
+
+    path.push(temp.id);
+    while (temp.parent) {
+      path.push(temp.parent.id);
+      temp = temp.parent;
+    }
+
+    console.log(path);
+
     // const path = [];
     // let currentNode = endNode
     // while (currentNode.id !== endNode.id) {
