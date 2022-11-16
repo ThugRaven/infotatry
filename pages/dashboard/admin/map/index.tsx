@@ -38,7 +38,6 @@ import {
   trailsDrawOffset3in3Layer,
 } from '@config/layer-styles';
 import Graph from '@lib/Graph';
-import RouteNode from '@lib/RouteNode';
 import {
   createLineString,
   createPoint,
@@ -102,6 +101,15 @@ export type Node = {
 type Results = {
   nodes: Node[];
   trails: Trail[];
+};
+
+type RouteNode = {
+  id: number;
+  distance: number;
+  gCost: number;
+  hCost: number;
+  fCost: number;
+  parent: RouteNode | null;
 };
 
 // type RouteNode = {
@@ -975,6 +983,7 @@ const DashboardAdminMap = () => {
 
     openSet.push({
       id: startNode.id,
+      distance: 0,
       gCost: 0,
       hCost: 0,
       fCost: 0,
@@ -1007,6 +1016,7 @@ const DashboardAdminMap = () => {
         .get(currentNode.id)
         ?.map<RouteNode>((node) => ({
           id: node.node_id,
+          distance: node.distance,
           gCost: 0,
           hCost: 0,
           fCost: 0,
@@ -1025,16 +1035,16 @@ const DashboardAdminMap = () => {
             return;
           }
 
-          const dist = distance(
-            [currentNodeLngLat.lng, currentNodeLngLat.lat],
-            [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
-            {
-              units: 'meters',
-            },
-          );
+          // const dist = distance(
+          //   [currentNodeLngLat.lng, currentNodeLngLat.lat],
+          //   [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
+          //   {
+          //     units: 'meters',
+          //   },
+          // );
 
-          let costToNeighbor = currentNode.gCost + dist;
-          console.log(costToNeighbor, neighbor.id);
+          let costToNeighbor = currentNode.gCost + neighbor.distance;
+          // console.log(costToNeighbor, neighbor.id);
 
           if (
             costToNeighbor < neighbor.gCost ||
@@ -1061,7 +1071,7 @@ const DashboardAdminMap = () => {
 
             if (!openSet.find((node) => node.id === neighbor.id)) {
               openSet.push(neighbor);
-              console.log(neighbor);
+              // console.log(neighbor);
             }
           }
         }
