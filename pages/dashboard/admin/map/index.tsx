@@ -1035,39 +1035,22 @@ const DashboardAdminMap = () => {
             return;
           }
 
-          // const dist = distance(
-          //   [currentNodeLngLat.lng, currentNodeLngLat.lat],
-          //   [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
-          //   {
-          //     units: 'meters',
-          //   },
-          // );
-
           let costToNeighbor = currentNode.gCost + neighbor.distance;
-          // console.log(costToNeighbor, neighbor.id);
-
           if (
             costToNeighbor < neighbor.gCost ||
             !openSet.find((node) => node.id === neighbor.id)
           ) {
             neighbor.gCost = costToNeighbor;
-            neighbor.hCost = distance(
+            const distanceToEndNode = distance(
               [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
               [endNode.lng, endNode.lat],
               {
                 units: 'meters',
               },
             );
+            neighbor.hCost = distanceToEndNode;
+            neighbor.fCost = costToNeighbor + distanceToEndNode;
             neighbor.parent = currentNode;
-            neighbor.fCost =
-              costToNeighbor +
-              distance(
-                [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
-                [endNode.lng, endNode.lat],
-                {
-                  units: 'meters',
-                },
-              );
 
             if (!openSet.find((node) => node.id === neighbor.id)) {
               openSet.push(neighbor);
