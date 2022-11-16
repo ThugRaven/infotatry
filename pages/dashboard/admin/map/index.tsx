@@ -973,13 +973,6 @@ const DashboardAdminMap = () => {
         },
       ),
     );
-    const dist = distance(
-      [startNode.lng, startNode.lat],
-      [endNode.lng, endNode.lat],
-      {
-        units: 'meters',
-      },
-    );
 
     openSet.push({
       id: startNode.id,
@@ -1023,42 +1016,44 @@ const DashboardAdminMap = () => {
           parent: null,
         }));
 
-      neighbors?.forEach((neighbor) => {
-        if (!closedSet.find((node) => node.id === neighbor.id)) {
-          const currentNodeLngLat = nodes.find(
-            (node) => node.id === currentNode.id,
-          );
-          const neighborNodeLngLat = nodes.find(
-            (node) => node.id === neighbor.id,
-          );
-          if (!currentNodeLngLat || !neighborNodeLngLat) {
-            return;
-          }
-
-          let costToNeighbor = currentNode.gCost + neighbor.distance;
-          if (
-            costToNeighbor < neighbor.gCost ||
-            !openSet.find((node) => node.id === neighbor.id)
-          ) {
-            neighbor.gCost = costToNeighbor;
-            const distanceToEndNode = distance(
-              [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
-              [endNode.lng, endNode.lat],
-              {
-                units: 'meters',
-              },
+      const currentNodeLngLat = nodes.find(
+        (node) => node.id === currentNode.id,
+      );
+      if (currentNodeLngLat) {
+        neighbors?.forEach((neighbor) => {
+          if (!closedSet.find((node) => node.id === neighbor.id)) {
+            const neighborNodeLngLat = nodes.find(
+              (node) => node.id === neighbor.id,
             );
-            neighbor.hCost = distanceToEndNode;
-            neighbor.fCost = costToNeighbor + distanceToEndNode;
-            neighbor.parent = currentNode;
+            if (!neighborNodeLngLat) {
+              return;
+            }
 
-            if (!openSet.find((node) => node.id === neighbor.id)) {
-              openSet.push(neighbor);
-              // console.log(neighbor);
+            const costToNeighbor = currentNode.gCost + neighbor.distance;
+            if (
+              costToNeighbor < neighbor.gCost ||
+              !openSet.find((node) => node.id === neighbor.id)
+            ) {
+              neighbor.gCost = costToNeighbor;
+              const distanceToEndNode = distance(
+                [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
+                [endNode.lng, endNode.lat],
+                {
+                  units: 'meters',
+                },
+              );
+              neighbor.hCost = distanceToEndNode;
+              neighbor.fCost = costToNeighbor + distanceToEndNode;
+              neighbor.parent = currentNode;
+
+              if (!openSet.find((node) => node.id === neighbor.id)) {
+                openSet.push(neighbor);
+                // console.log(neighbor);
+              }
             }
           }
-        }
-      });
+        });
+      }
     }
   };
 
@@ -1073,13 +1068,6 @@ const DashboardAdminMap = () => {
     }
 
     console.log(path);
-
-    // const path = [];
-    // let currentNode = endNode
-    // while (currentNode.id !== endNode.id) {
-    //   path.push(currentNode.id)
-    //   currentNode = currentNode.parent
-    // }
   };
 
   return (
