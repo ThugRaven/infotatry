@@ -106,6 +106,7 @@ type Results = {
 type RouteNode = {
   id: number;
   distance: number;
+  trail_id: number;
   gCost: number;
   hCost: number;
   fCost: number;
@@ -977,6 +978,7 @@ const DashboardAdminMap = () => {
     openSet.push({
       id: startNode.id,
       distance: 0,
+      trail_id: 0,
       gCost: 0,
       hCost: 0,
       fCost: 0,
@@ -1010,6 +1012,7 @@ const DashboardAdminMap = () => {
         ?.map<RouteNode>((node) => ({
           id: node.node_id,
           distance: node.distance,
+          trail_id: node.trail_id,
           gCost: 0,
           hCost: 0,
           fCost: 0,
@@ -1030,6 +1033,7 @@ const DashboardAdminMap = () => {
             }
 
             const costToNeighbor = currentNode.gCost + neighbor.distance;
+            console.log(costToNeighbor, neighbor.id);
             if (
               costToNeighbor < neighbor.gCost ||
               !openSet.find((node) => node.id === neighbor.id)
@@ -1048,7 +1052,7 @@ const DashboardAdminMap = () => {
 
               if (!openSet.find((node) => node.id === neighbor.id)) {
                 openSet.push(neighbor);
-                // console.log(neighbor);
+                console.log(neighbor);
               }
             }
           }
@@ -1061,9 +1065,9 @@ const DashboardAdminMap = () => {
     const path = [];
     let temp = current;
 
-    path.push(temp.id);
+    path.push(temp.trail_id);
     while (temp.parent) {
-      path.push(temp.parent.id);
+      path.push(temp.parent.trail_id);
       temp = temp.parent;
     }
 
