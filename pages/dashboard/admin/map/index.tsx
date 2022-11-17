@@ -28,6 +28,7 @@ import { SearchInput } from '@components/search';
 import { CameraAction } from '@components/search/SearchInput/SearchInput';
 import {
   nodesDrawLocalLayer,
+  routeLayer,
   trailNodesLocalLayer,
   trailNodesSelectedLayer,
   trailsDataLocalLayer,
@@ -190,6 +191,7 @@ const DashboardAdminMap = () => {
     nodes: [],
     trails: [],
   });
+  const [route, setRoute] = useState<Trail[] | null>(null);
 
   useEffect(() => {
     const data = features;
@@ -326,6 +328,29 @@ const DashboardAdminMap = () => {
       features,
     };
   }, [selectedTrail, startNodeIndex, endNodeIndex]);
+
+  const routeData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    route?.forEach((trail) => {
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+
+      let properties: GeoJSON.GeoJsonProperties = {
+        id: trail.id,
+        name: `${trail.name.start} - ${trail.name.end}`,
+      };
+
+      const lineString = createLineString(properties, decoded);
+      features.push(lineString);
+    });
+
+    console.log('Recalculate routeData');
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [route]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.name);
@@ -1072,6 +1097,15 @@ const DashboardAdminMap = () => {
     }
 
     console.log(path);
+
+    const route: Trail[] = [];
+    path.forEach((el) => {
+      const trail = trails.find((trail) => trail.id === el);
+      if (trail) {
+        route.push(trail);
+      }
+    });
+    setRoute(route);
   };
 
   return (
@@ -1308,6 +1342,9 @@ const DashboardAdminMap = () => {
             </Source>
             <Source type="geojson" data={trailNodesSelectedData}>
               <Layer {...trailNodesSelectedLayer} />
+            </Source>
+            <Source type="geojson" data={routeData} lineMetrics={true}>
+              <Layer {...routeLayer} />
             </Source>
             <NavigationControl />
           </Map>

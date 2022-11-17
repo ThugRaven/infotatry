@@ -172,3 +172,17 @@ export const trailNodesSelectedLayer: CircleLayer = {
     'circle-color': '#09ADC3',
   },
 };
+
+export const routeLayer: LineLayer = {
+  id: 'route-layer',
+  type: 'line',
+  source: 'composite',
+  layout: { 'line-cap': 'round' },
+  paint: {
+    'line-width': ['interpolate', ['linear'], ['zoom'], 9, 3, 11, 5, 22, 20],
+    'line-dasharray': [0.25, 1.5],
+    // 'line-color': '#0081cc',
+    // 'line-color': '#f89012',
+    'line-color': '#000000',
+  },
+};
