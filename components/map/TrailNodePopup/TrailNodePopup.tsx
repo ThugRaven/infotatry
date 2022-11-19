@@ -126,9 +126,9 @@ const TrailNodePopup = ({
 
       let name = '';
       if (feature.properties.index === 0) {
-        name = trail.name.end;
-      } else if (feature.properties.index === decoded.length - 1) {
         name = trail.name.start;
+      } else if (feature.properties.index === decoded.length - 1) {
+        name = trail.name.end;
       }
 
       onAddNode(feature.properties.lat, feature.properties.lng, name);
