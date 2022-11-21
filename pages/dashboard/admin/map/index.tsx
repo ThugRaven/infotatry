@@ -175,7 +175,11 @@ const DashboardAdminMap = () => {
   const [trailForm, setTrailForm] = useState(initialTrailValues);
   const [trailEditForm, setTrailEditForm] = useState(initialTrailValues);
   const [nodeEditForm, setNodeEditForm] = useState(initialNodeValues);
-  const [routeForm, setRouteForm] = useState({ start: '', end: '' });
+  const [routeForm, setRouteForm] = useState({
+    start: '',
+    middle: '',
+    end: '',
+  });
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
@@ -960,9 +964,6 @@ const DashboardAdminMap = () => {
 
   const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.time('Search');
-    let openSet: RouteNode[] = [];
-    const closedSet: RouteNode[] = [];
 
     if (!routeForm.start || !routeForm.end) {
       return;
@@ -971,6 +972,12 @@ const DashboardAdminMap = () => {
     const startNode = nodes.find(
       (node) =>
         node.name.trim().toLowerCase() === routeForm.start.trim().toLowerCase(),
+    );
+
+    const middleNode = nodes.find(
+      (node) =>
+        node.name.trim().toLowerCase() ===
+        routeForm.middle.trim().toLowerCase(),
     );
 
     const endNode = nodes.find(
@@ -982,10 +989,24 @@ const DashboardAdminMap = () => {
       return;
     }
 
-    console.log(startNode, endNode);
+    if (middleNode) {
+      const route: Trail[] = [];
+      const startMiddle = findPath(startNode, middleNode);
+      const middleEnd = findPath(middleNode, endNode);
+      route.push(...(startMiddle ?? []));
+      route.push(...(middleEnd ?? []));
+      setRoute(route);
+    } else {
+      setRoute(findPath(startNode, endNode) ?? []);
+    }
+  };
+
+  const findPath = (startNode: Node, endNode: Node) => {
+    console.time('Search');
+    let openSet: RouteNode[] = [];
+    const closedSet: RouteNode[] = [];
 
     const graph = new Graph();
-
     nodes.forEach((node) => graph.addVertex(node.id));
     trails.forEach((trail) =>
       graph.addEdge(
@@ -1027,9 +1048,8 @@ const DashboardAdminMap = () => {
 
       if (currentNode.id === endNode.id) {
         console.timeEnd('Search');
-        retracePath(currentNode);
         console.log(closedSet);
-        return;
+        return retracePath(currentNode);
       }
 
       openSet = openSet.filter(
@@ -1134,9 +1154,9 @@ const DashboardAdminMap = () => {
         route.push(trail);
       }
     });
-    setRoute(route);
     console.log(route);
     console.log(route.reduce((sum, trail) => sum + trail.distance, 0));
+    return route;
   };
 
   return (
@@ -1786,6 +1806,16 @@ const DashboardAdminMap = () => {
                   name="start"
                   mb={2}
                   value={routeForm.start}
+                  onChange={handleChangeRoute}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Go through</FormLabel>
+                <Input
+                  type="text"
+                  name="middle"
+                  mb={2}
+                  value={routeForm.middle}
                   onChange={handleChangeRoute}
                 />
               </FormControl>
