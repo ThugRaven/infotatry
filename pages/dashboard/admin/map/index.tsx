@@ -982,6 +982,8 @@ const DashboardAdminMap = () => {
       return;
     }
 
+    console.log(startNode, endNode);
+
     const graph = new Graph();
 
     nodes.forEach((node) => graph.addVertex(node.id));
@@ -1023,14 +1025,19 @@ const DashboardAdminMap = () => {
         }
       }
 
-      openSet = openSet.filter((node) => node.id !== currentNode.id);
-      closedSet.push(currentNode);
-
       if (currentNode.id === endNode.id) {
         console.timeEnd('Search');
         retracePath(currentNode);
+        console.log(closedSet);
         return;
       }
+
+      openSet = openSet.filter(
+        (node) =>
+          node.id !== currentNode.id && node.trail_id !== currentNode.trail_id,
+      );
+      closedSet.push(currentNode);
+      console.log('currentNode', currentNode);
 
       const neighbors = graph.adjacencyList
         .get(currentNode.id)
@@ -1048,8 +1055,17 @@ const DashboardAdminMap = () => {
         (node) => node.id === currentNode.id,
       );
       if (currentNodeLngLat) {
-        neighbors?.forEach((neighbor) => {
-          if (!closedSet.find((node) => node.id === neighbor.id)) {
+        if (!neighbors) {
+          return;
+        }
+
+        neighbors.forEach((neighbor) => {
+          if (
+            !closedSet.find(
+              (node) =>
+                node.id === neighbor.id && node.trail_id === neighbor.trail_id,
+            )
+          ) {
             const neighborNodeLngLat = nodes.find(
               (node) => node.id === neighbor.id,
             );
@@ -1058,26 +1074,39 @@ const DashboardAdminMap = () => {
             }
 
             const costToNeighbor = currentNode.gCost + neighbor.distance;
-            console.log(costToNeighbor, neighbor.id);
+            console.log(costToNeighbor, neighbor.id, neighbor.gCost, neighbor);
+
             if (
               costToNeighbor < neighbor.gCost ||
-              !openSet.find((node) => node.id === neighbor.id)
+              !openSet.find(
+                (node) =>
+                  node.id === neighbor.id &&
+                  node.trail_id === neighbor.trail_id,
+              )
             ) {
               neighbor.gCost = costToNeighbor;
-              const distanceToEndNode = distance(
-                [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
-                [endNode.lng, endNode.lat],
-                {
-                  units: 'meters',
-                },
+              const distanceToEndNode = Math.floor(
+                distance(
+                  [neighborNodeLngLat.lng, neighborNodeLngLat.lat],
+                  [endNode.lng, endNode.lat],
+                  {
+                    units: 'meters',
+                  },
+                ),
               );
               neighbor.hCost = distanceToEndNode;
               neighbor.fCost = costToNeighbor + distanceToEndNode;
               neighbor.parent = currentNode;
 
-              if (!openSet.find((node) => node.id === neighbor.id)) {
+              if (
+                !openSet.find(
+                  (node) =>
+                    node.id === neighbor.id &&
+                    node.trail_id === neighbor.trail_id,
+                )
+              ) {
                 openSet.push(neighbor);
-                console.log(neighbor);
+                console.log('neighbor', neighbor);
               }
             }
           }
@@ -1106,6 +1135,8 @@ const DashboardAdminMap = () => {
       }
     });
     setRoute(route);
+    console.log(route);
+    console.log(route.reduce((sum, trail) => sum + trail.distance, 0));
   };
 
   return (
