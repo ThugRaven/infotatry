@@ -974,12 +974,6 @@ const DashboardAdminMap = () => {
         node.name.trim().toLowerCase() === routeForm.start.trim().toLowerCase(),
     );
 
-    const middleNode = nodes.find(
-      (node) =>
-        node.name.trim().toLowerCase() ===
-        routeForm.middle.trim().toLowerCase(),
-    );
-
     const endNode = nodes.find(
       (node) =>
         node.name.trim().toLowerCase() === routeForm.end.trim().toLowerCase(),
@@ -1001,7 +995,7 @@ const DashboardAdminMap = () => {
     });
     console.log(middleNodes);
 
-    if (middleNodes.length > 1) {
+    if (middleNodes.length > 0) {
       const route: Trail[] = [];
       const nodes = [startNode, ...middleNodes, endNode];
       console.log(nodes);
@@ -1011,13 +1005,6 @@ const DashboardAdminMap = () => {
         const path = findPath(node, nextNode);
         route.push(...(path ?? []));
       }
-      setRoute(route);
-    } else if (middleNode) {
-      const route: Trail[] = [];
-      const startMiddle = findPath(startNode, middleNode);
-      const middleEnd = findPath(middleNode, endNode);
-      route.push(...(startMiddle ?? []));
-      route.push(...(middleEnd ?? []));
       setRoute(route);
     } else {
       setRoute(findPath(startNode, endNode) ?? []);
