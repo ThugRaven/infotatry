@@ -1705,6 +1705,14 @@ const DashboardAdminMap = () => {
                   onChange={handleChangeEditTrail}
                   disabled
                 />
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  mb={2}
+                  onClick={handleComputeTrailNodes}
+                >
+                  Compute nodes
+                </Button>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Elevation</FormLabel>
@@ -1723,13 +1731,6 @@ const DashboardAdminMap = () => {
                 </Button>
               </FormControl>
 
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={handleComputeTrailNodes}
-              >
-                Compute nodes
-              </Button>
               <Button colorScheme="blue" mr={3} type="submit">
                 Save
               </Button>
