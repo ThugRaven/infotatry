@@ -989,7 +989,30 @@ const DashboardAdminMap = () => {
       return;
     }
 
-    if (middleNode) {
+    const middleNodesNames = routeForm.middle.split(',');
+    const middleNodes: Node[] = [];
+    middleNodesNames.forEach((name) => {
+      const node = nodes.find(
+        (node) => node.name.trim().toLowerCase() === name.trim().toLowerCase(),
+      );
+      if (node) {
+        middleNodes.push(node);
+      }
+    });
+    console.log(middleNodes);
+
+    if (middleNodes.length > 1) {
+      const route: Trail[] = [];
+      const nodes = [startNode, ...middleNodes, endNode];
+      console.log(nodes);
+      for (let i = 0; i < nodes.length - 1; i++) {
+        const node = nodes[i];
+        const nextNode = nodes[i + 1];
+        const path = findPath(node, nextNode);
+        route.push(...(path ?? []));
+      }
+      setRoute(route);
+    } else if (middleNode) {
       const route: Trail[] = [];
       const startMiddle = findPath(startNode, middleNode);
       const middleEnd = findPath(middleNode, endNode);
