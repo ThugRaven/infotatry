@@ -1169,6 +1169,32 @@ const DashboardAdminMap = () => {
     return route;
   };
 
+  const handleSetStartPoint = (name: string) => {
+    setRouteForm((state) => ({ ...state, start: name }));
+    setSelectedNode(null);
+  };
+
+  const handleSetGoThroughPoint = (name: string) => {
+    const middleNodes = routeForm.middle.split(',');
+    let newMiddleNodes: string[] = [];
+    if (middleNodes[0] !== '') {
+      newMiddleNodes = [...middleNodes, name];
+    } else {
+      newMiddleNodes = [name];
+    }
+
+    setRouteForm((state) => ({
+      ...state,
+      middle: newMiddleNodes.toString(),
+    }));
+    setSelectedNode(null);
+  };
+
+  const handleSetEndPoint = (name: string) => {
+    setRouteForm((state) => ({ ...state, end: name }));
+    setSelectedNode(null);
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1338,6 +1364,9 @@ const DashboardAdminMap = () => {
                     setPopupInfo(null);
                   }}
                   onRemove={handleRemoveNode}
+                  onSetStartPoint={handleSetStartPoint}
+                  onSetGoThroughPoint={handleSetGoThroughPoint}
+                  onSetEndPoint={handleSetEndPoint}
                 />
               ))}
             <Source type="geojson" data={trailsData}>

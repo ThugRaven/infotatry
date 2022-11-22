@@ -7,6 +7,9 @@ interface NodeAdminPopupProps {
   features: mapboxgl.MapboxGeoJSONFeature[];
   onClose: (e: PopupEvent) => void;
   onRemove: (id: number) => void;
+  onSetStartPoint: (name: string) => void;
+  onSetGoThroughPoint: (name: string) => void;
+  onSetEndPoint: (name: string) => void;
 }
 
 const NodeAdminPopup = ({
@@ -14,6 +17,9 @@ const NodeAdminPopup = ({
   features,
   onClose,
   onRemove,
+  onSetStartPoint,
+  onSetGoThroughPoint,
+  onSetEndPoint,
 }: NodeAdminPopupProps) => {
   const feature = features[0];
 
@@ -21,6 +27,18 @@ const NodeAdminPopup = ({
     if (feature && feature.properties) {
       onRemove(feature.properties.id);
     }
+  };
+
+  const handleSetStartPoint = () => {
+    onSetStartPoint(feature.properties?.name);
+  };
+
+  const handleSetGoThroughPoint = () => {
+    onSetGoThroughPoint(feature.properties?.name);
+  };
+
+  const handleSetEndPoint = () => {
+    onSetEndPoint(feature.properties?.name);
   };
 
   return (
@@ -36,6 +54,9 @@ const NodeAdminPopup = ({
         <div className={s.container}>
           {feature.properties.name}
           <ButtonGroup size="xs" display={'flex'} flexWrap={'wrap'} spacing={0}>
+            <Button onClick={handleSetStartPoint}>Set as starting point</Button>
+            <Button onClick={handleSetGoThroughPoint}>Go through</Button>
+            <Button onClick={handleSetEndPoint}>Set as end point</Button>
             <Button onClick={handleRemove}>Remove node</Button>
           </ButtonGroup>
         </div>
