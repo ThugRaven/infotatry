@@ -138,9 +138,9 @@ const initialTrailValues = {
   color_1: '',
   color_2: '',
   color_3: '',
-  distance: 0,
-  time_start_end: 0,
-  time_end_start: 0,
+  distance: '',
+  time_start_end: '',
+  time_end_start: '',
   node_start: -1,
   node_end: -1,
   elevation_profile: '',
@@ -287,6 +287,19 @@ const DashboardAdminMap = () => {
           features.push(point);
         });
         console.log('Recalculate trailNodesData');
+        // decoded = swapCoordinates(decoded);
+        // const lineString = createLineString({}, decoded);
+        // const DISTANCE_BETWEEN_POINTS = 100;
+        // const numOfPoints = trail.distance / DISTANCE_BETWEEN_POINTS;
+        // for (let i = 0; i < numOfPoints + 1; i++) {
+        //   if (lineString) {
+        //     const pointAlong = along(lineString, DISTANCE_BETWEEN_POINTS * i, {
+        //       units: 'meters',
+        //     });
+        //     features.push(pointAlong);
+        //     // console.log(pointAlong);
+        //   }
+        // }
       }
     }
 
@@ -684,9 +697,9 @@ const DashboardAdminMap = () => {
         color_1: trail.color[0],
         color_2: trail.color[1],
         color_3: trail.color[2],
-        distance: trail.distance,
-        time_start_end: trail.time.start_end,
-        time_end_start: trail.time.end_start,
+        distance: trail.distance.toString(),
+        time_start_end: trail.time.start_end.toString(),
+        time_end_start: trail.time.end_start.toString(),
         node_start: trail.node_id?.start ?? -1,
         node_end: trail.node_id?.end ?? -1,
         elevation_profile:
@@ -741,10 +754,10 @@ const DashboardAdminMap = () => {
         end: trailEditForm.name_end,
       },
       color: colors as TrailColor[],
-      distance: trailEditForm.distance,
+      distance: parseInt(trailEditForm.distance),
       time: {
-        start_end: trailEditForm.time_start_end,
-        end_start: trailEditForm.time_end_start,
+        start_end: parseInt(trailEditForm.time_start_end),
+        end_start: parseInt(trailEditForm.time_end_start),
       },
       encoded: encode(swapped),
       node_id: {
@@ -817,7 +830,7 @@ const DashboardAdminMap = () => {
 
     setTrailEditForm({
       ...trailEditForm,
-      distance: Math.round(trailDistance),
+      distance: Math.round(trailDistance).toString(),
     });
   };
 
