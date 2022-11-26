@@ -1177,8 +1177,47 @@ const DashboardAdminMap = () => {
         route.push(trail);
       }
     });
+    route.reverse();
     console.log(route);
     console.log(route.reduce((sum, trail) => sum + trail.distance, 0));
+    const start = temp;
+    const end = current;
+    console.log(
+      route.reduce((sum, trail, index, trails) => {
+        let time = 0;
+        console.log('reduce');
+        console.log(trails[index]);
+        console.log(trails[index + 1]);
+        if (trail.node_id.start === start.id) {
+          time = trail.time.start_end;
+        } else if (trail.node_id.end === start.id) {
+          time = trail.time.end_start;
+        }
+
+        if (trail.node_id.start === end.id) {
+          time = trail.time.end_start;
+        } else if (trail.node_id.end === end.id) {
+          time = trail.time.start_end;
+        }
+
+        if (
+          trails[index + 1] &&
+          (trails[index + 1].node_id.start === trail.node_id.end ||
+            trails[index + 1].node_id.end === trail.node_id.end)
+        ) {
+          time = trail.time.start_end;
+        } else if (
+          trails[index + 1] &&
+          (trails[index + 1].node_id.end === trail.node_id.start ||
+            trails[index + 1].node_id.start === trail.node_id.start)
+        ) {
+          time = trail.time.end_start;
+        }
+
+        console.log(time);
+        return sum + time;
+      }, 0),
+    );
     return route;
   };
 
