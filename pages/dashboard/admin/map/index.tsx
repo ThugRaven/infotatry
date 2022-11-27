@@ -185,6 +185,7 @@ const DashboardAdminMap = () => {
     start: '',
     middle: '',
     end: '',
+    trail: '',
   });
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -1002,16 +1003,31 @@ const DashboardAdminMap = () => {
       return;
     }
 
+    const trail = trails.find(
+      (trail) => trail.id === parseInt(routeForm.trail.trim()),
+    );
+
     const middleNodesNames = routeForm.middle.split(',');
     const middleNodes: Node[] = [];
-    middleNodesNames.forEach((name) => {
-      const node = nodes.find(
-        (node) => node.name.trim().toLowerCase() === name.trim().toLowerCase(),
-      );
-      if (node) {
-        middleNodes.push(node);
-      }
-    });
+    if (trail) {
+      [trail.node_id.start, trail.node_id.end].forEach((id) => {
+        const node = nodes.find((node) => node.id === id);
+        if (node) {
+          middleNodes.push(node);
+        }
+      });
+    } else {
+      middleNodesNames.forEach((name) => {
+        const node = nodes.find(
+          (node) =>
+            node.name.trim().toLowerCase() === name.trim().toLowerCase(),
+        );
+        if (node) {
+          middleNodes.push(node);
+        }
+      });
+    }
+
     console.log(middleNodes);
 
     if (middleNodes.length > 0) {
@@ -1023,7 +1039,16 @@ const DashboardAdminMap = () => {
       for (let i = 0; i < nodes.length - 1; i++) {
         const node = nodes[i];
         const nextNode = nodes[i + 1];
-        const path = findPath(node, nextNode);
+        let path: Route | null = null;
+        if (
+          node.id === trail?.node_id.start &&
+          nextNode.id === trail.node_id.end
+        ) {
+          path = { trails: [trail], distance: trail.distance, duration: 0 };
+          // TODO: Move this inside findPath function to calculate all the things that are needed for the path e.g. duration
+        } else {
+          path = findPath(node, nextNode);
+        }
         route.push(...(path?.trails ?? []));
         totalDistance += path?.distance ?? 0;
         totalDuration += path?.duration ?? 0;
@@ -1931,6 +1956,16 @@ const DashboardAdminMap = () => {
                   name="middle"
                   mb={2}
                   value={routeForm.middle}
+                  onChange={handleChangeRoute}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Go through trail(id)</FormLabel>
+                <Input
+                  type="text"
+                  name="trail"
+                  mb={2}
+                  value={routeForm.trail}
                   onChange={handleChangeRoute}
                 />
               </FormControl>
