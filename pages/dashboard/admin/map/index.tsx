@@ -1247,6 +1247,14 @@ const DashboardAdminMap = () => {
     setSelectedNode(null);
   };
 
+  const handleReverseRoute = () => {
+    setRouteForm((state) => ({
+      ...routeForm,
+      start: state.end,
+      end: state.start,
+    }));
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1924,6 +1932,9 @@ const DashboardAdminMap = () => {
 
               <Button colorScheme="blue" mr={3} type="submit">
                 Save
+              </Button>
+              <Button colorScheme="blue" mr={3} onClick={handleReverseRoute}>
+                Reverse route
               </Button>
             </form>
           )}
