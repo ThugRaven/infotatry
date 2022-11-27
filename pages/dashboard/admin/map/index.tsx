@@ -114,6 +114,12 @@ type RouteNode = {
   parent: RouteNode | null;
 };
 
+type Route = {
+  trails: Trail[];
+  distance: number;
+  duration: number;
+};
+
 // type RouteNode = {
 //   id: number;
 //   g_cost: number;
@@ -1011,16 +1017,23 @@ const DashboardAdminMap = () => {
     if (middleNodes.length > 0) {
       const route: Trail[] = [];
       const nodes = [startNode, ...middleNodes, endNode];
+      let totalDistance = 0;
+      let totalDuration = 0;
       console.log(nodes);
       for (let i = 0; i < nodes.length - 1; i++) {
         const node = nodes[i];
         const nextNode = nodes[i + 1];
         const path = findPath(node, nextNode);
-        route.push(...(path ?? []));
+        route.push(...(path?.trails ?? []));
+        totalDistance += path?.distance ?? 0;
+        totalDuration += path?.duration ?? 0;
       }
       setRoute(route);
+      console.log(totalDistance, totalDuration);
     } else {
-      setRoute(findPath(startNode, endNode) ?? []);
+      const route = findPath(startNode, endNode);
+      setRoute(route?.trails ?? []);
+      console.log(route?.distance, route?.duration);
     }
   };
 
@@ -1099,7 +1112,7 @@ const DashboardAdminMap = () => {
       );
       if (currentNodeLngLat) {
         if (!neighbors) {
-          return;
+          return null;
         }
 
         neighbors.forEach((neighbor) => {
@@ -1113,7 +1126,7 @@ const DashboardAdminMap = () => {
               (node) => node.id === neighbor.id,
             );
             if (!neighborNodeLngLat) {
-              return;
+              return null;
             }
 
             const costToNeighbor = currentNode.gCost + neighbor.distance;
@@ -1156,9 +1169,10 @@ const DashboardAdminMap = () => {
         });
       }
     }
+    return null;
   };
 
-  const retracePath = (current: RouteNode) => {
+  const retracePath = (current: RouteNode): Route => {
     const path = [];
     let temp = current;
 
@@ -1179,7 +1193,8 @@ const DashboardAdminMap = () => {
     });
     route.reverse();
     console.log(route);
-    console.log(route.reduce((sum, trail) => sum + trail.distance, 0));
+    const distance = route.reduce((sum, trail) => sum + trail.distance, 0);
+    console.log(distance);
     const start = temp;
     const end = current;
     const routeTime = route.reduce((sum, trail, index, trails) => {
@@ -1218,7 +1233,7 @@ const DashboardAdminMap = () => {
     }, 0);
     console.log(routeTime);
     console.log(`${Math.floor(routeTime / 60)}h${routeTime % 60}m`);
-    return route;
+    return { trails: route, duration: routeTime, distance };
   };
 
   const handleSetStartPoint = (name: string) => {
