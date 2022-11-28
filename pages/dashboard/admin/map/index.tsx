@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -51,6 +52,7 @@ import distance from '@turf/distance';
 import { saveAs } from 'file-saver';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useRouter } from 'next/router';
 import React, {
   ReactElement,
   useCallback,
@@ -203,6 +205,7 @@ const DashboardAdminMap = () => {
     trails: [],
   });
   const [route, setRoute] = useState<Trail[] | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const data = features;
@@ -1295,6 +1298,44 @@ const DashboardAdminMap = () => {
     }));
   };
 
+  const handleAddTrip = () => {
+    if (!routeForm.start || !routeForm.end) {
+      return;
+    }
+
+    const startNode = nodes.find(
+      (node) =>
+        node.name.trim().toLowerCase() === routeForm.start.trim().toLowerCase(),
+    );
+
+    const endNode = nodes.find(
+      (node) =>
+        node.name.trim().toLowerCase() === routeForm.end.trim().toLowerCase(),
+    );
+
+    if (!startNode || !endNode) {
+      return;
+    }
+
+    const middleNodesNames = routeForm.middle.split(',');
+    const middleNodes: number[] = [];
+    middleNodesNames.forEach((name) => {
+      const node = nodes.find(
+        (node) => node.name.trim().toLowerCase() === name.trim().toLowerCase(),
+      );
+      if (node) {
+        middleNodes.push(node.id);
+      }
+    });
+
+    const allNodes = [startNode.id, ...middleNodes, endNode.id];
+    console.log(allNodes);
+
+    if (allNodes.length > 1) {
+      router.push(`/trips/${encodeURIComponent(allNodes.toString())}`);
+    }
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1980,12 +2021,17 @@ const DashboardAdminMap = () => {
                 />
               </FormControl>
 
-              <Button colorScheme="blue" mr={3} type="submit">
-                Save
-              </Button>
-              <Button colorScheme="blue" mr={3} onClick={handleReverseRoute}>
-                Reverse route
-              </Button>
+              <Flex direction="column" gap={2}>
+                <Button colorScheme="blue" type="submit">
+                  Search
+                </Button>
+                <Button colorScheme="blue" onClick={handleReverseRoute}>
+                  Reverse route
+                </Button>
+                <Button colorScheme="blue" onClick={handleAddTrip}>
+                  Plan a trip
+                </Button>
+              </Flex>
             </form>
           )}
         </aside>
