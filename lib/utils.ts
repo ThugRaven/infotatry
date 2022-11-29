@@ -1,6 +1,6 @@
 import polyline from '@mapbox/polyline';
+import { ENCODING_PRECISION } from 'constants/constants';
 import { LngLat } from 'mapbox-gl';
-import { ENCODING_PRECISION } from '../constants';
 
 export function createPoint(
   properties: GeoJSON.GeoJsonProperties,

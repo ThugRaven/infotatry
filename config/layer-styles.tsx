@@ -1,5 +1,5 @@
+import { TRAIL_COLORS } from 'constants/constants';
 import { CircleLayer, Expression, LineLayer, SymbolLayer } from 'mapbox-gl';
-import { TRAIL_COLORS } from '../constants';
 
 function getColors(property: string): Expression {
   return [
