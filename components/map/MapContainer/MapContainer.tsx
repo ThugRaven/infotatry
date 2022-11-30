@@ -148,7 +148,8 @@ const MapContainer = ({ children, padding }: MapContainerProps) => {
       maxPitch={60}
       reuseMaps
       // mapStyle="mapbox://styles/mapbox/streets-v9"
-      mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+      // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+      mapStyle="mapbox://styles/thugraven/clb2uwq4o000a14rpcner8xhe"
       // terrain={terrainMode ? { source: 'mapbox-dem' } : undefined}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
       interactiveLayerIds={INTERACTIVE_LAYER_IDS}
