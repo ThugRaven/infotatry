@@ -126,11 +126,11 @@ const MapContainer = ({ padding }: MapContainerProps) => {
   }, [nodes]);
 
   useEffect(() => {
-    let mapPadding: PaddingOptions = { left: 0, right: 0, bottom: 0, top: 0 };
+    let mapPadding: PaddingOptions = { top: 0, bottom: 0, left: 0, right: 0 };
     if (padding > 0) {
-      mapPadding.right = padding;
-    } else {
       mapPadding.left = padding;
+    } else {
+      mapPadding.left = 0;
     }
 
     mapRef.current?.easeTo({

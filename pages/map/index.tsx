@@ -24,7 +24,7 @@ const MapPage = () => {
           onToggle={onToggle}
           onWidthChange={onWidthChange}
         />
-        <MapContainer padding={isOpen ? 0 : width} />
+        <MapContainer padding={isOpen ? width : 0} />
       </div>
     </>
   );
