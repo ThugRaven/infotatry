@@ -27,16 +27,17 @@ import Map, {
 import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
 
-interface MapContainerProps {
+type MapContainerProps = {
+  children?: React.ReactNode;
   padding: number;
-}
+};
 
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const MapContainer = ({ padding }: MapContainerProps) => {
+const MapContainer = ({ children, padding }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
@@ -221,6 +222,7 @@ const MapContainer = ({ padding }: MapContainerProps) => {
         // console.log(e.viewState);
       }}
     >
+      {children}
       {popupInfo && (
         <MapPopup
           lngLat={popupInfo.lngLat}
