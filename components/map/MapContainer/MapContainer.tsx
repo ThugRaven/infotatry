@@ -157,7 +157,7 @@ const MapContainer = ({ route, children, padding }: MapContainerProps) => {
   }, [route]);
 
   useEffect(() => {
-    if (!padding) {
+    if (padding === undefined) {
       return;
     }
 
