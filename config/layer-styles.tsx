@@ -25,13 +25,13 @@ const TRAIL_DRAW_WIDTH_ARRAY = [
   [22, 3 / 2],
 ];
 const TRAIL_DRAW_DASH_ARRAY = [6 * 2, 2 * 2];
-const TRAIL_BORDER_RATIO = 0.5;
+const TRAIL_OUTLINE_RATIO = 0.5;
 
 const trailDrawWidth =
   TRAIL_DRAW_WIDTH_ARRAY[TRAIL_DRAW_WIDTH_ARRAY.length - 1][1];
-const trailBorderWidth =
-  trailDrawWidth * TRAIL_BORDER_RATIO * 2 + trailDrawWidth;
-const dashArrayRatio = trailBorderWidth / trailDrawWidth;
+const trailOutlineWidth =
+  trailDrawWidth * TRAIL_OUTLINE_RATIO * 2 + trailDrawWidth;
+const dashArrayRatio = trailOutlineWidth / trailDrawWidth;
 const trailDrawOutlineDashArray = [
   TRAIL_DRAW_DASH_ARRAY[0] / dashArrayRatio,
   TRAIL_DRAW_DASH_ARRAY[1] / dashArrayRatio,
@@ -42,12 +42,12 @@ TRAIL_DRAW_WIDTH_ARRAY.forEach((value) => {
   const zoom = value[0];
   const width = value[1];
 
-  const borderWidth = width * TRAIL_BORDER_RATIO * 2 + width;
-  trailDrawOutlineWidthArray.push(zoom, borderWidth);
-  console.log(trailBorderWidth);
+  const outlineWidth = width * TRAIL_OUTLINE_RATIO * 2 + width;
+  trailDrawOutlineWidthArray.push(zoom, outlineWidth);
+  console.log(trailOutlineWidth);
 });
 console.log(trailDrawOutlineWidthArray);
-console.log(trailBorderWidth);
+console.log(trailOutlineWidth);
 console.log(dashArrayRatio);
 console.log(trailDrawOutlineDashArray);
 
