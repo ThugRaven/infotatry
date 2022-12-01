@@ -1,23 +1,59 @@
-import { TRAIL_COLORS } from 'constants/constants';
+import { TRAIL_COLORS, TRAIL_OUTLINE_COLORS } from 'constants/constants';
 import { CircleLayer, Expression, LineLayer, SymbolLayer } from 'mapbox-gl';
 
-function getColors(property: string): Expression {
+function getColors(property: string, isOutline?: boolean): Expression {
   return [
     'match',
     ['get', property],
     ['red'],
-    TRAIL_COLORS.RED,
+    isOutline ? TRAIL_OUTLINE_COLORS.RED : TRAIL_COLORS.RED,
     ['blue'],
-    TRAIL_COLORS.BLUE,
+    isOutline ? TRAIL_OUTLINE_COLORS.BLUE : TRAIL_COLORS.BLUE,
     ['yellow'],
-    TRAIL_COLORS.YELLOW,
+    isOutline ? TRAIL_OUTLINE_COLORS.YELLOW : TRAIL_COLORS.YELLOW,
     ['green'],
-    TRAIL_COLORS.GREEN,
+    isOutline ? TRAIL_OUTLINE_COLORS.GREEN : TRAIL_COLORS.GREEN,
     ['black'],
-    TRAIL_COLORS.BLACK,
+    isOutline ? TRAIL_OUTLINE_COLORS.BLACK : TRAIL_COLORS.BLACK,
     '#FFFFFF',
   ];
 }
+
+const TRAIL_DRAW_WIDTH_ARRAY = [
+  [9, 1 / 2],
+  [11, 3 / 2],
+  [22, 3 / 2],
+];
+const TRAIL_DRAW_DASH_ARRAY = [6 * 2, 2 * 2];
+const TRAIL_BORDER_RATIO = 0.5;
+
+const trailDrawWidth =
+  TRAIL_DRAW_WIDTH_ARRAY[TRAIL_DRAW_WIDTH_ARRAY.length - 1][1];
+const trailBorderWidth =
+  trailDrawWidth * TRAIL_BORDER_RATIO * 2 + trailDrawWidth;
+const dashArrayRatio = trailBorderWidth / trailDrawWidth;
+const trailDrawOutlineDashArray = [
+  TRAIL_DRAW_DASH_ARRAY[0] / dashArrayRatio,
+  TRAIL_DRAW_DASH_ARRAY[1] / dashArrayRatio,
+];
+
+const trailDrawOutlineWidthArray: number[] = [];
+TRAIL_DRAW_WIDTH_ARRAY.forEach((value) => {
+  const zoom = value[0];
+  const width = value[1];
+
+  const borderWidth = width * TRAIL_BORDER_RATIO * 2 + width;
+  trailDrawOutlineWidthArray.push(zoom, borderWidth);
+  console.log(trailBorderWidth);
+});
+console.log(trailDrawOutlineWidthArray);
+console.log(trailBorderWidth);
+console.log(dashArrayRatio);
+console.log(trailDrawOutlineDashArray);
+
+const trailDrawWidthArray = TRAIL_DRAW_WIDTH_ARRAY.reduce((acc, value) =>
+  acc.concat(value),
+);
 
 export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
@@ -26,8 +62,24 @@ export const trailsDrawLayer: LineLayer = {
   filter: ['in', '1-1', ['get', 'offset']],
   paint: {
     'line-color': getColors('color'),
-    'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 11, 3, 22, 3],
-    'line-dasharray': [6, 2],
+    'line-width': ['interpolate', ['linear'], ['zoom'], ...trailDrawWidthArray],
+    'line-dasharray': TRAIL_DRAW_DASH_ARRAY,
+  },
+};
+
+export const trailsDrawOutlineLayer: LineLayer = {
+  ...trailsDrawLayer,
+  id: 'trails-draw-outline-layer',
+  paint: {
+    ...trailsDrawLayer.paint,
+    'line-color': getColors('color', true),
+    'line-width': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      ...trailDrawOutlineWidthArray,
+    ],
+    'line-dasharray': trailDrawOutlineDashArray,
   },
 };
 
@@ -42,6 +94,16 @@ export const trailsDrawOffset1in3Layer: LineLayer = {
   },
 };
 
+export const trailsDrawOffset1in3OutlineLayer: LineLayer = {
+  ...trailsDrawOffset1in3Layer,
+  id: 'trails-draw-offset-1-3-outline-layer',
+  paint: {
+    ...trailsDrawOutlineLayer.paint,
+    'line-offset': -5,
+    'line-color': getColors('color_left', true),
+  },
+};
+
 export const trailsDrawOffset3in3Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-3-3-layer',
@@ -50,6 +112,16 @@ export const trailsDrawOffset3in3Layer: LineLayer = {
     ...trailsDrawLayer.paint,
     'line-offset': 5,
     'line-color': getColors('color_right'),
+  },
+};
+
+export const trailsDrawOffset3in3OutlineLayer: LineLayer = {
+  ...trailsDrawOffset3in3Layer,
+  id: 'trails-draw-offset-3-3-outline-layer',
+  paint: {
+    ...trailsDrawOutlineLayer.paint,
+    'line-offset': 5,
+    'line-color': getColors('color_right', true),
   },
 };
 
@@ -64,6 +136,16 @@ export const trailsDrawOffset1in2Layer: LineLayer = {
   },
 };
 
+export const trailsDrawOffset1in2OutlineLayer: LineLayer = {
+  ...trailsDrawOffset1in2Layer,
+  id: 'trails-draw-offset-1-2-outline-layer',
+  paint: {
+    ...trailsDrawOutlineLayer.paint,
+    'line-offset': -2.5,
+    'line-color': getColors('color_left', true),
+  },
+};
+
 export const trailsDrawOffset2in2Layer: LineLayer = {
   ...trailsDrawLayer,
   id: 'trails-draw-offset-2-2-layer',
@@ -72,6 +154,16 @@ export const trailsDrawOffset2in2Layer: LineLayer = {
     ...trailsDrawLayer.paint,
     'line-offset': 2.5,
     'line-color': getColors('color_right'),
+  },
+};
+
+export const trailsDrawOffset2in2OutlineLayer: LineLayer = {
+  ...trailsDrawOffset2in2Layer,
+  id: 'trails-draw-offset-2-2-outline-layer',
+  paint: {
+    ...trailsDrawOutlineLayer.paint,
+    'line-offset': 2.5,
+    'line-color': getColors('color_right', true),
   },
 };
 

@@ -3,9 +3,14 @@ import {
   trailsDataLayer,
   trailsDrawLayer,
   trailsDrawOffset1in2Layer,
+  trailsDrawOffset1in2OutlineLayer,
   trailsDrawOffset1in3Layer,
+  trailsDrawOffset1in3OutlineLayer,
   trailsDrawOffset2in2Layer,
+  trailsDrawOffset2in2OutlineLayer,
   trailsDrawOffset3in3Layer,
+  trailsDrawOffset3in3OutlineLayer,
+  trailsDrawOutlineLayer,
 } from '@config/layer-styles';
 import {
   createLineString,
@@ -243,6 +248,11 @@ const MapContainer = ({ children, padding }: MapContainerProps) => {
       <Source type="geojson" data={trailsData}>
         {/* <Layer {...trailsDataLayer} beforeId="trails-data-layer" /> */}
         <Layer {...trailsDataLayer} />
+        <Layer {...trailsDrawOutlineLayer} />
+        <Layer {...trailsDrawOffset1in2OutlineLayer} />
+        <Layer {...trailsDrawOffset2in2OutlineLayer} />
+        <Layer {...trailsDrawOffset1in3OutlineLayer} />
+        <Layer {...trailsDrawOffset3in3OutlineLayer} />
         <Layer {...trailsDrawLayer} />
         <Layer {...trailsDrawOffset1in2Layer} />
         <Layer {...trailsDrawOffset2in2Layer} />
