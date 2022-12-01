@@ -1,5 +1,6 @@
 import {
   nodesDrawLayer,
+  routeLayer,
   trailsDataLayer,
   trailsDrawLayer,
   trailsDrawOffset1in2Layer,
@@ -33,8 +34,9 @@ import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
 
 type MapContainerProps = {
+  route?: Trail[];
   children?: React.ReactNode;
-  padding: number;
+  padding?: number;
 };
 
 interface PopupInfo {
@@ -42,7 +44,7 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const MapContainer = ({ children, padding }: MapContainerProps) => {
+const MapContainer = ({ route, children, padding }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
@@ -131,7 +133,34 @@ const MapContainer = ({ children, padding }: MapContainerProps) => {
     };
   }, [nodes]);
 
+  const routeData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    route?.forEach((trail) => {
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+
+      let properties: GeoJSON.GeoJsonProperties = {
+        id: trail.id,
+        name: `${trail.name.start} - ${trail.name.end}`,
+      };
+
+      const lineString = createLineString(properties, decoded);
+      features.push(lineString);
+    });
+
+    console.log('Recalculate routeData');
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [route]);
+
   useEffect(() => {
+    if (!padding) {
+      return;
+    }
+
     let mapPadding: PaddingOptions = { top: 0, bottom: 0, left: 0, right: 0 };
     if (padding > 0) {
       mapPadding.left = padding;
@@ -262,9 +291,9 @@ const MapContainer = ({ children, padding }: MapContainerProps) => {
       <Source type="geojson" data={nodesData}>
         <Layer {...nodesDrawLayer} />
       </Source>
-      {/* <Source type="geojson" data={routeData} lineMetrics={true}>
-          <Layer {...routeLayer} />
-        </Source> */}
+      <Source type="geojson" data={routeData} lineMetrics={true}>
+        <Layer {...routeLayer} />
+      </Source>
       <NavigationControl />
     </Map>
   );
