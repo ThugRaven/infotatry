@@ -1,4 +1,5 @@
 import { MainLayout } from '@components/layouts';
+import { MapContainer } from '@components/map';
 import s from '@styles/Trips.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
@@ -47,6 +48,8 @@ const Trips = () => {
           </li>
         ))}
       </ul>
+
+      <MapContainer></MapContainer>
     </div>
   );
 };
