@@ -554,7 +554,7 @@ const DashboardAdminMap = () => {
   };
 
   const handleAddSelected = () => {
-    const nodes: Array<[number, number]> = [];
+    const selectedNodes: Array<[number, number]> = [];
     if (!selectedTrail || startNodeIndex == null || endNodeIndex == null) {
       return;
     }
@@ -563,32 +563,34 @@ const DashboardAdminMap = () => {
 
     for (let i = startNodeIndex; i < endNodeIndex + 1; i++) {
       const point = decoded[i];
-      nodes.push([point[1], point[0]]);
+      selectedNodes.push([point[1], point[0]]);
     }
 
     let nameStart = '';
     let nameEnd = '';
 
-    if (nodes.length > 0) {
-      nodes.forEach((node) => {
-        if (node[0] === decoded[0][1] && node[1] === decoded[0][0]) {
-          nameEnd = selectedTrail.name.end;
-        }
-        if (
-          node[0] === decoded[decoded.length - 1][1] &&
-          node[1] === decoded[decoded.length - 1][0]
-        ) {
-          nameStart = selectedTrail.name.start;
-        }
-      });
+    if (selectedNodes.length > 0) {
+      nameStart =
+        nodes.find(
+          (node) =>
+            node.lng === selectedNodes[0][0] &&
+            node.lat === selectedNodes[0][1],
+        )?.name ?? '';
+
+      nameEnd =
+        nodes.find(
+          (node) =>
+            node.lng === selectedNodes[selectedNodes.length - 1][0] &&
+            node.lat === selectedNodes[selectedNodes.length - 1][1],
+        )?.name ?? '';
     }
 
     setType('trail');
     setTrailForm((values) => ({
       ...values,
-      nameStart: nameStart,
-      nameEnd: nameEnd,
-      path: JSON.stringify(nodes, null, 2),
+      name_start: nameStart,
+      name_end: nameEnd,
+      path: JSON.stringify(selectedNodes, null, 2),
       color_1: selectedTrail.color[0],
       color_2: selectedTrail.color[1],
       color_3: selectedTrail.color[2],
