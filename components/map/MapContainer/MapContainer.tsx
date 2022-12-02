@@ -120,7 +120,7 @@ const MapContainer = ({ route, children, padding }: MapContainerProps) => {
 
     nodes.forEach((node) => {
       const point = createPoint(
-        { id: node.id, name: node.name },
+        { id: node.id, name: node.name, type: node.type },
         new LngLat(node.lng, node.lat),
       );
       features.push(point);
