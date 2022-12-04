@@ -1338,6 +1338,108 @@ const DashboardAdminMap = () => {
     }
   };
 
+  const handleCalculateTime = () => {
+    if (
+      !selectedTrail ||
+      !selectedTrail.elevation_profile ||
+      selectedTrail.elevation_profile.length === 0
+    ) {
+      return;
+    }
+
+    const trail = selectedTrail;
+    let decoded = decode(selectedTrail.encoded);
+    decoded = swapCoordinates(decoded);
+
+    let ascent = 0;
+    let descent = 0;
+    let timeToblers = 0;
+
+    console.log('Start - end');
+    for (let i = 0; i < trail.elevation_profile.length - 1; i++) {
+      const elevationDelta =
+        trail.elevation_profile[i + 1] - trail.elevation_profile[i];
+      if (trail.elevation_profile[i] < trail.elevation_profile[i + 1]) {
+        ascent += Math.abs(elevationDelta);
+      } else if (trail.elevation_profile[i] > trail.elevation_profile[i + 1]) {
+        descent += Math.abs(elevationDelta);
+      }
+
+      const node = decoded[i];
+      const nextNode = decoded[i + 1];
+      const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
+        units: 'meters',
+      });
+      let speedToblers =
+        6 * Math.exp(-3.5 * Math.abs(elevationDelta / dist + 0.05));
+      timeToblers += (dist / (1000 * speedToblers)) * 60;
+    }
+
+    console.log(ascent);
+    console.log(descent);
+
+    let timeInMinutes = (trail.distance / 5000) * 60;
+    timeInMinutes += (ascent / 100) * 10;
+    console.log(timeInMinutes);
+    console.log(
+      `${Math.floor(Math.round(timeInMinutes) / 60)}h${
+        Math.round(timeInMinutes) % 60
+      }m`,
+    );
+
+    console.log(timeToblers);
+    console.log(
+      `${Math.floor(Math.round(timeToblers) / 60)}h${
+        Math.round(timeToblers) % 60
+      }m`,
+    );
+
+    ascent = 0;
+    descent = 0;
+    timeToblers = 0;
+
+    console.log('End - start');
+    for (let i = trail.elevation_profile.length - 1; i > 0; i--) {
+      const elevationDelta =
+        trail.elevation_profile[i - 1] - trail.elevation_profile[i];
+
+      if (trail.elevation_profile[i] < trail.elevation_profile[i - 1]) {
+        ascent += Math.abs(elevationDelta);
+      } else if (trail.elevation_profile[i] > trail.elevation_profile[i - 1]) {
+        descent += Math.abs(elevationDelta);
+      }
+
+      const node = decoded[i];
+      const nextNode = decoded[i - 1];
+      const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
+        units: 'meters',
+      });
+
+      let speedToblers =
+        6 * Math.exp(-3.5 * Math.abs(elevationDelta / dist + 0.05));
+      timeToblers += (dist / (1000 * speedToblers)) * 60;
+    }
+
+    console.log(ascent);
+    console.log(descent);
+
+    timeInMinutes = (trail.distance / 5000) * 60;
+    timeInMinutes += (ascent / 100) * 10;
+    console.log(timeInMinutes);
+    console.log(
+      `${Math.floor(Math.round(timeInMinutes) / 60)}h${
+        Math.round(timeInMinutes) % 60
+      }m`,
+    );
+
+    console.log(timeToblers);
+    console.log(
+      `${Math.floor(Math.round(timeToblers) / 60)}h${
+        Math.round(timeToblers) % 60
+      }m`,
+    );
+  };
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1856,6 +1958,14 @@ const DashboardAdminMap = () => {
                   onChange={handleChangeEditTrail}
                 />
               </FormControl>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                mb={2}
+                onClick={handleCalculateTime}
+              >
+                Calculate time
+              </Button>
               <FormControl isRequired>
                 <FormLabel>Node start</FormLabel>
                 <Input
