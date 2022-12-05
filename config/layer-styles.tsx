@@ -22,7 +22,7 @@ function getColors(property: string, isOutline?: boolean): Expression {
 const TRAIL_DRAW_WIDTH_ARRAY = [
   [9, 1 / 2],
   [11, 3 / 2],
-  [22, 3 / 2],
+  [22, 6 / 2],
 ];
 const TRAIL_DRAW_DASH_ARRAY = [6 * 2, 2 * 2];
 const TRAIL_OUTLINE_RATIO = 0.5;
