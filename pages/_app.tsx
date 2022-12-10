@@ -4,6 +4,8 @@ import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import '../styles/globals.css';
 import '../styles/reset.css';
 
@@ -15,6 +17,8 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+const queryClient = new QueryClient();
 
 export default function MyApp({
   Component,
@@ -31,11 +35,14 @@ export default function MyApp({
           content="width=device-width, initial-scale=1"
         />
       </SEO>
-      <SessionProvider session={session}>
-        <ChakraProvider>
-          {getLayout(<Component {...pageProps} />)}
-        </ChakraProvider>
-      </SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>
+          <ChakraProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </ChakraProvider>
+        </SessionProvider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </>
   );
 }
