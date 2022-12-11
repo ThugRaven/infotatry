@@ -34,7 +34,7 @@ import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
 
 type MapContainerProps = {
-  route?: Trail[];
+  trailIds?: number[];
   children?: React.ReactNode;
   padding?: number;
 };
@@ -44,7 +44,7 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const MapContainer = ({ route, children, padding }: MapContainerProps) => {
+const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
@@ -136,17 +136,20 @@ const MapContainer = ({ route, children, padding }: MapContainerProps) => {
   const routeData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
 
-    route?.forEach((trail) => {
-      let decoded = decode(trail.encoded);
-      decoded = swapCoordinates(decoded);
+    trailIds?.forEach((id) => {
+      const trail = trails.find((trail) => trail.id === id);
+      if (trail) {
+        let decoded = decode(trail.encoded);
+        decoded = swapCoordinates(decoded);
 
-      let properties: GeoJSON.GeoJsonProperties = {
-        id: trail.id,
-        name: `${trail.name.start} - ${trail.name.end}`,
-      };
+        let properties: GeoJSON.GeoJsonProperties = {
+          id: trail.id,
+          name: `${trail.name.start} - ${trail.name.end}`,
+        };
 
-      const lineString = createLineString(properties, decoded);
-      features.push(lineString);
+        const lineString = createLineString(properties, decoded);
+        features.push(lineString);
+      }
     });
 
     console.log('Recalculate routeData');
@@ -154,7 +157,7 @@ const MapContainer = ({ route, children, padding }: MapContainerProps) => {
       type: 'FeatureCollection',
       features,
     };
-  }, [route]);
+  }, [trailIds]);
 
   useEffect(() => {
     if (padding === undefined) {

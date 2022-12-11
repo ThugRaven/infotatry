@@ -1,49 +1,28 @@
 import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
 import { Button, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
-import { useQuery } from 'react-query';
 import s from './MapSidebar.module.css';
 
 interface MapSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   onWidthChange: (width: number) => void;
+  isLoading: boolean;
+  error: Error | null;
+  data: any;
+  onSearch: () => void;
 }
 
-const MapSidebar = ({ isOpen, onToggle, onWidthChange }: MapSidebarProps) => {
+const MapSidebar = ({
+  isOpen,
+  onToggle,
+  onWidthChange,
+  isLoading,
+  error,
+  data,
+  onSearch,
+}: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
-
-  const fetchRoute = async () => {
-    try {
-      const response = await fetch(
-        'http://localhost:8080/route/Palenica Białczańska;Rówień Waksmundzka',
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message);
-      }
-
-      return response.json();
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-    }
-  };
-
-  const { isLoading, error, data, refetch } = useQuery<any, Error>(
-    'route',
-    fetchRoute,
-    {
-      enabled: false,
-    },
-  );
 
   useEffect(() => {
     if (!ref.current) return;
@@ -71,7 +50,7 @@ const MapSidebar = ({ isOpen, onToggle, onWidthChange }: MapSidebarProps) => {
           : data && data.route
           ? `${data.route.name.start} - ${data.route.name.end} - ${data.route.distance}m`
           : data && data.message}
-        <Button mt={2} onClick={() => refetch()}>
+        <Button mt={2} onClick={onSearch}>
           Search
         </Button>
       </div>
