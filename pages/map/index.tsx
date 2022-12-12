@@ -63,7 +63,7 @@ const MapPage = () => {
         />
         <MapContainer
           padding={isOpen ? width : 0}
-          trailIds={data.route.trails}
+          trailIds={data?.route.trails}
         />
       </div>
     </>
