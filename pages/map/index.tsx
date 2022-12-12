@@ -4,10 +4,12 @@ import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement, useState } from 'react';
 import { useQuery } from 'react-query';
+import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
 
 const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [width, setWidth] = useState(0);
+  const [query, setQuery] = useState<SearchForm | null>(null);
 
   const onToggle = () => {
     setIsOpen((open) => !open);
@@ -17,15 +19,15 @@ const MapPage = () => {
     setWidth(width);
   };
 
-  const fetchRoute = async () => {
+  const fetchRoute = async (query: SearchForm | null) => {
     try {
-      const response = await fetch(
-        'http://localhost:8080/route/Palenica Białczańska;Rówień Waksmundzka',
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
+      console.log('fetch');
+      console.log(query);
+
+      const response = await fetch(`http://localhost:8080/route/${query}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
       if (!response.ok) {
         const data = await response.json();
@@ -41,13 +43,24 @@ const MapPage = () => {
     }
   };
 
-  const { isLoading, error, data, refetch } = useQuery<any, Error>(
-    'route',
-    fetchRoute,
+  const { isLoading, error, data } = useQuery<any, Error>(
+    ['route', query],
+    () => fetchRoute(query),
     {
-      enabled: false,
+      enabled: Boolean(query),
+      refetchOnWindowFocus: false,
     },
   );
+
+  const handleSearch = (searchForm: SearchForm) => {
+    let searchQuery = '';
+    for (const key in searchForm) {
+      const element = searchForm[key];
+      searchQuery = searchQuery.concat(element + ';');
+    }
+    console.log(searchQuery);
+    setQuery(searchQuery);
+  };
 
   return (
     <>
@@ -59,7 +72,7 @@ const MapPage = () => {
           isLoading={isLoading}
           error={error}
           data={data}
-          onSearch={() => refetch()}
+          onSearch={handleSearch}
         />
         <MapContainer
           padding={isOpen ? width : 0}

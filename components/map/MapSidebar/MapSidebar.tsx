@@ -1,6 +1,13 @@
 import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
-import { Button, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import {
+  Button,
+  Flex,
+  FormControl,
+  Input,
+  InputGroup,
+  InputLeftElement,
+} from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 import s from './MapSidebar.module.css';
 
 interface MapSidebarProps {
@@ -10,8 +17,10 @@ interface MapSidebarProps {
   isLoading: boolean;
   error: Error | null;
   data: any;
-  onSearch: () => void;
+  onSearch: (searchForm: SearchForm) => void;
 }
+
+export type SearchForm = { [key: number]: string };
 
 const MapSidebar = ({
   isOpen,
@@ -23,11 +32,26 @@ const MapSidebar = ({
   onSearch,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [searchForm, setSearchForm] = useState<SearchForm>({});
 
   useEffect(() => {
     if (!ref.current) return;
     onWidthChange(ref.current.offsetWidth);
   }, []);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setSearchForm((state) => ({
+      ...state,
+      [name]: value,
+    }));
+  };
+
+  const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch(searchForm);
+  };
 
   return (
     <div className={s.wrapper}>
@@ -39,10 +63,49 @@ const MapSidebar = ({
             className={`${s.toggle__icon} ${!isOpen ? s.rotate : ''}`}
           />
         </button>
-        <InputGroup>
-          <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-          <Input type="text" placeholder="Szukaj..." />
-        </InputGroup>
+
+        <form onSubmit={handleSearchRoute}>
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<SearchIcon />}
+              />
+              <Input
+                type="text"
+                placeholder="Starting point"
+                name="1"
+                value={searchForm[1]}
+                onChange={handleSearchChange}
+                mb={2}
+              />
+            </InputGroup>
+          </FormControl>
+
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<SearchIcon />}
+              />
+              <Input
+                type="text"
+                placeholder="Destination"
+                name="2"
+                value={searchForm[2]}
+                onChange={handleSearchChange}
+                mb={2}
+              />
+            </InputGroup>
+          </FormControl>
+
+          <Flex direction="column" gap={2}>
+            <Button colorScheme="blue" type="submit">
+              Search
+            </Button>
+          </Flex>
+        </form>
+
         {isLoading
           ? 'Loading...'
           : error
@@ -50,9 +113,6 @@ const MapSidebar = ({
           : data && data.route
           ? `${data.route.name.start} - ${data.route.name.end} - ${data.route.distance}m`
           : data && data.message}
-        <Button mt={2} onClick={onSearch}>
-          Search
-        </Button>
       </div>
     </div>
   );
