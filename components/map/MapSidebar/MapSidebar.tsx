@@ -32,7 +32,7 @@ const MapSidebar = ({
   onSearch,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [searchForm, setSearchForm] = useState<SearchForm>({});
+  const [searchForm, setSearchForm] = useState<string[]>(['', '']);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -42,15 +42,32 @@ const MapSidebar = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setSearchForm((state) => ({
-      ...state,
-      [name]: value,
-    }));
+    const newSearchForm = [...searchForm];
+    newSearchForm[parseInt(name)] = value;
+    setSearchForm(newSearchForm);
   };
 
   const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (searchForm.some((value) => value == '')) {
+      console.log('Search cancelled - not every field is filled in');
+      return;
+    }
+    console.log('Search');
     onSearch(searchForm);
+  };
+
+  const handleAddDestination = () => {
+    setSearchForm((state) => [...state, '']);
+  };
+
+  const handleRemoveDestination = () => {
+    if (searchForm.length <= 2) {
+      return;
+    }
+    const newSearchForm = [...searchForm];
+    newSearchForm.pop();
+    setSearchForm(newSearchForm);
   };
 
   return (
@@ -65,7 +82,7 @@ const MapSidebar = ({
         </button>
 
         <form onSubmit={handleSearchRoute}>
-          <FormControl isRequired>
+          <FormControl>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -74,15 +91,15 @@ const MapSidebar = ({
               <Input
                 type="text"
                 placeholder="Starting point"
-                name="1"
-                value={searchForm[1]}
+                name="0"
+                value={searchForm[0]}
                 onChange={handleSearchChange}
                 mb={2}
               />
             </InputGroup>
           </FormControl>
 
-          <FormControl isRequired>
+          <FormControl>
             <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
@@ -91,13 +108,59 @@ const MapSidebar = ({
               <Input
                 type="text"
                 placeholder="Destination"
-                name="2"
-                value={searchForm[2]}
+                name="1"
+                value={searchForm[1]}
                 onChange={handleSearchChange}
                 mb={2}
               />
             </InputGroup>
           </FormControl>
+
+          {searchForm.length >= 2 && (
+            <>
+              {searchForm.map((value, index) => {
+                if (index > 1) {
+                  return (
+                    <FormControl key={index}>
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          children={<SearchIcon />}
+                        />
+                        <Input
+                          type="text"
+                          placeholder="Destination"
+                          name={index.toString()}
+                          value={searchForm[index]}
+                          onChange={handleSearchChange}
+                          mb={2}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                  );
+                }
+              })}
+
+              <Button
+                colorScheme="blue"
+                mb={2}
+                onClick={handleAddDestination}
+                disabled={!searchForm.every((value) => value != '')}
+              >
+                Add destination
+              </Button>
+
+              <Button
+                colorScheme="blue"
+                ml={2}
+                mb={2}
+                onClick={handleRemoveDestination}
+                disabled={searchForm.length <= 2}
+              >
+                Remove destination
+              </Button>
+            </>
+          )}
 
           <Flex direction="column" gap={2}>
             <Button colorScheme="blue" type="submit">
