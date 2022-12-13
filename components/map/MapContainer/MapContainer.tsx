@@ -20,7 +20,7 @@ import {
   swapCoordinates,
 } from '@lib/utils';
 import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
-import mapboxgl, { LngLat } from 'mapbox-gl';
+import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Map, {
@@ -136,11 +136,16 @@ const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
   const routeData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
 
+    const bounds = new LngLatBounds();
     trailIds?.forEach((id) => {
       const trail = trails.find((trail) => trail.id === id);
       if (trail) {
         let decoded = decode(trail.encoded);
         decoded = swapCoordinates(decoded);
+
+        decoded.forEach((node) => {
+          bounds.extend([node[0], node[1]]);
+        });
 
         let properties: GeoJSON.GeoJsonProperties = {
           id: trail.id,
@@ -152,6 +157,9 @@ const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
       }
     });
 
+    if (!bounds.isEmpty()) {
+      mapRef.current?.fitBounds(bounds, { padding: 100 });
+    }
     console.log('Recalculate routeData');
     return {
       type: 'FeatureCollection',
