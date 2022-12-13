@@ -39,3 +39,8 @@
 .rotate {
   transform: rotate(180deg);
 }
+
+.route__info {
+  display: flex;
+  flex-direction: column;
+}

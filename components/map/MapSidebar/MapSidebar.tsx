@@ -80,7 +80,6 @@ const MapSidebar = ({
             className={`${s.toggle__icon} ${!isOpen ? s.rotate : ''}`}
           />
         </button>
-
         <form onSubmit={handleSearchRoute}>
           <FormControl>
             <InputGroup>
@@ -169,13 +168,31 @@ const MapSidebar = ({
           </Flex>
         </form>
 
-        {isLoading
-          ? 'Loading...'
-          : error
-          ? 'An error has occured: ' + error.message
-          : data && data.route
-          ? `${data.route.name.start} - ${data.route.name.end} - ${data.route.distance}m`
-          : data && data.message}
+        {isLoading ? (
+          'Loading...'
+        ) : error ? (
+          'An error has occured: ' + error.message
+        ) : data && data.route ? (
+          <div className={s.route__info}>
+            <p>{`${data.route.name.start} - ${data.route.name.end}`}</p>
+            <p title={`${data.route.distance} m`}>{`${
+              (Math.floor(data.route.distance / 1000) * 1000 +
+                Math.round((data.route.distance % 1000) / 100) * 100) /
+              1000
+            } km`}</p>
+            <p title={`${data.route.duration} min.`}>{`${Math.floor(
+              data.route.duration / 60,
+            )}:${
+              data.route.duration % 60 > 10
+                ? data.route.duration % 60
+                : `0${data.route.duration % 60}`
+            } h`}</p>
+            <p>Ascent: {`${data.route.ascent} m`}</p>
+            <p>Descent: {`${data.route.descent} m`}</p>
+          </div>
+        ) : (
+          data && data.message
+        )}
       </div>
     </div>
   );
