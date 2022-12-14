@@ -183,7 +183,7 @@ const MapSidebar = ({
             <p title={`${data.route.duration} min.`}>{`${Math.floor(
               data.route.duration / 60,
             )}:${
-              data.route.duration % 60 > 10
+              data.route.duration % 60 >= 10
                 ? data.route.duration % 60
                 : `0${data.route.duration % 60}`
             } h`}</p>
