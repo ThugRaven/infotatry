@@ -18,6 +18,7 @@ interface MapSidebarProps {
   error: Error | null;
   data: any;
   onSearch: (searchForm: SearchForm) => void;
+  onPlanTrip: () => void;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -30,6 +31,7 @@ const MapSidebar = ({
   error,
   data,
   onSearch,
+  onPlanTrip,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
@@ -167,6 +169,10 @@ const MapSidebar = ({
             </Button>
           </Flex>
         </form>
+
+        <Button colorScheme="blue" mt={2} onClick={onPlanTrip}>
+          Plan a trip
+        </Button>
 
         {isLoading ? (
           'Loading...'

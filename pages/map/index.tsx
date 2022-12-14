@@ -62,6 +62,12 @@ const MapPage = () => {
     setQuery(searchQuery);
   };
 
+  const handlePlanTrip = () => {
+    if (data) {
+      console.log(data);
+    }
+  };
+
   return (
     <>
       <div className={s.container}>
@@ -73,6 +79,7 @@ const MapPage = () => {
           error={error}
           data={data}
           onSearch={handleSearch}
+          onPlanTrip={handlePlanTrip}
         />
         <MapContainer
           padding={isOpen ? width : 0}
