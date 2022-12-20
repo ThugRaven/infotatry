@@ -3,8 +3,14 @@ import { MapContainer, MapSidebar } from '@components/map';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
+
+interface HikeArgs {
+  query: SearchForm | null;
+  dateStart: number;
+  dateEnd: number;
+}
 
 const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -62,10 +68,52 @@ const MapPage = () => {
     setQuery(searchQuery);
   };
 
-  const handlePlanTrip = () => {
+  const createHike = async ({ query, dateStart, dateEnd }: HikeArgs) => {
+    try {
+      if (!query || !data) {
+        return null;
+      }
+
+      const response = await fetch('http://localhost:8080/hikes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query,
+          dateStart,
+          dateEnd,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const hikeMutation = useMutation((newHike: HikeArgs) => createHike(newHike));
+
+  const handlePlanHike = () => {
     if (data) {
       console.log(data);
     }
+
+    hikeMutation.mutate(
+      { query, dateStart: Date.now(), dateEnd: Date.now() },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          console.log(data._id);
+        },
+      },
+    );
   };
 
   return (
@@ -79,7 +127,7 @@ const MapPage = () => {
           error={error}
           data={data}
           onSearch={handleSearch}
-          onPlanTrip={handlePlanTrip}
+          onPlanHike={handlePlanHike}
         />
         <MapContainer
           padding={isOpen ? width : 0}
