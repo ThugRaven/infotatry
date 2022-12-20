@@ -35,6 +35,7 @@ import MapPopup from '../MapPopup';
 
 type MapContainerProps = {
   trailIds?: number[];
+  hike?: any;
   children?: React.ReactNode;
   padding?: number;
 };
@@ -44,7 +45,12 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
+const MapContainer = ({
+  trailIds,
+  hike,
+  children,
+  padding,
+}: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
@@ -137,25 +143,44 @@ const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
 
     const bounds = new LngLatBounds();
-    trailIds?.forEach((id) => {
-      const trail = trails.find((trail) => trail.id === id);
-      if (trail) {
-        let decoded = decode(trail.encoded);
-        decoded = swapCoordinates(decoded);
+    console.log(trailIds, hike);
 
-        decoded.forEach((node) => {
-          bounds.extend([node[0], node[1]]);
-        });
+    if (trailIds) {
+      trailIds?.forEach((id) => {
+        const trail = trails.find((trail) => trail.id === id);
+        if (trail) {
+          let decoded = decode(trail.encoded);
+          decoded = swapCoordinates(decoded);
 
-        let properties: GeoJSON.GeoJsonProperties = {
-          id: trail.id,
-          name: `${trail.name.start} - ${trail.name.end}`,
-        };
+          decoded.forEach((node) => {
+            bounds.extend([node[0], node[1]]);
+          });
 
-        const lineString = createLineString(properties, decoded);
-        features.push(lineString);
-      }
-    });
+          let properties: GeoJSON.GeoJsonProperties = {
+            id: trail.id,
+            name: `${trail.name.start} - ${trail.name.end}`,
+          };
+
+          const lineString = createLineString(properties, decoded);
+          features.push(lineString);
+        }
+      });
+    } else if (hike) {
+      let decoded = decode(hike.encoded);
+      decoded = swapCoordinates(decoded);
+
+      decoded.forEach((node) => {
+        bounds.extend([node[0], node[1]]);
+      });
+
+      let properties: GeoJSON.GeoJsonProperties = {
+        id: hike._id,
+        name: `${hike.name.start} - ${hike.name.end}`,
+      };
+
+      const lineString = createLineString(properties, decoded);
+      features.push(lineString);
+    }
 
     if (!bounds.isEmpty()) {
       mapRef.current?.fitBounds(bounds, { padding: 100 });
@@ -165,7 +190,7 @@ const MapContainer = ({ trailIds, children, padding }: MapContainerProps) => {
       type: 'FeatureCollection',
       features,
     };
-  }, [trailIds]);
+  }, [trailIds, hike]);
 
   useEffect(() => {
     if (padding === undefined) {
