@@ -129,10 +129,7 @@ const MapPage = () => {
           onSearch={handleSearch}
           onPlanHike={handlePlanHike}
         />
-        <MapContainer
-          padding={isOpen ? width : 0}
-          trailIds={data?.route.trails}
-        />
+        <MapContainer padding={isOpen ? width : 0} trailIds={data?.trails} />
       </div>
     </>
   );
