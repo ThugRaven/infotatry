@@ -186,12 +186,8 @@ const MapSidebar = ({
                 Math.round((data.distance % 1000) / 100) * 100) /
               1000
             } km`}</p>
-            <p title={`${data.duration} min.`}>{`${Math.floor(
-              data.duration / 60,
-            )}:${
-              data.duration % 60 >= 10
-                ? data.duration % 60
-                : `0${data.duration % 60}`
+            <p title={`${data.time} min.`}>{`${Math.floor(data.time / 60)}:${
+              data.time % 60 >= 10 ? data.time % 60 : `0${data.time % 60}`
             } h`}</p>
             <p>Ascent: {`${data.ascent} m`}</p>
             <p>Descent: {`${data.descent} m`}</p>
