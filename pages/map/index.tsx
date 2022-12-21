@@ -110,7 +110,7 @@ const MapPage = () => {
       {
         onSuccess: (data) => {
           console.log(data);
-          console.log(data._id);
+          console.log(data && data._id);
         },
       },
     );

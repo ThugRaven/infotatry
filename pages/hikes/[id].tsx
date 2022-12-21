@@ -90,6 +90,7 @@ const Hikes = () => {
       <MapContainer
         trailIds={data && data.route ? data.route.trails : null}
         hike={data && data.route ? null : data}
+        isLoading={isLoading}
       ></MapContainer>
     </div>
   );

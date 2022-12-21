@@ -1,3 +1,4 @@
+import { Spinner } from '@chakra-ui/react';
 import {
   nodesDrawLayer,
   routeLayer,
@@ -32,12 +33,14 @@ import Map, {
 } from 'react-map-gl';
 import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
+import s from './MapContainer.module.css';
 
 type MapContainerProps = {
   trailIds?: number[];
   hike?: any;
   children?: React.ReactNode;
   padding?: number;
+  isLoading?: boolean;
 };
 
 interface PopupInfo {
@@ -50,6 +53,7 @@ const MapContainer = ({
   hike,
   children,
   padding,
+  isLoading = false,
 }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
@@ -293,6 +297,14 @@ const MapContainer = ({
         // console.log(e.viewState);
       }}
     >
+      {isLoading && (
+        <Spinner
+          thickness="5px"
+          size={'xl'}
+          color="black"
+          className={s.spinner}
+        />
+      )}
       {children}
       {popupInfo && (
         <MapPopup
