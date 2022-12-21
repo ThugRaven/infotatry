@@ -300,7 +300,7 @@ const MapContainer = ({
       {isLoading && (
         <Spinner
           thickness="5px"
-          size={'xl'}
+          size="xl"
           color="black"
           className={s.spinner}
         />
