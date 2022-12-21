@@ -79,19 +79,53 @@ const Hikes = () => {
 
   return (
     <div className={s.container}>
-      <ul>
+      {/* <ul>
         {routeNodes.map((node, index) => (
           <li key={`${node.id}-${index}`}>
             {node.id} | {node.name}
           </li>
         ))}
-      </ul>
+      </ul> */}
+
+      {data && (
+        <>
+          <h1
+            className={s.hike__names}
+          >{`${data.name.start} - ${data.name.end}`}</h1>
+          <ul className={s.hike__info}>
+            <li title={`${data.distance} m`}>
+              <span>Distance</span>
+              {`${
+                (Math.floor(data.distance / 1000) * 1000 +
+                  Math.round((data.distance % 1000) / 100) * 100) /
+                1000
+              } km`}
+            </li>
+            <li title={`${data.time} min.`}>
+              <span>Time</span>
+              {`${Math.floor(data.time / 60)}:${
+                data.time % 60 >= 10 ? data.time % 60 : `0${data.time % 60}`
+              } h`}
+            </li>
+            <li>
+              <span>Ascent</span>
+              {`${data.ascent} m`}
+            </li>
+            <li>
+              <span>Descent</span>
+              {`${data.descent} m`}
+            </li>
+          </ul>
+        </>
+      )}
 
       <MapContainer
-        trailIds={data && data.route ? data.route.trails : null}
-        hike={data && data.route ? null : data}
+        trailIds={data && data.encoded != '' ? data.trails : null}
+        hike={data && data.encoded == '' ? null : data}
         isLoading={isLoading}
       ></MapContainer>
+
+      <div>Elevation profile</div>
     </div>
   );
 };

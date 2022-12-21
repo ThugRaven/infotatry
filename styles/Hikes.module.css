@@ -4,3 +4,21 @@
   align-items: center;
   justify-content: center;
 }
+
+.hike__names {
+  margin-top: 0.5rem;
+}
+
+.hike__info {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 1rem;
+}
+
+.hike__info > li span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
