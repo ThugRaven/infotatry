@@ -2,6 +2,7 @@ import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useRouter } from 'next/router';
 import { ReactElement, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
@@ -16,6 +17,7 @@ const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [width, setWidth] = useState(0);
   const [query, setQuery] = useState<SearchForm | null>(null);
+  const router = useRouter();
 
   const onToggle = () => {
     setIsOpen((open) => !open);
@@ -111,6 +113,10 @@ const MapPage = () => {
         onSuccess: (data) => {
           console.log(data);
           console.log(data && data._id);
+          if (data) {
+            setIsOpen(false);
+            router.push(`/hikes/${data._id}`);
+          }
         },
       },
     );
