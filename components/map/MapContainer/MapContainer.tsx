@@ -231,6 +231,7 @@ const MapContainer = ({
       onMouseLeave={onMouseLeave}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onLoad={() => mapRef.current?.resize()}
       cursor={cursor}
       onClick={(e) => {
         // console.log(mapRef.current?.getStyle().layers);
