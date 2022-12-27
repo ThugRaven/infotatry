@@ -76,7 +76,7 @@ const MapPage = () => {
         return null;
       }
 
-      const response = await fetch('http://localhost:8080/hikes', {
+      const response = await fetch('http://localhost:8080/hikes/planned', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -115,7 +115,7 @@ const MapPage = () => {
           console.log(data && data._id);
           if (data) {
             setIsOpen(false);
-            router.push(`/hikes/${data._id}`);
+            router.push(`/hikes/planned/${data._id}`);
           }
         },
       },

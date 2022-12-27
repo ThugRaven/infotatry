@@ -7,9 +7,9 @@ import { useRouter } from 'next/router';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { ReactElement, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import features from '../../public/features.json';
+import features from '../../../public/features.json';
 
-const Hikes = () => {
+const CompletedHike = () => {
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [routeNodes, setRouteNodes] = useState<Node[]>([]);
@@ -46,10 +46,13 @@ const Hikes = () => {
       console.log('fetch');
       console.log(id);
 
-      const response = await fetch(`http://localhost:8080/hikes/${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        `http://localhost:8080/hikes/completed/${id}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -174,8 +177,8 @@ const Hikes = () => {
   );
 };
 
-Hikes.getLayout = function getLayout(page: ReactElement) {
+CompletedHike.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
 
-export default Hikes;
+export default CompletedHike;
