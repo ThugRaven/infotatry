@@ -1,6 +1,7 @@
 import { Avatar, Button, Text } from '@chakra-ui/react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import { useMutation } from 'react-query';
 import s from './MainLayout.module.css';
@@ -11,6 +12,8 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { data: session, status } = useSession();
+
+  const router = useRouter();
 
   const logout = async (x: number) => {
     try {
@@ -37,7 +40,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const logoutMutation = useMutation(logout);
 
   const handleLogout = () => {
-    logoutMutation.mutate(1);
+    logoutMutation.mutate(1, {
+      onSuccess: () => {
+        router.reload();
+      },
+    });
   };
 
   return (
