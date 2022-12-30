@@ -2,6 +2,7 @@ import { Avatar, Button, Text } from '@chakra-ui/react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
+import { useMutation } from 'react-query';
 import s from './MainLayout.module.css';
 
 interface MainLayoutProps {
@@ -10,6 +11,34 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { data: session, status } = useSession();
+
+  const logout = async (x: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        // const data = await response.json();
+        throw new Error(response.status.toString());
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const logoutMutation = useMutation(logout);
+
+  const handleLogout = () => {
+    logoutMutation.mutate(1);
+  };
 
   return (
     <div className={s.container}>
@@ -38,6 +67,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             <Button onClick={() => signIn()}>Zaloguj się</Button>
           )}
         </div>
+        <Button onClick={handleLogout}>Logout</Button>
       </header>
       {children}
     </div>
