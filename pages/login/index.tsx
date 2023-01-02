@@ -1,10 +1,9 @@
 import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import s from '@styles/Hikes.module.css';
+import { useSignIn } from 'hooks/useSignIn';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
-import { useMutation } from 'react-query';
 
 interface LoginForm {
   name: string;
@@ -16,51 +15,11 @@ const Login = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const router = useRouter();
-
-  const login = async (loginForm: LoginForm) => {
-    try {
-      const response = await fetch(`http://localhost:8080/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginForm),
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        // const data = await response.json();
-        throw new Error(response.status.toString());
-      }
-
-      console.log(response);
-
-      return response.json();
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-    }
-  };
-
-  const loginMutation = useMutation(login);
+  const signIn = useSignIn();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginMutation.mutate(
-      { name, email, password },
-      {
-        onSuccess: (data) => {
-          router.push('/');
-          console.log(data);
-          console.log(data && data._id);
-          if (data) {
-            // router.push(`/hikes/completed/${data._id}`);
-          }
-        },
-      },
-    );
+    signIn({ name, email, password });
   };
 
   return (

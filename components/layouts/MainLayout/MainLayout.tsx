@@ -1,4 +1,5 @@
 import { Avatar, Button, Text } from '@chakra-ui/react';
+import { useAuth } from 'hooks/useAuth';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,6 +13,7 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { data: session, status } = useSession();
+  const { user, status: authStatus } = useAuth();
 
   const router = useRouter();
 
@@ -74,7 +76,16 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             <Button onClick={() => signIn()}>Zaloguj się</Button>
           )}
         </div>
-        <Button onClick={handleLogout}>Logout</Button>
+        <div className={s.auth}>
+          {authStatus === 'authenticated' ? (
+            <>
+              <Text fontSize={'lg'}>Witaj 2 {user?.name}!</Text>
+              <Button onClick={handleLogout}>Wyloguj się</Button>
+            </>
+          ) : (
+            <Button onClick={() => signIn()}>Zaloguj się</Button>
+          )}
+        </div>
       </header>
       {children}
     </div>
