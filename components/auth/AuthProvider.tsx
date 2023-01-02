@@ -47,12 +47,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             name: data.user.name,
             email: data.user.email,
           });
+        } else {
+          setUser(null);
         }
       },
     },
   );
 
   const authValue = useMemo<AuthValue>(() => {
+    console.log('useMemo update');
     return {
       user,
       status: isLoading

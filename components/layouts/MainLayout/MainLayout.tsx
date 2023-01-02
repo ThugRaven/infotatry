@@ -1,10 +1,9 @@
 import { Avatar, Button, Text } from '@chakra-ui/react';
 import { useAuth } from 'hooks/useAuth';
+import { useSignOut } from 'hooks/useSignOut';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
-import { useMutation } from 'react-query';
 import s from './MainLayout.module.css';
 
 interface MainLayoutProps {
@@ -14,40 +13,7 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { data: session, status } = useSession();
   const { user, status: authStatus } = useAuth();
-
-  const router = useRouter();
-
-  const logout = async (x: number) => {
-    try {
-      const response = await fetch(`http://localhost:8080/auth/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        // const data = await response.json();
-        throw new Error(response.status.toString());
-      }
-
-      return response.json();
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-    }
-  };
-
-  const logoutMutation = useMutation(logout);
-
-  const handleLogout = () => {
-    logoutMutation.mutate(1, {
-      onSuccess: () => {
-        router.reload();
-      },
-    });
-  };
+  const handleSignOut = useSignOut();
 
   return (
     <div className={s.container}>
@@ -80,7 +46,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           {authStatus === 'authenticated' ? (
             <>
               <Text fontSize={'lg'}>Witaj 2 {user?.name}!</Text>
-              <Button onClick={handleLogout}>Wyloguj się</Button>
+              <Button onClick={handleSignOut}>Wyloguj się</Button>
             </>
           ) : (
             <Button onClick={() => signIn()}>Zaloguj się</Button>
