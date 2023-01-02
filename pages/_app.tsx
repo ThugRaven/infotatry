@@ -1,4 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import AuthProvider from '@components/auth/AuthProvider';
 import { SEO } from '@components/common';
 import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
@@ -36,11 +37,13 @@ export default function MyApp({
         />
       </SEO>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider session={session}>
-          <ChakraProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </ChakraProvider>
-        </SessionProvider>
+        <AuthProvider>
+          <SessionProvider session={session}>
+            <ChakraProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </ChakraProvider>
+          </SessionProvider>
+        </AuthProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </>
