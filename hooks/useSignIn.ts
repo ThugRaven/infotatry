@@ -1,4 +1,3 @@
-import { signIn } from '@lib/auth-utils';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { useAuth } from './useAuth';
@@ -47,7 +46,12 @@ export const useSignIn = () => {
         onSuccess: (data) => {
           console.log(data);
           console.log(data && data._id);
-          signIn(auth.refetch, router);
+          
+          if (auth.refetch) {
+            auth.refetch();
+            return router.push('/');
+          }
+          return router.push('/login');
         },
       },
     );
