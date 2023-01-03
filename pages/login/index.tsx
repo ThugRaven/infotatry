@@ -47,9 +47,14 @@ const Login = () => {
         </FormControl>
 
         <Button colorScheme="blue" mr={3} type="submit">
-          Login
+          Log in
         </Button>
       </form>
+      <a href="http://localhost:8080/auth/login/google">
+        <Button colorScheme="blue" mt={3}>
+          Log in with Google
+        </Button>
+      </a>
     </div>
   );
 };
