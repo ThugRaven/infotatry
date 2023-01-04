@@ -47,7 +47,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <div className={s.auth}>
           {authStatus === 'authenticated' ? (
             <>
-              <Text fontSize={'lg'}>Witaj 2 {user?.name}!</Text>
+              <Text fontSize={'lg'}>
+                Witaj
+                <Link href={'/user'}>
+                  <span> {user?.name}!</span>
+                </Link>
+              </Text>
               <Button onClick={handleSignOut}>Wyloguj się</Button>
             </>
           ) : (
