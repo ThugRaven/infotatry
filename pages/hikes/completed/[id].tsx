@@ -1,4 +1,3 @@
-import { Button } from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
 import s from '@styles/Hikes.module.css';
@@ -6,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { ReactElement, useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import features from '../../../public/features.json';
 
 const CompletedHike = () => {
@@ -51,6 +50,7 @@ const CompletedHike = () => {
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
         },
       );
 
@@ -80,46 +80,6 @@ const CompletedHike = () => {
       },
     },
   );
-
-  const saveHike = async (id: string | string[] | undefined) => {
-    try {
-      console.log(id);
-
-      const response = await fetch(`http://localhost:8080/hikes/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message);
-      }
-
-      return response.json();
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-    }
-  };
-
-  const hikeMutation = useMutation((id: string | string[] | undefined) =>
-    saveHike(id),
-  );
-
-  const handleSaveHike = () => {
-    if (data) {
-      console.log(data);
-    }
-
-    hikeMutation.mutate(id, {
-      onSuccess: (data) => {
-        console.log(data);
-        console.log(data && data._id);
-      },
-    });
-  };
 
   return (
     <div className={s.container}>
@@ -160,9 +120,6 @@ const CompletedHike = () => {
               {`${data.descent} m`}
             </li>
           </ul>
-          <Button colorScheme="blue" mb={2} onClick={handleSaveHike}>
-            Save hike
-          </Button>
         </>
       )}
 

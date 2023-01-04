@@ -51,6 +51,7 @@ const PlannedHike = () => {
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
         },
       );
 
@@ -90,6 +91,7 @@ const PlannedHike = () => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
         },
       );
 

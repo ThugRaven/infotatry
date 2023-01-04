@@ -84,6 +84,7 @@ const MapPage = () => {
           dateStart,
           dateEnd,
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
