@@ -46,6 +46,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             id: data.user._id,
             name: data.user.name,
             email: data.user.email,
+            image: data.user.image,
           });
         } else {
           setUser(null);
