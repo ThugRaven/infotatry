@@ -1,8 +1,8 @@
-import { Avatar, Button, Text } from '@chakra-ui/react';
+import { Avatar, Button, Link, Text } from '@chakra-ui/react';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import s from './MainLayout.module.css';
@@ -23,13 +23,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <nav>
           <ul className={s.nav}>
             <li>
-              <Link href="/">Home</Link>
+              <NextLink href="/">Home</NextLink>
             </li>
             <li>
-              <Link href="/map">Mapa</Link>
+              <NextLink href="/map">Mapa</NextLink>
             </li>
             <li>
-              <Link href="/dashboard">Dashboard</Link>
+              <NextLink href="/dashboard">Dashboard</NextLink>
             </li>
           </ul>
         </nav>
@@ -48,10 +48,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           {authStatus === 'authenticated' ? (
             <>
               <Text fontSize={'lg'}>
-                Witaj
-                <Link href={'/user'}>
-                  <span> {user?.name}!</span>
-                </Link>
+                Witaj{' '}
+                <NextLink href="/user" passHref>
+                  <Link>{user?.name}!</Link>
+                </NextLink>
               </Text>
               <Button onClick={handleSignOut}>Wyloguj się</Button>
             </>
