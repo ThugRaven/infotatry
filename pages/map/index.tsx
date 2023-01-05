@@ -1,3 +1,17 @@
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
 import s from '@styles/MapPage.module.css';
@@ -9,8 +23,7 @@ import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
 
 interface HikeArgs {
   query: SearchForm | null;
-  dateStart: number;
-  dateEnd: number;
+  date: number;
 }
 
 const MapPage = () => {
@@ -18,6 +31,9 @@ const MapPage = () => {
   const [width, setWidth] = useState(0);
   const [query, setQuery] = useState<SearchForm | null>(null);
   const router = useRouter();
+
+  const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
+  const [date, setDate] = useState('');
 
   const onToggle = () => {
     setIsOpen((open) => !open);
@@ -70,7 +86,7 @@ const MapPage = () => {
     setQuery(searchQuery);
   };
 
-  const createHike = async ({ query, dateStart, dateEnd }: HikeArgs) => {
+  const createHike = async ({ query, date }: HikeArgs) => {
     try {
       if (!query || !data) {
         return null;
@@ -81,8 +97,7 @@ const MapPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          dateStart,
-          dateEnd,
+          date,
         }),
         credentials: 'include',
       });
@@ -103,13 +118,14 @@ const MapPage = () => {
 
   const hikeMutation = useMutation((newHike: HikeArgs) => createHike(newHike));
 
-  const handlePlanHike = () => {
+  const handlePlanHike = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (data) {
       console.log(data);
     }
 
     hikeMutation.mutate(
-      { query, dateStart: Date.now(), dateEnd: Date.now() },
+      { query, date: new Date(date).getTime() },
       {
         onSuccess: (data) => {
           console.log(data);
@@ -134,9 +150,37 @@ const MapPage = () => {
           error={error}
           data={data}
           onSearch={handleSearch}
-          onPlanHike={handlePlanHike}
+          onPlanHike={onOpen}
         />
         <MapContainer padding={isOpen ? width : 0} trailIds={data?.trails} />
+        <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Select date and time of hike</ModalHeader>
+            <ModalCloseButton />
+            <form onSubmit={handlePlanHike}>
+              <ModalBody>
+                <FormControl isRequired>
+                  <FormLabel>Date</FormLabel>
+                  <Input
+                    type="datetime-local"
+                    name="date"
+                    mb={2}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </FormControl>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} type="submit">
+                  Plan a hike
+                </Button>
+                <Button onClick={onClose}>Cancel</Button>
+              </ModalFooter>
+            </form>
+          </ModalContent>
+        </Modal>
       </div>
     </>
   );
