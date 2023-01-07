@@ -26,6 +26,26 @@ interface HikeArgs {
   date: number;
 }
 
+type WeatherSite = {
+  id: number;
+  name: string;
+  lat: string;
+  lng: string;
+};
+
+export type Route = {
+  name: {
+    start: string;
+    end: string;
+  };
+  trails: number[];
+  distance: number;
+  time: number;
+  ascent: number;
+  descent: number;
+  weatherSite: WeatherSite | null;
+};
+
 const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [width, setWidth] = useState(0);
@@ -75,12 +95,67 @@ const MapPage = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery<any, Error>(
+  const { isLoading, error, data } = useQuery<Route, Error>(
     ['route', query],
     () => fetchRoute(query),
     {
       enabled: Boolean(query),
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess Route');
+        console.log(data);
+      },
+    },
+  );
+
+  const fetchWeather = async (lat?: string, lng?: string) => {
+    console.log('data', data);
+
+    try {
+      if (!lat || !lng) {
+        return false;
+      }
+      console.log('fetch');
+      console.log(query);
+
+      const response = await fetch(
+        `http://localhost:8080/weather/forecast/${lat}/${lng}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isLoadingForecast,
+    error: forecastError,
+    data: forecastData,
+  } = useQuery<any, Error>(
+    ['weather', data?.weatherSite?.lat, data?.weatherSite?.lng],
+    () => fetchWeather(data?.weatherSite?.lat, data?.weatherSite?.lng),
+    {
+      enabled: Boolean(data),
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess Weather');
+        console.log(data);
+      },
     },
   );
 
@@ -160,6 +235,7 @@ const MapPage = () => {
           onSearch={handleSearch}
           onPlanHike={onOpen}
         />
+        <span>{forecastData?.list[0].main.temp}</span>
         <MapContainer padding={isOpen ? width : 0} trailIds={data?.trails} />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
