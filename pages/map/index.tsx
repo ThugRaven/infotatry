@@ -29,8 +29,6 @@ interface HikeArgs {
 type WeatherSite = {
   id: number;
   name: string;
-  lat: string;
-  lng: string;
 };
 
 export type Route = {
@@ -109,18 +107,18 @@ const MapPage = () => {
     },
   );
 
-  const fetchWeather = async (lat?: string, lng?: string) => {
+  const fetchWeather = async (name?: string) => {
     console.log('data', data);
 
     try {
-      if (!lat || !lng) {
+      if (!name) {
         return false;
       }
       console.log('fetch');
       console.log(query);
 
       const response = await fetch(
-        `http://localhost:8080/weather/forecast/${lat}/${lng}`,
+        `http://localhost:8080/weather/forecast/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -146,8 +144,8 @@ const MapPage = () => {
     error: forecastError,
     data: forecastData,
   } = useQuery<any, Error>(
-    ['weather', data?.weatherSite?.lat, data?.weatherSite?.lng],
-    () => fetchWeather(data?.weatherSite?.lat, data?.weatherSite?.lng),
+    ['weather', data?.weatherSite?.name],
+    () => fetchWeather(data?.weatherSite?.name),
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
