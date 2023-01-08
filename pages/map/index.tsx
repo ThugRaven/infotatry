@@ -163,8 +163,8 @@ const MapPage = () => {
       const element = searchForm[key];
       searchQuery = searchQuery.concat(element + ';');
     }
-    console.log(searchQuery);
-    setQuery(searchQuery);
+    searchQuery = searchQuery.slice(0, -1);
+    setQuery(searchQuery.trim().toLowerCase());
   };
 
   const createHike = async ({ query, date }: HikeArgs) => {
