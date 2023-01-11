@@ -99,7 +99,8 @@ const MapPage = () => {
     {
       enabled: Boolean(query),
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
       onSuccess: (data) => {
         console.log('onSuccess Route');
         console.log(data);
@@ -149,7 +150,8 @@ const MapPage = () => {
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
       onSuccess: (data) => {
         console.log('onSuccess Weather');
         console.log(data);

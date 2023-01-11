@@ -32,6 +32,7 @@ import Map, {
   PaddingOptions,
   Source,
 } from 'react-map-gl';
+import { useQuery } from 'react-query';
 import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
 import s from './MapContainer.module.css';
@@ -48,6 +49,18 @@ interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
+
+type Announcement = {
+  type: string;
+  title: string;
+  featuresType: string;
+  featuresIds: number[];
+  reason: string;
+  since: Date | null;
+  until: Date | null;
+  description: string;
+  link: string | null;
+};
 
 const MapContainer = ({
   trailIds,
@@ -197,6 +210,78 @@ const MapContainer = ({
     };
   }, [trailIds, hike]);
 
+  const fetchAnnouncements = async () => {
+    try {
+      console.log('fetch announcements');
+
+      const response = await fetch(
+        `http://localhost:8080/announcements/closures`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isQueryLoading,
+    error,
+    data,
+  } = useQuery<Announcement[], Error>(['announcements'], fetchAnnouncements, {
+    refetchOnWindowFocus: false,
+    retry: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+
+  const closedTrailsData: GeoJSON.FeatureCollection = useMemo(() => {
+    const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+
+    if (data) {
+      const closures = data;
+      closures.forEach((announcement) => {
+        announcement.featuresIds.forEach((id) => {
+          const trail = trails.find((trail) => trail.id === id);
+
+          if (trail) {
+            let decoded = decode(trail.encoded);
+            decoded = swapCoordinates(decoded);
+
+            let properties: GeoJSON.GeoJsonProperties = {
+              id: trail.id,
+              name: `${trail.name.start} - ${trail.name.end}`,
+            };
+
+            const lineString = createLineString(properties, decoded);
+            features.push(lineString);
+          }
+        });
+      });
+    }
+
+    console.log('Recalculate closedTrailsData');
+    return {
+      type: 'FeatureCollection',
+      features,
+    };
+  }, [trails, data]);
+
   useEffect(() => {
     if (padding === undefined) {
       return;
@@ -337,13 +422,15 @@ const MapContainer = ({
         <Layer {...trailsDrawOffset2in2Layer} />
         <Layer {...trailsDrawOffset1in3Layer} />
         <Layer {...trailsDrawOffset3in3Layer} />
-        <Layer {...trailsClosedLayer} />
       </Source>
       <Source type="geojson" data={nodesData}>
         <Layer {...nodesDrawLayer} />
       </Source>
       <Source type="geojson" data={routeData} lineMetrics={true}>
         <Layer {...routeLayer} />
+      </Source>
+      <Source type="geojson" data={closedTrailsData}>
+        <Layer {...trailsClosedLayer} />
       </Source>
       <NavigationControl />
     </Map>

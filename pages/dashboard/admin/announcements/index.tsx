@@ -62,7 +62,7 @@ const Announcements = () => {
         return null;
       }
 
-      const response = await fetch('http://localhost:8080/announcement', {
+      const response = await fetch('http://localhost:8080/announcements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
