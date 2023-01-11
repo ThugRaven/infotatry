@@ -29,6 +29,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <li>
               <Link href="/dashboard/admin/map">Map</Link>
             </li>
+            <li>
+              <Link href="/dashboard/admin/announcements">Announcements</Link>
+            </li>
           </ul>
         </nav>
         <div className={s.auth}>
