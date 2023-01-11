@@ -2,6 +2,7 @@ import { Spinner } from '@chakra-ui/react';
 import {
   nodesDrawLayer,
   routeLayer,
+  trailsClosedLayer,
   trailsDataLayer,
   trailsDrawLayer,
   trailsDrawOffset1in2Layer,
@@ -336,6 +337,7 @@ const MapContainer = ({
         <Layer {...trailsDrawOffset2in2Layer} />
         <Layer {...trailsDrawOffset1in3Layer} />
         <Layer {...trailsDrawOffset3in3Layer} />
+        <Layer {...trailsClosedLayer} />
       </Source>
       <Source type="geojson" data={nodesData}>
         <Layer {...nodesDrawLayer} />

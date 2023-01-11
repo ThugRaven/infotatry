@@ -182,6 +182,19 @@ export const trailsDrawOffsetRightLocalLayer: LineLayer = {
   id: 'trails-draw-offset-right-local-layer',
 };
 
+export const trailsClosedLayer: SymbolLayer = {
+  id: 'trails-closed-layer',
+  type: 'symbol',
+  source: 'composite',
+  layout: {
+    'icon-image': 'closed',
+    'symbol-placement': 'line',
+    'symbol-spacing': 25,
+    'icon-allow-overlap': true,
+    'icon-size': ['interpolate', ['linear'], ['zoom'], 10, 0.5, 12, 1],
+  },
+};
+
 export const trailsDataLayer: LineLayer = {
   id: 'trails-data-layer',
   type: 'line',
