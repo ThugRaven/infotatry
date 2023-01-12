@@ -178,19 +178,23 @@ const MapSidebar = ({
           'Loading...'
         ) : error ? (
           'An error has occured: ' + error.message
-        ) : data ? (
+        ) : data && data[0] ? (
           <div className={s.route__info}>
-            <p>{`${data.name.start} - ${data.name.end}`}</p>
-            <p title={`${data.distance} m`}>{`${
-              (Math.floor(data.distance / 1000) * 1000 +
-                Math.round((data.distance % 1000) / 100) * 100) /
+            <p>{`${data[0].name.start} - ${data[0].name.end}`}</p>
+            <p title={`${data[0].distance} m`}>{`${
+              (Math.floor(data[0].distance / 1000) * 1000 +
+                Math.round((data[0].distance % 1000) / 100) * 100) /
               1000
             } km`}</p>
-            <p title={`${data.time} min.`}>{`${Math.floor(data.time / 60)}:${
-              data.time % 60 >= 10 ? data.time % 60 : `0${data.time % 60}`
+            <p title={`${data[0].time} min.`}>{`${Math.floor(
+              data[0].time / 60,
+            )}:${
+              data[0].time % 60 >= 10
+                ? data[0].time % 60
+                : `0${data[0].time % 60}`
             } h`}</p>
-            <p>Ascent: {`${data.ascent} m`}</p>
-            <p>Descent: {`${data.descent} m`}</p>
+            <p>Ascent: {`${data[0].ascent} m`}</p>
+            <p>Descent: {`${data[0].descent} m`}</p>
           </div>
         ) : (
           data && data.message

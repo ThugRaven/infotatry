@@ -93,7 +93,7 @@ const MapPage = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery<Route, Error>(
+  const { isLoading, error, data } = useQuery<Route[], Error>(
     ['route', query],
     () => fetchRoute(query),
     {
@@ -145,8 +145,8 @@ const MapPage = () => {
     error: forecastError,
     data: forecastData,
   } = useQuery<any, Error>(
-    ['weather', data?.weatherSite?.name],
-    () => fetchWeather(data?.weatherSite?.name),
+    ['weather', data && data[0].weatherSite?.name],
+    () => fetchWeather(data && data[0].weatherSite?.name),
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
@@ -236,7 +236,10 @@ const MapPage = () => {
           onPlanHike={onOpen}
         />
         <span>{forecastData?.list[0].main.temp}</span>
-        <MapContainer padding={isOpen ? width : 0} trailIds={data?.trails} />
+        <MapContainer
+          padding={isOpen ? width : 0}
+          trailIds={data && data[1].trails}
+        />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent>
