@@ -1,8 +1,14 @@
-import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SearchIcon,
+} from '@chakra-ui/icons';
 import {
   Button,
   Flex,
   FormControl,
+  HStack,
+  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
@@ -19,6 +25,9 @@ interface MapSidebarProps {
   data: any;
   onSearch: (searchForm: SearchForm) => void;
   onPlanHike: () => void;
+  index: number;
+  onPreviousRoute: () => void;
+  onNextRoute: () => void;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -32,6 +41,9 @@ const MapSidebar = ({
   data,
   onSearch,
   onPlanHike,
+  index,
+  onPreviousRoute,
+  onNextRoute,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
@@ -71,6 +83,8 @@ const MapSidebar = ({
     newSearchForm.pop();
     setSearchForm(newSearchForm);
   };
+
+  const currentRoute = data[index];
 
   return (
     <div className={s.wrapper}>
@@ -178,27 +192,36 @@ const MapSidebar = ({
           'Loading...'
         ) : error ? (
           'An error has occured: ' + error.message
-        ) : data && data[0] ? (
+        ) : data && currentRoute ? (
           <div className={s.route__info}>
-            <p>{`${data[0].name.start} - ${data[0].name.end}`}</p>
-            <p title={`${data[0].distance} m`}>{`${
-              (Math.floor(data[0].distance / 1000) * 1000 +
-                Math.round((data[0].distance % 1000) / 100) * 100) /
+            <p>{`${currentRoute.name.start} - ${currentRoute.name.end}`}</p>
+            <p title={`${currentRoute.distance} m`}>{`${
+              (Math.floor(currentRoute.distance / 1000) * 1000 +
+                Math.round((currentRoute.distance % 1000) / 100) * 100) /
               1000
             } km`}</p>
-            <p title={`${data[0].time} min.`}>{`${Math.floor(
-              data[0].time / 60,
+            <p title={`${currentRoute.time} min.`}>{`${Math.floor(
+              currentRoute.time / 60,
             )}:${
-              data[0].time % 60 >= 10
-                ? data[0].time % 60
-                : `0${data[0].time % 60}`
+              currentRoute.time % 60 >= 10
+                ? currentRoute.time % 60
+                : `0${currentRoute.time % 60}`
             } h`}</p>
-            <p>Ascent: {`${data[0].ascent} m`}</p>
-            <p>Descent: {`${data[0].descent} m`}</p>
+            <p>Ascent: {`${currentRoute.ascent} m`}</p>
+            <p>Descent: {`${currentRoute.descent} m`}</p>
           </div>
         ) : (
           data && data.message
         )}
+
+        <HStack justifyContent={'center'} mt={2}>
+          <IconButton aria-label="Previous route" onClick={onPreviousRoute}>
+            <ChevronLeftIcon boxSize={6} />
+          </IconButton>
+          <IconButton aria-label="Next route" onClick={onNextRoute}>
+            <ChevronRightIcon boxSize={6} />
+          </IconButton>
+        </HStack>
       </div>
     </div>
   );

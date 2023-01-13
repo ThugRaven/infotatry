@@ -48,6 +48,7 @@ const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [width, setWidth] = useState(0);
   const [query, setQuery] = useState<SearchForm | null>(null);
+  const [index, setIndex] = useState(0);
   const router = useRouter();
 
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
@@ -104,6 +105,7 @@ const MapPage = () => {
       onSuccess: (data) => {
         console.log('onSuccess Route');
         console.log(data);
+        setIndex(0);
       },
     },
   );
@@ -222,6 +224,20 @@ const MapPage = () => {
     );
   };
 
+  const handlePreviousRoute = () => {
+    if (data) {
+      setIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
+    }
+  };
+
+  const handleNextRoute = () => {
+    if (data) {
+      setIndex((prevIndex) =>
+        prevIndex === data.length - 1 ? prevIndex : prevIndex + 1,
+      );
+    }
+  };
+
   return (
     <>
       <div className={s.container}>
@@ -234,11 +250,14 @@ const MapPage = () => {
           data={data}
           onSearch={handleSearch}
           onPlanHike={onOpen}
+          index={index}
+          onPreviousRoute={handlePreviousRoute}
+          onNextRoute={handleNextRoute}
         />
         <span>{forecastData?.list[0].main.temp}</span>
         <MapContainer
           padding={isOpen ? width : 0}
-          trailIds={data && data[1].trails}
+          trailIds={data && data[index].trails}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
