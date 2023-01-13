@@ -59,7 +59,7 @@ type Announcement = {
   since: Date | null;
   until: Date | null;
   description: string;
-  link: string | null;
+  source: string | null;
 };
 
 const MapContainer = ({

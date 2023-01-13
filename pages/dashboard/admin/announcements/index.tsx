@@ -20,7 +20,7 @@ type AnnouncementForm = {
   reason: string;
   since: string;
   until: string;
-  link: string;
+  source: string;
   description: string;
 };
 
@@ -32,7 +32,7 @@ const initialAnnouncementValues: AnnouncementForm = {
   reason: '',
   since: '',
   until: '',
-  link: '',
+  source: '',
   description: '',
 };
 
@@ -189,11 +189,11 @@ const Announcements = () => {
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Link</FormLabel>
+          <FormLabel>Source link</FormLabel>
           <Input
             type="text"
-            name="link"
-            value={announcementForm.link}
+            name="source"
+            value={announcementForm.source}
             mb={2}
             onChange={handleChangeForm}
           />
