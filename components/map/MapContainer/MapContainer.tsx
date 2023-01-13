@@ -259,7 +259,13 @@ const MapContainer = ({
         announcement.featuresIds.forEach((id) => {
           const trail = trails.find((trail) => trail.id === id);
 
-          if (trail) {
+          if (
+            trail &&
+            (!announcement.since ||
+              new Date(announcement.since).getTime() <= Date.now()) &&
+            (!announcement.until ||
+              new Date(announcement.until).getTime() >= Date.now())
+          ) {
             let decoded = decode(trail.encoded);
             decoded = swapCoordinates(decoded);
 
