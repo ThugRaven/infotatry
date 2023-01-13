@@ -84,7 +84,7 @@ const MapSidebar = ({
     setSearchForm(newSearchForm);
   };
 
-  const currentRoute = data[index];
+  const currentRoute = data && data[index];
 
   return (
     <div className={s.wrapper}>
