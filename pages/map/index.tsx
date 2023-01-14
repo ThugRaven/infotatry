@@ -56,8 +56,6 @@ const MapPage = () => {
   nextDay = new Date(
     new Date(nextDay.setDate(new Date().getDate() + 1)).setHours(15, 0, 0, 0),
   );
-  console.log(new Date(nextDay));
-  console.log(new Date(nextDay).toISOString());
   const [date, setDate] = useState(
     new Date(nextDay).toISOString().slice(0, -1),
   );

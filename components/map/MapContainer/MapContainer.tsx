@@ -87,12 +87,20 @@ const MapContainer = ({
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const data = features;
     setTrails(data.trails as Trail[]);
     setNodes(data.nodes as Node[]);
   }, []);
+
+  useEffect(() => {
+    if (mapRef.current && !isLoaded) {
+      console.log('Map loaded');
+      setIsLoaded(true);
+    }
+  }, [mapRef.current]);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -208,7 +216,7 @@ const MapContainer = ({
       type: 'FeatureCollection',
       features,
     };
-  }, [trailIds, hike]);
+  }, [trailIds, hike, isLoaded]);
 
   const fetchAnnouncements = async () => {
     try {
@@ -390,7 +398,7 @@ const MapContainer = ({
         // console.log(e.viewState);
       }}
     >
-      {isLoading && (
+      {(isLoading || !isLoaded) && (
         <Spinner
           thickness="5px"
           size="xl"
