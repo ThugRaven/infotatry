@@ -69,7 +69,16 @@ const MapContainer = ({
   padding,
   isLoading = false,
 }: MapContainerProps) => {
-  const mapRef = useRef<MapRef>(null);
+  const mapRef = useRef<MapRef | null>(null);
+  const mapInitializeRef = useCallback((node: MapRef) => {
+    console.log('mapInitializeRef');
+    mapRef.current = node;
+
+    if (node !== null) {
+      console.log('mapInitializeRef node', node);
+      setIsLoaded(true);
+    }
+  }, []);
   const [viewState, setViewState] = useState({
     latitude: 49.23,
     longitude: 19.93,
@@ -94,13 +103,6 @@ const MapContainer = ({
     setTrails(data.trails as Trail[]);
     setNodes(data.nodes as Node[]);
   }, []);
-
-  useEffect(() => {
-    if (mapRef.current && !isLoaded) {
-      console.log('Map loaded');
-      setIsLoaded(true);
-    }
-  }, [mapRef.current]);
 
   const trailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -316,7 +318,7 @@ const MapContainer = ({
 
   return (
     <Map
-      ref={mapRef}
+      ref={mapInitializeRef}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       maxPitch={60}
