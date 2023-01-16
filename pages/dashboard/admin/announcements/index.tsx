@@ -41,6 +41,7 @@ const Announcements = () => {
   const [announcementForm, setAnnouncementForm] = useState(
     initialAnnouncementValues,
   );
+  const [selectedAnnouncementId, setSelectedAnnouncementId] = useState('');
 
   const fetchAllAnnouncements = async () => {
     try {
@@ -106,6 +107,7 @@ const Announcements = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...announcement,
+          featuresIds: announcement.featuresIds.toString(),
         }),
         credentials: 'include',
       });
@@ -154,12 +156,52 @@ const Announcements = () => {
     }
   };
 
+  const updateAnnouncement = async (id: string) => {
+    try {
+      if (!id) {
+        return null;
+      }
+
+      console.log(announcementForm);
+
+      const response = await fetch(
+        `http://localhost:8080/announcements/${id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...announcementForm,
+            featuresIds: announcementForm.featuresIds.toString(),
+          }),
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error(error as string);
+    }
+  };
+
   const announcementMutation = useMutation(
     (newAnnouncement: AnnouncementForm) => createAnnouncement(newAnnouncement),
   );
 
   const announcementCloseMutation = useMutation((id: string) =>
     closeAnnouncement(id),
+  );
+
+  const announcementUpdateMutation = useMutation((id: string) =>
+    updateAnnouncement(id),
   );
 
   const handleAddAnnouncement = (e: React.FormEvent<HTMLFormElement>) => {
@@ -201,13 +243,69 @@ const Announcements = () => {
     });
   };
 
+  const handleSelectAnnouncement = (announcement: Announcement) => {
+    console.log('announcement', announcement);
+    const {
+      type,
+      title,
+      featuresType,
+      featuresIds,
+      reason,
+      since,
+      until,
+      source,
+      description,
+    } = announcement;
+
+    setSelectedAnnouncementId(announcement._id);
+    setAnnouncementForm({
+      type,
+      title,
+      featuresType,
+      featuresIds,
+      reason,
+      since: since ? new Date(since).toISOString().slice(0, -14) : '',
+      until: until ? new Date(until).toISOString().slice(0, -14) : '',
+      source: source ?? '',
+      description,
+    });
+  };
+
+  const handleUpdateAnnouncement = () => {
+    announcementUpdateMutation.mutate(selectedAnnouncementId, {
+      onSuccess: (data) => {
+        queryClient.setQueryData<Announcement[]>(
+          'announcements-all',
+          (announcements) => {
+            if (announcements) {
+              let announcement = announcements.find(
+                (announcement) => announcement._id === data._id,
+              );
+              if (announcement) {
+                Object.assign(announcement, data);
+              }
+              return announcements;
+            }
+            return [];
+          },
+          data,
+        );
+        queryClient.invalidateQueries('announcements');
+        console.log(data);
+      },
+    });
+  };
+
   return (
     <div className={s.container}>
       <div>
         {data && (
           <ul>
             {data.map((announcement) => (
-              <li key={announcement._id}>
+              <li
+                key={announcement._id}
+                onClick={() => handleSelectAnnouncement(announcement)}
+              >
                 {`${announcement._id} ${announcement.title} ${
                   announcement.since
                     ? new Date(announcement.since).toLocaleDateString()
@@ -327,6 +425,10 @@ const Announcements = () => {
 
         <Button colorScheme="blue" mr={3} type="submit">
           Add an announcement
+        </Button>
+
+        <Button colorScheme="blue" mr={3} onClick={handleUpdateAnnouncement}>
+          Update announcement
         </Button>
       </form>
     </div>
