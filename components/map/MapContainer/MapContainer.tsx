@@ -50,7 +50,8 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
 }
 
-type Announcement = {
+export type Announcement = {
+  _id: string;
   type: string;
   title: string;
   featuresType: string;
@@ -60,6 +61,7 @@ type Announcement = {
   until: Date | null;
   description: string;
   source: string | null;
+  isClosed?: boolean;
 };
 
 const MapContainer = ({

@@ -7,10 +7,11 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
+import { Announcement } from '@components/map/MapContainer/MapContainer';
 import s from '@styles/Hikes.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 type AnnouncementForm = {
   type: string;
@@ -39,6 +40,47 @@ const initialAnnouncementValues: AnnouncementForm = {
 const Announcements = () => {
   const [announcementForm, setAnnouncementForm] = useState(
     initialAnnouncementValues,
+  );
+
+  const fetchAnnouncements = async () => {
+    try {
+      console.log('fetch announcements');
+
+      const response = await fetch(
+        `http://localhost:8080/announcements/history`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const { isLoading, error, data } = useQuery<Announcement[], Error>(
+    ['announcements'],
+    fetchAnnouncements,
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    },
   );
 
   const handleChangeForm = (
@@ -103,6 +145,25 @@ const Announcements = () => {
 
   return (
     <div className={s.container}>
+      <div>
+        {data && (
+          <ul>
+            {data.map((announcement) => (
+              <li key={announcement._id}>{`${announcement._id} ${
+                announcement.title
+              } ${
+                announcement.since
+                  ? new Date(announcement.since).toLocaleDateString()
+                  : 'N/A'
+              } - ${
+                announcement.until
+                  ? new Date(announcement.until).toLocaleDateString()
+                  : 'N/A'
+              } ${announcement.isClosed}`}</li>
+            ))}
+          </ul>
+        )}
+      </div>
       <form onSubmit={handleAddAnnouncement}>
         <FormControl isRequired>
           <FormLabel>Type</FormLabel>
