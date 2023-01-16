@@ -192,6 +192,36 @@ const Announcements = () => {
     }
   };
 
+  const deleteAnnouncement = async (id: string) => {
+    try {
+      if (!id) {
+        return null;
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/announcements/${id}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error(error as string);
+    }
+  };
+
   const announcementMutation = useMutation(
     (newAnnouncement: AnnouncementForm) => createAnnouncement(newAnnouncement),
   );
@@ -202,6 +232,10 @@ const Announcements = () => {
 
   const announcementUpdateMutation = useMutation((id: string) =>
     updateAnnouncement(id),
+  );
+
+  const announcementDeleteMutation = useMutation((id: string) =>
+    deleteAnnouncement(id),
   );
 
   const handleAddAnnouncement = (e: React.FormEvent<HTMLFormElement>) => {
@@ -296,6 +330,27 @@ const Announcements = () => {
     });
   };
 
+  const handleDeleteAnnouncement = (id: string) => {
+    announcementDeleteMutation.mutate(id, {
+      onSuccess: (data) => {
+        queryClient.setQueryData<Announcement[]>(
+          'announcements-all',
+          (announcements) => {
+            if (announcements) {
+              return announcements.filter(
+                (announcement) => announcement._id !== id,
+              );
+            }
+            return [];
+          },
+          data,
+        );
+        queryClient.invalidateQueries('announcements');
+        console.log(data);
+      },
+    });
+  };
+
   return (
     <div className={s.container}>
       <div>
@@ -321,6 +376,15 @@ const Announcements = () => {
                   onClick={() => handleCloseAnnouncement(announcement._id)}
                 >
                   Toggle closure
+                </Button>
+
+                <Button
+                  ml={1}
+                  size="sm"
+                  colorScheme={'red'}
+                  onClick={() => handleDeleteAnnouncement(announcement._id)}
+                >
+                  Delete
                 </Button>
               </li>
             ))}
