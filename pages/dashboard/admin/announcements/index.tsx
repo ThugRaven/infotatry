@@ -11,7 +11,7 @@ import { Announcement } from '@components/map/MapContainer/MapContainer';
 import s from '@styles/Hikes.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 type AnnouncementForm = {
   type: string;
@@ -42,18 +42,15 @@ const Announcements = () => {
     initialAnnouncementValues,
   );
 
-  const fetchAnnouncements = async () => {
+  const fetchAllAnnouncements = async () => {
     try {
-      console.log('fetch announcements');
+      console.log('fetch all announcements');
 
-      const response = await fetch(
-        `http://localhost:8080/announcements/history`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        },
-      );
+      const response = await fetch(`http://localhost:8080/announcements/all`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         const data = await response.json();
@@ -70,8 +67,8 @@ const Announcements = () => {
   };
 
   const { isLoading, error, data } = useQuery<Announcement[], Error>(
-    ['announcements'],
-    fetchAnnouncements,
+    ['announcements-all'],
+    fetchAllAnnouncements,
     {
       refetchOnWindowFocus: false,
       retry: false,
@@ -127,8 +124,42 @@ const Announcements = () => {
     }
   };
 
+  const closeAnnouncement = async (id: string) => {
+    try {
+      if (!id) {
+        return null;
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/announcements/${id}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error(error as string);
+    }
+  };
+
   const announcementMutation = useMutation(
     (newAnnouncement: AnnouncementForm) => createAnnouncement(newAnnouncement),
+  );
+
+  const announcementCloseMutation = useMutation((id: string) =>
+    closeAnnouncement(id),
   );
 
   const handleAddAnnouncement = (e: React.FormEvent<HTMLFormElement>) => {
@@ -143,23 +174,57 @@ const Announcements = () => {
     });
   };
 
+  const queryClient = useQueryClient();
+
+  const handleCloseAnnouncement = (id: string) => {
+    announcementCloseMutation.mutate(id, {
+      onSuccess: (data) => {
+        queryClient.setQueryData<Announcement[]>(
+          'announcements-all',
+          (announcements) => {
+            if (announcements) {
+              const announcement = announcements.find(
+                (announcement) => announcement._id === data._id,
+              );
+              if (announcement) {
+                announcement.isClosed = data.isClosed;
+              }
+              return announcements;
+            }
+            return [];
+          },
+          data,
+        );
+        queryClient.invalidateQueries('announcements');
+        console.log(data);
+      },
+    });
+  };
+
   return (
     <div className={s.container}>
       <div>
         {data && (
           <ul>
             {data.map((announcement) => (
-              <li key={announcement._id}>{`${announcement._id} ${
-                announcement.title
-              } ${
-                announcement.since
-                  ? new Date(announcement.since).toLocaleDateString()
-                  : 'N/A'
-              } - ${
-                announcement.until
-                  ? new Date(announcement.until).toLocaleDateString()
-                  : 'N/A'
-              } ${announcement.isClosed}`}</li>
+              <li key={announcement._id}>
+                {`${announcement._id} ${announcement.title} ${
+                  announcement.since
+                    ? new Date(announcement.since).toLocaleDateString()
+                    : 'N/A'
+                } - ${
+                  announcement.until
+                    ? new Date(announcement.until).toLocaleDateString()
+                    : 'N/A'
+                } ${announcement.isClosed}`}
+                <Button
+                  ml={1}
+                  size="sm"
+                  onClick={() => handleCloseAnnouncement(announcement._id)}
+                >
+                  Toggle closure
+                </Button>
+              </li>
             ))}
           </ul>
         )}
