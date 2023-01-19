@@ -90,6 +90,7 @@ export type Trail = {
     end: number;
   };
   elevation_profile: number[];
+  direction: string;
 };
 
 export type Node = {
@@ -152,6 +153,7 @@ const initialTrailValues = {
   node_start: -1,
   node_end: -1,
   elevation_profile: '',
+  direction: 'two-way',
 };
 
 const interactiveLayerIds = [
@@ -475,6 +477,7 @@ const DashboardAdminMap = () => {
         end: -1,
       },
       elevation_profile: [],
+      direction: 'two-way',
     };
 
     setTrails((state) => [...state, newTrail]);
@@ -716,6 +719,7 @@ const DashboardAdminMap = () => {
         node_end: trail.node_id?.end ?? -1,
         elevation_profile:
           JSON.stringify(trail.elevation_profile, null, 2) ?? '',
+        direction: trail.direction ?? '',
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -777,7 +781,9 @@ const DashboardAdminMap = () => {
         end: trailEditForm.node_end,
       },
       elevation_profile: JSON.parse(trailEditForm.elevation_profile),
+      direction: trailEditForm.direction,
     };
+
     const updatedTrails = [...trails];
     updatedTrails[index] = editedTrail;
     setTrails(updatedTrails);
@@ -1995,6 +2001,20 @@ const DashboardAdminMap = () => {
                 >
                   Compute nodes
                 </Button>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Direction</FormLabel>
+                <Select
+                  placeholder="Select direction"
+                  name="direction"
+                  value={trailEditForm.direction}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                >
+                  <option value="two-way">Two-Way</option>
+                  <option value="start-end">Start-End</option>
+                  <option value="end-start">End-Start</option>
+                </Select>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Elevation</FormLabel>
