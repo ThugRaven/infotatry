@@ -28,16 +28,24 @@ import {
 import { SearchInput } from '@components/search';
 import { CameraAction } from '@components/search/SearchInput/SearchInput';
 import {
+  nodesDrawLayer,
   nodesDrawLocalLayer,
   routeLayer,
   trailNodesLocalLayer,
   trailNodesSelectedLayer,
+  trailsDataLayer,
   trailsDataLocalLayer,
+  trailsDrawLayer,
   trailsDrawLocalLayer,
   trailsDrawOffset1in2Layer,
+  trailsDrawOffset1in2OutlineLayer,
   trailsDrawOffset1in3Layer,
+  trailsDrawOffset1in3OutlineLayer,
   trailsDrawOffset2in2Layer,
+  trailsDrawOffset2in2OutlineLayer,
   trailsDrawOffset3in3Layer,
+  trailsDrawOffset3in3OutlineLayer,
+  trailsDrawOutlineLayer,
 } from '@config/layer-styles';
 import Graph from '@lib/Graph';
 import {
@@ -158,9 +166,9 @@ const initialTrailValues = {
 
 const interactiveLayerIds = [
   'trails-data-layer',
-  'trails-data-local-layer',
+  // 'trails-data-local-layer',
   'nodes-draw-layer',
-  'nodes-draw-local-layer',
+  // 'nodes-draw-local-layer',
   'trail-nodes-local-layer',
 ];
 
@@ -1493,7 +1501,8 @@ const DashboardAdminMap = () => {
             maxPitch={60}
             reuseMaps
             // mapStyle="mapbox://styles/mapbox/streets-v9"
-            mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+            // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+            mapStyle="mapbox://styles/thugraven/clb2uwq4o000a14rpcner8xhe"
             terrain={terrainMode ? { source: 'mapbox-dem' } : undefined}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
             interactiveLayerIds={interactiveLayerIds}
@@ -1522,7 +1531,7 @@ const DashboardAdminMap = () => {
               if (
                 features[0].properties &&
                 features[0].layer.id !== 'trail-nodes-local-layer' &&
-                features[0].layer.id !== 'nodes-draw-local-layer'
+                features[0].layer.id !== 'nodes-draw-layer'
               ) {
                 const id = features[0].properties.id;
                 trail = trails.find((trail) => trail.id === id) ?? null;
@@ -1531,7 +1540,7 @@ const DashboardAdminMap = () => {
                 setSelectedNode(null);
               } else if (
                 features[0].properties &&
-                features[0].layer.id === 'nodes-draw-local-layer'
+                features[0].layer.id === 'nodes-draw-layer'
               ) {
                 const id = features[0].properties.id;
                 const node = nodes.find((node) => node.id === id) ?? null;
@@ -1577,7 +1586,7 @@ const DashboardAdminMap = () => {
             />
             {popupInfo &&
               (popupInfo.trail &&
-              popupInfo.features[0].layer.id !== 'nodes-draw-local-layer' ? (
+              popupInfo.features[0].layer.id !== 'nodes-draw-layer' ? (
                 popupInfo.features[0] &&
                 popupInfo.features[0].layer.id === 'trail-nodes-local-layer' ? (
                   <TrailNodePopup
@@ -1621,6 +1630,12 @@ const DashboardAdminMap = () => {
                 />
               ))}
             <Source type="geojson" data={trailsData}>
+              <Layer {...trailsDataLayer} />
+              <Layer {...trailsDrawOutlineLayer} />
+              <Layer {...trailsDrawOffset1in2OutlineLayer} />
+              <Layer {...trailsDrawOffset2in2OutlineLayer} />
+              <Layer {...trailsDrawOffset1in3OutlineLayer} />
+              <Layer {...trailsDrawOffset3in3OutlineLayer} />
               <Layer
                 {...trailsDataLocalLayer}
                 beforeId="trails-data-layer"
@@ -1628,6 +1643,7 @@ const DashboardAdminMap = () => {
                   visibility: visibility['local'] ? 'visible' : 'none',
                 }}
               />
+              <Layer {...trailsDrawLayer} />
               <Layer
                 {...trailsDrawLocalLayer}
                 beforeId="trails-data-layer"
@@ -1665,6 +1681,7 @@ const DashboardAdminMap = () => {
               />
             </Source>
             <Source type="geojson" data={nodesData}>
+              <Layer {...nodesDrawLayer} />
               <Layer
                 {...nodesDrawLocalLayer}
                 layout={{
