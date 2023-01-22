@@ -33,6 +33,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Link href="/dashboard/admin/announcements">Announcements</Link>
             </li>
             <li>
+              <Link href="/dashboard/admin/avalanches">
+                Avalanche bulletins
+              </Link>
+            </li>
+            <li>
               <Link href="/dashboard/admin/users">Users</Link>
             </li>
           </ul>
