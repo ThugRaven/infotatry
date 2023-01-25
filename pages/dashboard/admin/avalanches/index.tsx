@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   FormControl,
   FormLabel,
   Input,
@@ -14,15 +15,18 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 type AvalancheBulletin = {
   _id: string;
   danger: number;
+  increase: boolean;
   am: {
     elevation?: number;
     danger: number[];
+    increase: boolean;
     problem?: string;
     aspect?: string;
   };
   pm: {
     elevation?: number;
     danger: number[];
+    increase: boolean;
     problem?: string;
     aspect?: string;
   };
@@ -32,12 +36,15 @@ type AvalancheBulletin = {
 
 type AvalancheBulletinForm = {
   danger: number;
+  increase: boolean;
   am_elevation?: number;
   am_danger: number[];
+  am_increase: boolean;
   am_problem?: string;
   am_aspect?: string;
   pm_elevation?: number;
   pm_danger: number[];
+  pm_increase: boolean;
   pm_problem?: string;
   pm_aspect?: string;
   forecast: number;
@@ -46,8 +53,11 @@ type AvalancheBulletinForm = {
 
 const initialAvalancheBulletinValues: AvalancheBulletinForm = {
   danger: 0,
+  increase: false,
   am_danger: [],
+  am_increase: false,
   pm_danger: [],
+  pm_increase: false,
   forecast: 0,
   until: new Date(
     new Date(new Date().setDate(new Date().getDate() + 1)).setHours(
@@ -132,15 +142,18 @@ const Avalanches = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           danger: bulletin.danger,
+          increase: bulletin.increase,
           am: {
             elevation: bulletin.am_elevation,
             danger: bulletin.am_danger,
+            increase: bulletin.am_increase,
             problem: bulletin.am_problem,
             aspect: bulletin.am_aspect,
           },
           pm: {
             elevation: bulletin.pm_elevation,
             danger: bulletin.pm_danger,
+            increase: bulletin.pm_increase,
             problem: bulletin.pm_problem,
             aspect: bulletin.pm_aspect,
           },
@@ -265,17 +278,20 @@ const Avalanches = () => {
 
   const handleSelectBulletin = (bulletin: AvalancheBulletin) => {
     console.log('bulletin', bulletin);
-    const { danger, am, pm, forecast, until } = bulletin;
+    const { danger, increase, am, pm, forecast, until } = bulletin;
 
     setSelectedBulletinId(bulletin._id);
     setBulletinForm({
       danger,
+      increase,
       am_elevation: am.elevation,
       am_danger: am.danger,
+      am_increase: am.increase,
       am_problem: am.problem,
       am_aspect: am.aspect,
       pm_elevation: pm.elevation,
       pm_danger: pm.danger,
+      pm_increase: pm.increase,
       pm_problem: pm.problem,
       pm_aspect: pm.aspect,
       forecast,
@@ -374,6 +390,21 @@ const Avalanches = () => {
             <option value="5">5</option>
           </Select>
         </FormControl>
+        <FormControl>
+          <Checkbox
+            name="increase"
+            isChecked={bulletinForm.increase}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                increase: e.target.checked,
+              })
+            }
+          >
+            Increases with temperature
+          </Checkbox>
+        </FormControl>
         AM
         <FormControl>
           <FormLabel>Elevation</FormLabel>
@@ -394,6 +425,20 @@ const Avalanches = () => {
             mb={2}
             onChange={handleChangeForm}
           />
+        </FormControl>
+        <FormControl>
+          <Checkbox
+            isChecked={bulletinForm.am_increase}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                am_increase: e.target.checked,
+              })
+            }
+          >
+            Increases with temperature
+          </Checkbox>
         </FormControl>
         <FormControl>
           <FormLabel>Avalanche problem</FormLabel>
@@ -441,6 +486,20 @@ const Avalanches = () => {
             mb={2}
             onChange={handleChangeForm}
           />
+        </FormControl>
+        <FormControl>
+          <Checkbox
+            isChecked={bulletinForm.pm_increase}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                pm_increase: e.target.checked,
+              })
+            }
+          >
+            Increases with temperature
+          </Checkbox>
         </FormControl>
         <FormControl>
           <FormLabel>Avalanche problem</FormLabel>
