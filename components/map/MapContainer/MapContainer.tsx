@@ -4,6 +4,8 @@ import {
   routeLayer,
   trailsClosedLayer,
   trailsDataLayer,
+  trailsDirectionEndStartLayer,
+  trailsDirectionStartEndLayer,
   trailsDrawLayer,
   trailsDrawOffset1in2Layer,
   trailsDrawOffset1in2OutlineLayer,
@@ -122,6 +124,7 @@ const MapContainer = ({
           ...properties,
           offset: '1-1',
           color: trail.color[0],
+          direction: trail.direction,
         };
       } else if (trail.color.length === 2) {
         properties = {
@@ -129,6 +132,7 @@ const MapContainer = ({
           offset: ['1-2', '2-2'],
           color_left: trail.color[0],
           color_right: trail.color[1],
+          direction: trail.direction,
         };
       } else if (trail.color.length === 3) {
         properties = {
@@ -137,6 +141,7 @@ const MapContainer = ({
           color_left: trail.color[0],
           color: trail.color[1],
           color_right: trail.color[2],
+          direction: trail.direction,
         };
       }
 
@@ -440,6 +445,8 @@ const MapContainer = ({
         <Layer {...trailsDrawOffset2in2Layer} />
         <Layer {...trailsDrawOffset1in3Layer} />
         <Layer {...trailsDrawOffset3in3Layer} />
+        <Layer {...trailsDirectionStartEndLayer} />
+        <Layer {...trailsDirectionEndStartLayer} />
       </Source>
       <Source type="geojson" data={nodesData}>
         <Layer {...nodesDrawLayer} />

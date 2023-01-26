@@ -195,6 +195,30 @@ export const trailsClosedLayer: SymbolLayer = {
   },
 };
 
+export const trailsDirectionStartEndLayer: SymbolLayer = {
+  id: 'trails-direction-start-end-layer',
+  type: 'symbol',
+  source: 'composite',
+  filter: ['in', 'start-end', ['get', 'direction']],
+  minzoom: 12,
+  layout: {
+    'icon-image': 'direction',
+    'symbol-placement': 'line',
+    'symbol-spacing': 50,
+    'icon-offset': [0, 10],
+  },
+};
+
+export const trailsDirectionEndStartLayer: SymbolLayer = {
+  ...trailsDirectionStartEndLayer,
+  id: 'trails-direction-end-start-layer',
+  filter: ['in', 'end-start', ['get', 'direction']],
+  layout: {
+    ...trailsDirectionStartEndLayer.layout,
+    'icon-rotate': 180,
+  },
+};
+
 export const trailsDataLayer: LineLayer = {
   id: 'trails-data-layer',
   type: 'line',
