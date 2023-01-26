@@ -287,12 +287,12 @@ const Avalanches = () => {
       am_elevation: am.elevation,
       am_danger: am.danger,
       am_increase: am.increase,
-      am_problem: am.problem,
+      am_problem: am.problem ?? '',
       am_aspect: am.aspect,
       pm_elevation: pm.elevation,
       pm_danger: pm.danger,
       pm_increase: pm.increase,
-      pm_problem: pm.problem,
+      pm_problem: pm.problem ?? '',
       pm_aspect: pm.aspect,
       forecast,
       until: until.slice(0, -1),
@@ -443,12 +443,12 @@ const Avalanches = () => {
         <FormControl>
           <FormLabel>Avalanche problem</FormLabel>
           <Select
-            placeholder="Select avalanche problem"
             name="am_problem"
             value={bulletinForm.am_problem}
             mb={2}
             onChange={handleChangeForm}
           >
+            <option value="">None</option>
             <option value="new">New snow</option>
             <option value="wind">Wind slab</option>
             <option value="weak">Persistent weak layers</option>
@@ -504,12 +504,12 @@ const Avalanches = () => {
         <FormControl>
           <FormLabel>Avalanche problem</FormLabel>
           <Select
-            placeholder="Select avalanche problem"
             name="pm_problem"
             value={bulletinForm.pm_problem}
             mb={2}
             onChange={handleChangeForm}
           >
+            <option value="">None</option>
             <option value="new">New snow</option>
             <option value="wind">Wind slab</option>
             <option value="weak">Persistent weak layers</option>
