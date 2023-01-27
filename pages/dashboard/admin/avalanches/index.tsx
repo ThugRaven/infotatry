@@ -19,16 +19,16 @@ type AvalancheBulletin = {
   am: {
     elevation?: number;
     danger: number[];
-    increase: boolean;
-    problem?: string;
-    aspect?: string;
+    increase: boolean[];
+    problem: string[];
+    aspect: string[];
   };
   pm: {
     elevation?: number;
     danger: number[];
-    increase: boolean;
-    problem?: string;
-    aspect?: string;
+    increase: boolean[];
+    problem: string[];
+    aspect: string[];
   };
   forecast: number;
   until: string;
@@ -37,16 +37,16 @@ type AvalancheBulletin = {
 type AvalancheBulletinForm = {
   danger: number;
   increase: boolean;
-  am_elevation?: number;
-  am_danger: number[];
-  am_increase: boolean;
-  am_problem?: string;
-  am_aspect?: string;
-  pm_elevation?: number;
-  pm_danger: number[];
-  pm_increase: boolean;
-  pm_problem?: string;
-  pm_aspect?: string;
+  am_elevation?: string;
+  am_danger: string;
+  am_increase: boolean[];
+  am_problem: string[];
+  am_aspect: string;
+  pm_elevation?: string;
+  pm_danger: string;
+  pm_increase: boolean[];
+  pm_problem: string[];
+  pm_aspect: string;
   forecast: number;
   until: string;
 };
@@ -54,10 +54,14 @@ type AvalancheBulletinForm = {
 const initialAvalancheBulletinValues: AvalancheBulletinForm = {
   danger: 0,
   increase: false,
-  am_danger: [],
-  am_increase: false,
-  pm_danger: [],
-  pm_increase: false,
+  am_danger: '',
+  am_increase: [false, false],
+  am_problem: [],
+  am_aspect: '',
+  pm_danger: '',
+  pm_increase: [false, false],
+  pm_problem: [],
+  pm_aspect: '',
   forecast: 0,
   until: new Date(
     new Date(new Date().setDate(new Date().getDate() + 1)).setHours(
@@ -145,17 +149,17 @@ const Avalanches = () => {
           increase: bulletin.increase,
           am: {
             elevation: bulletin.am_elevation,
-            danger: bulletin.am_danger,
+            danger: bulletin.am_danger.split(','),
             increase: bulletin.am_increase,
             problem: bulletin.am_problem,
-            aspect: bulletin.am_aspect,
+            aspect: bulletin.am_aspect.split(','),
           },
           pm: {
             elevation: bulletin.pm_elevation,
-            danger: bulletin.pm_danger,
+            danger: bulletin.pm_danger.split(','),
             increase: bulletin.pm_increase,
             problem: bulletin.pm_problem,
-            aspect: bulletin.pm_aspect,
+            aspect: bulletin.pm_aspect.split(','),
           },
           forecast: bulletin.forecast,
           until: bulletin.until,
@@ -190,17 +194,20 @@ const Avalanches = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           danger: bulletinForm.danger,
+          increase: bulletinForm.increase,
           am: {
             elevation: bulletinForm.am_elevation,
-            danger: bulletinForm.am_danger,
+            danger: bulletinForm.am_danger.split(','),
+            increase: bulletinForm.am_increase,
             problem: bulletinForm.am_problem,
-            aspect: bulletinForm.am_aspect,
+            aspect: bulletinForm.am_aspect.split(','),
           },
           pm: {
             elevation: bulletinForm.pm_elevation,
-            danger: bulletinForm.pm_danger,
+            danger: bulletinForm.pm_danger.split(','),
+            increase: bulletinForm.pm_increase,
             problem: bulletinForm.pm_problem,
-            aspect: bulletinForm.pm_aspect,
+            aspect: bulletinForm.pm_aspect.split(','),
           },
           forecast: bulletinForm.forecast,
           until: bulletinForm.until,
@@ -284,16 +291,16 @@ const Avalanches = () => {
     setBulletinForm({
       danger,
       increase,
-      am_elevation: am.elevation,
-      am_danger: am.danger,
+      am_elevation: am.elevation ? am.elevation.toString() : '',
+      am_danger: am.danger.toString(),
       am_increase: am.increase,
-      am_problem: am.problem ?? '',
-      am_aspect: am.aspect,
-      pm_elevation: pm.elevation,
-      pm_danger: pm.danger,
+      am_problem: am.problem.length > 0 ? am.problem : ['', ''],
+      am_aspect: am.aspect.toString(),
+      pm_elevation: pm.elevation ? pm.elevation.toString() : '',
+      pm_danger: pm.danger.toString(),
       pm_increase: pm.increase,
-      pm_problem: pm.problem ?? '',
-      pm_aspect: pm.aspect,
+      pm_problem: pm.problem.length > 0 ? pm.problem : ['', ''],
+      pm_aspect: pm.aspect.toString(),
       forecast,
       until: until.slice(0, -1),
     });
@@ -421,19 +428,33 @@ const Avalanches = () => {
           <Input
             type="text"
             name="am_danger"
-            value={bulletinForm.am_danger.toString()}
+            value={bulletinForm.am_danger}
             mb={2}
             onChange={handleChangeForm}
           />
         </FormControl>
         <FormControl>
           <Checkbox
-            isChecked={bulletinForm.am_increase}
+            isChecked={bulletinForm.am_increase[0]}
             mb={2}
             onChange={(e) =>
               setBulletinForm({
                 ...bulletinForm,
-                am_increase: e.target.checked,
+                am_increase: [e.target.checked, bulletinForm.am_increase[1]],
+              })
+            }
+          >
+            Increases with temperature
+          </Checkbox>
+        </FormControl>
+        <FormControl>
+          <Checkbox
+            isChecked={bulletinForm.am_increase[1]}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                am_increase: [bulletinForm.am_increase[0], e.target.checked],
               })
             }
           >
@@ -444,9 +465,35 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="am_problem"
-            value={bulletinForm.am_problem}
+            value={bulletinForm.am_problem[0]}
             mb={2}
-            onChange={handleChangeForm}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                am_problem: [e.target.value, bulletinForm.am_problem[1]],
+              })
+            }
+          >
+            <option value="">None</option>
+            <option value="new">New snow</option>
+            <option value="wind">Wind slab</option>
+            <option value="weak">Persistent weak layers</option>
+            <option value="gliding">Gliding snow</option>
+            <option value="wet">Wet snow</option>
+          </Select>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Avalanche problem</FormLabel>
+          <Select
+            name="am_problem"
+            value={bulletinForm.am_problem[1]}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                am_problem: [bulletinForm.am_problem[0], e.target.value],
+              })
+            }
           >
             <option value="">None</option>
             <option value="new">New snow</option>
@@ -461,7 +508,7 @@ const Avalanches = () => {
           <Input
             type="text"
             name="am_aspect"
-            value={bulletinForm.am_aspect}
+            value={bulletinForm.am_aspect.toString()}
             mb={2}
             onChange={handleChangeForm}
           />
@@ -482,19 +529,33 @@ const Avalanches = () => {
           <Input
             type="text"
             name="pm_danger"
-            value={bulletinForm.pm_danger.toString()}
+            value={bulletinForm.pm_danger}
             mb={2}
             onChange={handleChangeForm}
           />
         </FormControl>
         <FormControl>
           <Checkbox
-            isChecked={bulletinForm.pm_increase}
+            isChecked={bulletinForm.pm_increase[0]}
             mb={2}
             onChange={(e) =>
               setBulletinForm({
                 ...bulletinForm,
-                pm_increase: e.target.checked,
+                pm_increase: [e.target.checked, bulletinForm.pm_increase[1]],
+              })
+            }
+          >
+            Increases with temperature
+          </Checkbox>
+        </FormControl>
+        <FormControl>
+          <Checkbox
+            isChecked={bulletinForm.pm_increase[1]}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                pm_increase: [bulletinForm.pm_increase[0], e.target.checked],
               })
             }
           >
@@ -505,9 +566,35 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="pm_problem"
-            value={bulletinForm.pm_problem}
+            value={bulletinForm.pm_problem[0]}
             mb={2}
-            onChange={handleChangeForm}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                pm_problem: [e.target.value, bulletinForm.pm_problem[1]],
+              })
+            }
+          >
+            <option value="">None</option>
+            <option value="new">New snow</option>
+            <option value="wind">Wind slab</option>
+            <option value="weak">Persistent weak layers</option>
+            <option value="gliding">Gliding snow</option>
+            <option value="wet">Wet snow</option>
+          </Select>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Avalanche problem</FormLabel>
+          <Select
+            name="pm_problem"
+            value={bulletinForm.pm_problem[1]}
+            mb={2}
+            onChange={(e) =>
+              setBulletinForm({
+                ...bulletinForm,
+                pm_problem: [bulletinForm.pm_problem[0], e.target.value],
+              })
+            }
           >
             <option value="">None</option>
             <option value="new">New snow</option>
@@ -522,7 +609,7 @@ const Avalanches = () => {
           <Input
             type="text"
             name="pm_aspect"
-            value={bulletinForm.pm_aspect}
+            value={bulletinForm.pm_aspect.toString()}
             mb={2}
             onChange={handleChangeForm}
           />
