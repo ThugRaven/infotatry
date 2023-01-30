@@ -1,3 +1,39 @@
+:root {
+  --clr-50: #fafafa;
+  --clr-100: #f2f2f3;
+  --clr-200: #e5e5e6;
+  --clr-300: #d8d8da;
+  --clr-400: #a3a3a8;
+  --clr-500: #6f6f76;
+  --clr-600: #57575c;
+  --clr-700: #3e3e42;
+  --clr-800: #252527;
+  --clr-900: #19191a;
+
+  --clr-accent-light: #f9a743;
+  --clr-accent: #f89012;
+  --clr-accent-dark: #d07506;
+
+  --clr-red-light: #d76b70;
+  --clr-red: #cc444b;
+  --clr-red-dark: #ac2f35;
+
+  --clr-green-light: #7cbb89;
+  --clr-green: #59a96a;
+  --clr-green-dark: #478a55;
+
+  --ff-primary: 'Montserrat', sans-serif;
+
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi-bold: 600;
+  --fw-bold: 700;
+
+  --text-primary-light: var(--clr-50);
+  --text-primary-dark: var(--clr-900);
+}
+
 html,
 body {
   padding: 0;
