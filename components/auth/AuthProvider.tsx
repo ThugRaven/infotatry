@@ -38,6 +38,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     {
       refetchOnWindowFocus: false,
       retry: false,
+      staleTime: 15 * 1000, // 15 seconds
       onSuccess: (data) => {
         console.log('setUser');
         console.log(data);
