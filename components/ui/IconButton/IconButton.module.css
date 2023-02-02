@@ -1,0 +1,51 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 250ms ease-in-out;
+}
+
+.button--normal {
+  height: 2.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--clr-800);
+}
+
+.button--normal > svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--clr-50);
+}
+
+.button--normal:hover,
+.button--normal:focus-visible {
+  background-color: var(--clr-700);
+}
+
+.button--normal:active {
+  background-color: var(--clr-600);
+}
+
+.button--action {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  background-color: transparent;
+}
+
+.button--action > svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--clr-900);
+}
+
+.button--action:hover,
+.button--action:focus-visible {
+  background-color: var(--clr-200);
+}
+
+.button--action:active {
+  background-color: var(--clr-300);
+}

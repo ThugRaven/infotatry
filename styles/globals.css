@@ -56,3 +56,20 @@ a {
     background: black;
   }
 }
+
+/* Override default Mapbox popup styles */
+#map .mapboxgl-popup {
+  /* filter: drop-shadow(0 2px 4px hsla(0, 0%, 0%, 0.25)); */
+}
+
+#map .mapboxgl-popup .mapboxgl-popup-content {
+  padding: 0.75rem;
+  background-color: var(--clr-50);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.25);
+}
+
+#map .mapboxgl-popup .mapboxgl-popup-tip {
+  border-top-color: var(--clr-50);
+  border-width: 12px;
+}

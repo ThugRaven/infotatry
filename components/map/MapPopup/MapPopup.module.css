@@ -1,3 +1,97 @@
 .container {
   color: black;
 }
+
+.mapbox__popup {
+  color: var(--text-primary-dark);
+  font-family: var(--ff-primary);
+  font-size: clamp(1rem, 1vw, 1.25rem);
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.popup__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.feature__name {
+  width: calc(100% - 0.75rem * 2 - 0.25rem * 2);
+}
+
+.info__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.info__item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.info__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info__icon > svg {
+  width: 0.75em;
+  height: 0.75em;
+  fill: var(--clr-700);
+}
+
+.info__text {
+  color: var(--clr-700);
+  font-size: 0.75em;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.buttons__route {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5em 0;
+  background-color: var(--clr-200);
+  border-radius: 0.5rem;
+  user-select: none;
+  transition: background-color 250ms ease-in-out;
+}
+
+.button > svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: var(--clr-900);
+}
+
+.button:hover,
+.button:focus-visible {
+  background-color: var(--clr-300);
+}
+
+.button:active {
+  background-color: var(--clr-400);
+}
