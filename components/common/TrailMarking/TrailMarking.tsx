@@ -3,7 +3,7 @@ import s from './TrailMarking.module.css';
 
 interface TrailMarkingProps {
   color: TrailColor;
-  size: 'sm' | 'md' | 'lg';
+  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const TrailMarking = ({ color, size }: TrailMarkingProps) => {
