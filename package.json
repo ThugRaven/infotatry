@@ -21,6 +21,7 @@
     "@next-auth/mongodb-adapter": "^1.0.4",
     "@turf/along": "^6.5.0",
     "@turf/distance": "^6.5.0",
+    "classnames": "^2.3.2",
     "file-saver": "^2.0.5",
     "framer-motion": "^7.2.0",
     "mapbox-gl": "^2.10.0",
