@@ -1,7 +1,7 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { TrailMarking } from '@components/common';
-import { decode } from '@lib/utils';
+import { decode } from '@lib/geo-utils';
 import { FitBoundsOptions, LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { useEffect, useRef, useState } from 'react';

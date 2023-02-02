@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
-import { decode } from '@lib/utils';
+import { decode } from '@lib/geo-utils';
 import { Trail } from 'pages/dashboard/admin/map';
 import { Popup, PopupEvent } from 'react-map-gl';
 import s from './TrailNodePopup.module.css';

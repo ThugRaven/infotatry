@@ -47,14 +47,14 @@ import {
   trailsDrawOffset3in3OutlineLayer,
   trailsDrawOutlineLayer,
 } from '@config/layer-styles';
-import Graph from '@lib/Graph';
 import {
   createLineString,
   createPoint,
   decode,
   encode,
   swapCoordinates,
-} from '@lib/utils';
+} from '@lib/geo-utils';
+import Graph from '@lib/Graph';
 import s from '@styles/DashboardAdminMap.module.css';
 import distance from '@turf/distance';
 import { saveAs } from 'file-saver';
