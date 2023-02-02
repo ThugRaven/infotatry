@@ -22,7 +22,7 @@ import {
   createPoint,
   decode,
   swapCoordinates,
-} from '@lib/utils';
+} from '@lib/geo-utils';
 import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
@@ -118,6 +118,9 @@ const MapContainer = ({
       let properties: GeoJSON.GeoJsonProperties = {
         id: trail.id,
         name: `${trail.name.start} - ${trail.name.end}`,
+        distance: trail.distance,
+        time_start_end: trail.time.start_end,
+        time_end_start: trail.time.end_start,
       };
       if (trail.color.length === 1) {
         properties = {
@@ -161,7 +164,14 @@ const MapContainer = ({
 
     nodes.forEach((node) => {
       const point = createPoint(
-        { id: node.id, name: node.name, type: node.type },
+        {
+          id: node.id,
+          name: node.name,
+          type: node.type,
+          lat: node.lat,
+          lng: node.lng,
+          elevation: node.elevation,
+        },
         new LngLat(node.lng, node.lat),
       );
       features.push(point);
@@ -325,6 +335,7 @@ const MapContainer = ({
 
   return (
     <Map
+      id="map"
       ref={mapInitializeRef}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
