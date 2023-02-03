@@ -222,19 +222,25 @@ const MapPage = () => {
     );
   };
 
-  const handlePreviousRoute = () => {
-    if (data) {
-      setIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
-    }
+  const handleSelectRoute = (index: number) => {
+    console.log(index);
+
+    setIndex(index);
   };
 
-  const handleNextRoute = () => {
-    if (data) {
-      setIndex((prevIndex) =>
-        prevIndex === data.length - 1 ? prevIndex : prevIndex + 1,
-      );
-    }
-  };
+  // const handlePreviousRoute = () => {
+  //   if (data) {
+  //     setIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
+  //   }
+  // };
+
+  // const handleNextRoute = () => {
+  //   if (data) {
+  //     setIndex((prevIndex) =>
+  //       prevIndex === data.length - 1 ? prevIndex : prevIndex + 1,
+  //     );
+  //   }
+  // };
 
   return (
     <>
@@ -249,8 +255,9 @@ const MapPage = () => {
           onSearch={handleSearch}
           onPlanHike={onOpen}
           index={index}
-          onPreviousRoute={handlePreviousRoute}
-          onNextRoute={handleNextRoute}
+          onSelectRoute={handleSelectRoute}
+          // onPreviousRoute={handlePreviousRoute}
+          // onNextRoute={handleNextRoute}
         />
         <span>{forecastData?.list[0].main.temp}</span>
         <MapContainer
