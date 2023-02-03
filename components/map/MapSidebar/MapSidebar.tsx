@@ -1,18 +1,14 @@
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  SearchIcon,
-} from '@chakra-ui/icons';
+import { ChevronLeftIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Button,
   Flex,
   FormControl,
-  HStack,
-  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
+import RouteResult from '@components/route/RouteResult';
+import { SearchRoute } from '@components/search';
 import { useEffect, useRef, useState } from 'react';
 import s from './MapSidebar.module.css';
 
@@ -26,8 +22,9 @@ interface MapSidebarProps {
   onSearch: (searchForm: SearchForm) => void;
   onPlanHike: () => void;
   index: number;
-  onPreviousRoute: () => void;
-  onNextRoute: () => void;
+  onSelectRoute: (index: number) => void;
+  // onPreviousRoute: () => void;
+  // onNextRoute: () => void;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -42,9 +39,10 @@ const MapSidebar = ({
   onSearch,
   onPlanHike,
   index,
-  onPreviousRoute,
-  onNextRoute,
-}: MapSidebarProps) => {
+  onSelectRoute,
+}: // onPreviousRoute,
+// onNextRoute,
+MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
 
@@ -193,35 +191,65 @@ const MapSidebar = ({
         ) : error ? (
           'An error has occured: ' + error.message
         ) : data && currentRoute ? (
-          <div className={s.route__info}>
-            <p>{`${currentRoute.name.start} - ${currentRoute.name.end}`}</p>
-            <p title={`${currentRoute.distance} m`}>{`${
-              (Math.floor(currentRoute.distance / 1000) * 1000 +
-                Math.round((currentRoute.distance % 1000) / 100) * 100) /
-              1000
-            } km`}</p>
-            <p title={`${currentRoute.time} min.`}>{`${Math.floor(
-              currentRoute.time / 60,
-            )}:${
-              currentRoute.time % 60 >= 10
-                ? currentRoute.time % 60
-                : `0${currentRoute.time % 60}`
-            } h`}</p>
-            <p>Ascent: {`${currentRoute.ascent} m`}</p>
-            <p>Descent: {`${currentRoute.descent} m`}</p>
-          </div>
+          <>
+            <div className={s.route__info}>
+              <p>{`${currentRoute.name.start} - ${currentRoute.name.end}`}</p>
+              <p title={`${currentRoute.distance} m`}>{`${
+                (Math.floor(currentRoute.distance / 1000) * 1000 +
+                  Math.round((currentRoute.distance % 1000) / 100) * 100) /
+                1000
+              } km`}</p>
+              <p title={`${currentRoute.time} min.`}>{`${Math.floor(
+                currentRoute.time / 60,
+              )}:${
+                currentRoute.time % 60 >= 10
+                  ? currentRoute.time % 60
+                  : `0${currentRoute.time % 60}`
+              } h`}</p>
+              <p>Ascent: {`${currentRoute.ascent} m`}</p>
+              <p>Descent: {`${currentRoute.descent} m`}</p>
+            </div>
+          </>
         ) : (
           data && data.message
         )}
 
-        <HStack justifyContent={'center'} mt={2}>
+        {isLoading ? (
+          'Loading...'
+        ) : error ? (
+          'An error has occured: ' + error.message
+        ) : data && data.length > 0 ? (
+          <>
+            <ul>
+              {data.toString()}
+              {data.map((route: any, idx: number) => (
+                <RouteResult
+                  index={idx}
+                  active={index === idx}
+                  type={route.type}
+                  distance={route.distance}
+                  time={route.time}
+                  ascent={route.ascent}
+                  descent={route.descent}
+                  onClick={() => onSelectRoute(idx)}
+                />
+              ))}
+            </ul>
+          </>
+        ) : (
+          data && data.message
+        )}
+
+        {/* <HStack justifyContent={'center'} mt={2}>
           <IconButton aria-label="Previous route" onClick={onPreviousRoute}>
             <ChevronLeftIcon boxSize={6} />
           </IconButton>
           <IconButton aria-label="Next route" onClick={onNextRoute}>
             <ChevronRightIcon boxSize={6} />
           </IconButton>
-        </HStack>
+        </HStack> */}
+
+        <SearchRoute onSearch={onSearch} />
       </div>
     </div>
   );

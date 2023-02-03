@@ -11,8 +11,7 @@
 .container {
   position: relative;
   margin: 0.5rem;
-  padding: 1rem;
-  background-color: #222222;
+  background-color: var(--clr-50);
   border-radius: 4px;
   transition: transform 250ms ease-in-out;
   pointer-events: all;
