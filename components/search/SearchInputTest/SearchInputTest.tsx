@@ -1,13 +1,12 @@
-import { SearchIcon } from '@chakra-ui/icons';
-import { InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { TrailMarking } from '@components/common';
-import { Input } from '@components/ui';
+import { IconButton, Input } from '@components/ui';
 import { decode } from '@lib/geo-utils';
 import { FitBoundsOptions, LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import { useEffect, useRef, useState } from 'react';
+import { MdClose } from 'react-icons/md';
 import SearchResult from '../SearchResult';
-import s from './SearchInput.module.css';
+import s from './SearchInputTest.module.css';
 
 type Results = {
   nodes: Node[];
@@ -20,12 +19,21 @@ export type CameraAction = {
 };
 
 interface SearchInputProps {
-  results: Results;
+  icon: React.ReactNode;
+  searchResults: Results;
   onSearch: (query: string) => void;
   onClick: (cameraAction: CameraAction) => void;
+  onRemove: () => void;
 }
 
-const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
+const SearchInputTest = ({
+  icon,
+  searchResults: results,
+  onSearch,
+  onClick,
+  onRemove,
+  ...props
+}: SearchInputProps & React.InputHTMLAttributes<HTMLInputElement>) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const hasResults = results.nodes.length > 0 || results.trails.length > 0;
@@ -90,16 +98,15 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
 
   return (
     <div className={s.search__wrapper} ref={searchRef}>
-      <InputGroup>
-        <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-        <Input
-          type="text"
-          placeholder="Szukaj..."
-          value={query}
-          onChange={handleChange}
-          onFocus={handleFocus}
-        />
-      </InputGroup>
+      <div className={s.search__icon}>{icon}</div>
+      <Input
+        type="text"
+        value={query}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        className={s.search__input}
+        {...props}
+      />
       {hasResults && isOpen && (
         <ul className={s.search__results}>
           {results.nodes.length > 0 &&
@@ -130,8 +137,17 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
             })}
         </ul>
       )}
+      <IconButton
+        buttonType="action"
+        aria-label="Usuń punkt"
+        onClick={onRemove}
+        className={s.search__remove}
+        type="button"
+      >
+        <MdClose />
+      </IconButton>
     </div>
   );
 };
 
-export default SearchInput;
+export default SearchInputTest;
