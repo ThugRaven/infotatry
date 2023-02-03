@@ -73,13 +73,14 @@ const MapPopup = ({ lngLat, features, onClose }: MapPopupProps) => {
           icon={<MdSchedule />}
           text={`${formatMinutesToHours(
             properties.time_start_end,
-          )} / ${formatMinutesToHours(properties.time_end_start)}`}
+            true,
+          )} / ${formatMinutesToHours(properties.time_end_start, true)}`}
         />
         <InfoItem
           icon={<DistanceIcon />}
           text={
             properties.distance > 100
-              ? formatMetersToKm(properties.distance)
+              ? formatMetersToKm(properties.distance, true)
               : `${properties.distance} m`
           }
         />
