@@ -1,0 +1,23 @@
+.input {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  color: var(--text-primary-dark);
+  background-color: inherit;
+  border-radius: 0.5rem;
+  border: 1px solid var(--clr-400);
+  outline: 0;
+  transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
+}
+
+.input::placeholder {
+  color: var(--clr-400);
+}
+
+.input:hover {
+  border-color: var(--clr-500);
+}
+
+.input:focus-visible {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 1px var(--clr-accent);
+}
