@@ -18,9 +18,9 @@
   background-color: var(--clr-100);
 }
 
-.route--active {
-  /* background-color: var(--clr-200); */
-}
+/* .route--active {
+   background-color: var(--clr-200); 
+} */
 
 .route::before {
   content: '';

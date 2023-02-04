@@ -1,6 +1,7 @@
 import { Button, Flex } from '@chakra-ui/react';
 import NodeIcon from '@components/icons/NodeIcon';
-import { useState } from 'react';
+import { PopupState } from 'pages/map';
+import { useEffect, useState } from 'react';
 import { FaHiking } from 'react-icons/fa';
 import { MdLandscape } from 'react-icons/md';
 import SearchInputTest from '../SearchInputTest';
@@ -8,12 +9,43 @@ import s from './SearchRoute.module.css';
 
 interface SearchRouteProps {
   onSearch: (searchForm: SearchForm) => void;
+  popupState: PopupState;
 }
 
 export type SearchForm = { [key: number]: string };
 
-const SearchRoute = ({ onSearch }: SearchRouteProps) => {
+const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
+
+  useEffect(() => {
+    console.log(popupState);
+    const newSearchForm = [...searchForm];
+    if (popupState.name) {
+      switch (popupState.type) {
+        case 'start': {
+          newSearchForm[0] = popupState.name;
+          break;
+        }
+        case 'mid': {
+          if (
+            searchForm.length == 2 &&
+            searchForm[searchForm.length - 1] === ''
+          ) {
+            newSearchForm[searchForm.length - 1] = popupState.name;
+          } else {
+            newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
+          }
+          break;
+        }
+        case 'end': {
+          newSearchForm[searchForm.length - 1] = popupState.name;
+          break;
+        }
+      }
+
+      setSearchForm(newSearchForm);
+    }
+  }, [popupState]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

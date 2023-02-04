@@ -26,7 +26,15 @@ import {
 import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { Node, Trail } from 'pages/dashboard/admin/map';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PopupAction } from 'pages/map';
+import {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Map, {
   Layer,
   MapRef,
@@ -45,6 +53,7 @@ type MapContainerProps = {
   children?: React.ReactNode;
   padding?: number;
   isLoading?: boolean;
+  popupDispatch: Dispatch<PopupAction>;
 };
 
 interface PopupInfo {
@@ -72,6 +81,7 @@ const MapContainer = ({
   children,
   padding,
   isLoading = false,
+  popupDispatch,
 }: MapContainerProps) => {
   const mapRef = useRef<MapRef | null>(null);
   const mapInitializeRef = useCallback((node: MapRef) => {
@@ -434,6 +444,7 @@ const MapContainer = ({
           onClose={() => {
             setPopupInfo(null);
           }}
+          dispatch={popupDispatch}
         />
       )}
       <Source

@@ -17,7 +17,7 @@ import { MapContainer, MapSidebar } from '@components/map';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
-import { ReactElement, useState } from 'react';
+import { ReactElement, useReducer, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
 
@@ -44,11 +44,50 @@ export type Route = {
   weatherSite: WeatherSite | null;
 };
 
+export interface PopupState {
+  type: 'start' | 'mid' | 'end';
+  name: string | null;
+}
+
+export interface PopupAction {
+  type: 'START_NODE' | 'MIDDLE_NODE' | 'END_NODE';
+  payload: string | null;
+}
+
+const popupReducer = (state: PopupState, action: PopupAction): PopupState => {
+  switch (action.type) {
+    case 'START_NODE': {
+      return {
+        type: 'start',
+        name: action.payload,
+      };
+    }
+    case 'MIDDLE_NODE': {
+      return {
+        type: 'mid',
+        name: action.payload,
+      };
+    }
+    case 'END_NODE': {
+      return {
+        type: 'end',
+        name: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
 const MapPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [width, setWidth] = useState(0);
   const [query, setQuery] = useState<SearchForm | null>(null);
   const [index, setIndex] = useState(0);
+  const [state, dispatch] = useReducer(popupReducer, {
+    type: 'start',
+    name: '',
+  });
   const router = useRouter();
 
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
@@ -256,6 +295,7 @@ const MapPage = () => {
           onPlanHike={onOpen}
           index={index}
           onSelectRoute={handleSelectRoute}
+          popupState={state}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
         />
@@ -263,6 +303,7 @@ const MapPage = () => {
         <MapContainer
           padding={isOpen ? width : 0}
           trailIds={data && data[index].trails}
+          popupDispatch={dispatch}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />

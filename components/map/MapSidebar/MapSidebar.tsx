@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import RouteResult from '@components/route/RouteResult';
 import { SearchRoute } from '@components/search';
+import { PopupState } from 'pages/map';
 import { useEffect, useRef, useState } from 'react';
 import s from './MapSidebar.module.css';
 
@@ -23,6 +24,7 @@ interface MapSidebarProps {
   onPlanHike: () => void;
   index: number;
   onSelectRoute: (index: number) => void;
+  popupState: PopupState;
   // onPreviousRoute: () => void;
   // onNextRoute: () => void;
 }
@@ -40,6 +42,7 @@ const MapSidebar = ({
   onPlanHike,
   index,
   onSelectRoute,
+  popupState,
 }: // onPreviousRoute,
 // onNextRoute,
 MapSidebarProps) => {
@@ -214,6 +217,8 @@ MapSidebarProps) => {
           data && data.message
         )}
 
+        <SearchRoute onSearch={onSearch} popupState={popupState} />
+
         {isLoading ? (
           'Loading...'
         ) : error ? (
@@ -248,8 +253,6 @@ MapSidebarProps) => {
             <ChevronRightIcon boxSize={6} />
           </IconButton>
         </HStack> */}
-
-        <SearchRoute onSearch={onSearch} />
       </div>
     </div>
   );

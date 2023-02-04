@@ -3,7 +3,8 @@ import DistanceIcon from '@components/icons/DistanceIcon';
 import NodeIcon from '@components/icons/NodeIcon';
 import IconButton from '@components/ui/IconButton';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
-import { ReactNode } from 'react';
+import { PopupAction } from 'pages/map';
+import { Dispatch, ReactNode } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {
   MdClose,
@@ -18,6 +19,7 @@ interface MapPopupProps {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
   onClose: () => void;
+  dispatch: Dispatch<PopupAction>;
 }
 
 const InfoItem = ({ icon, text }: { icon: ReactNode; text?: string }) => {
@@ -50,7 +52,7 @@ const PopupButton = ({
   );
 };
 
-const MapPopup = ({ lngLat, features, onClose }: MapPopupProps) => {
+const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
   const feature =
     features.length > 0 && features[0] && features[0].properties
       ? features[0]
@@ -124,17 +126,32 @@ const MapPopup = ({ lngLat, features, onClose }: MapPopupProps) => {
         <PopupButton
           icon={<FaHiking />}
           label="Dodaj punkt początkowy"
-          onClick={() => console.log('start')}
+          onClick={() =>
+            dispatch({
+              type: 'START_NODE',
+              payload: feature?.properties?.name ?? null,
+            })
+          }
         />
         <PopupButton
           icon={<NodeIcon />}
           label="Dodaj punkt pośredni"
-          onClick={() => console.log('through')}
+          onClick={() =>
+            dispatch({
+              type: 'MIDDLE_NODE',
+              payload: feature?.properties?.name ?? null,
+            })
+          }
         />
         <PopupButton
           icon={<MdLandscape />}
           label="Dodaj punkt końcowy"
-          onClick={() => console.log('end')}
+          onClick={() =>
+            dispatch({
+              type: 'END_NODE',
+              payload: feature?.properties?.name ?? null,
+            })
+          }
         />
       </div>
       <PopupButton
