@@ -27,14 +27,7 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
           break;
         }
         case 'mid': {
-          if (
-            searchForm.length == 2 &&
-            searchForm[searchForm.length - 1] === ''
-          ) {
-            newSearchForm[searchForm.length - 1] = popupState.name;
-          } else {
-            newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
-          }
+          newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
           break;
         }
         case 'end': {
