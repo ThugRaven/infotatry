@@ -99,3 +99,37 @@
   display: flex;
   gap: 0.25rem;
 }
+
+.trails {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 5px;
+  display: flex;
+}
+
+.trail {
+  background-color: var(--background-color);
+}
+
+.trail--red {
+  --background-color: #ff0000;
+}
+
+.trail--blue {
+  --background-color: #0095da;
+}
+
+.trail--green {
+  --background-color: #00a650;
+}
+
+.trail--yellow {
+  --background-color: #ffcb04;
+}
+
+.trail--black {
+  --background-color: #000000;
+}

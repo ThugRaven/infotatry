@@ -9,7 +9,7 @@ import {
 import s from './RouteResult.module.css';
 
 type Segment = {
-  color: string;
+  colors: string[];
   distance: number;
 };
 
@@ -21,9 +21,80 @@ interface RouteResultProps {
   time: number;
   ascent: number;
   descent: number;
-  trails?: Segment[];
+  segments?: Segment[];
   onClick: (index: number) => void;
 }
+
+const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
+  // const totalDistance = useMemo(
+  //   () => segments.reduce((sum, segment) => sum + segment.distance, 0),
+  //   [segments],
+  // );
+  const totalDistance =
+    segments?.reduce((sum, segment) => sum + segment.distance, 0) ?? 0;
+
+  const totalCumulativeDistance =
+    segments?.reduce(
+      (sum, segment) => sum + segment.distance * segment.colors.length,
+      0,
+    ) ?? 0;
+
+  const trailSegments = {
+    red: 0,
+    blue: 0,
+    yellow: 0,
+    green: 0,
+    black: 0,
+  };
+
+  segments?.forEach((segment) => {
+    segment.colors.forEach((color) => {
+      switch (color) {
+        case 'red': {
+          console.log('red');
+          trailSegments.red += segment.distance;
+          break;
+        }
+        case 'blue': {
+          console.log('blue');
+          trailSegments.blue += segment.distance;
+          break;
+        }
+        case 'yellow': {
+          console.log('yellow');
+          trailSegments.yellow += segment.distance;
+          break;
+        }
+        case 'green': {
+          console.log('green');
+          trailSegments.green += segment.distance;
+          break;
+        }
+        case 'black': {
+          console.log('black');
+          trailSegments.black += segment.distance;
+          break;
+        }
+      }
+    });
+  });
+
+  console.log(totalDistance, trailSegments);
+
+  return (
+    <div className={s.trails}>
+      {Object.entries(trailSegments).map((segment) => (
+        <div
+          className={classNames(s.trail, s[`trail--${segment[0]}`])}
+          style={{
+            width: `${(segment[1] / totalCumulativeDistance) * 100}%`,
+          }}
+          data-part={(segment[1] / totalDistance) * 100}
+        ></div>
+      ))}
+    </div>
+  );
+};
 
 const RouteResult = ({
   index,
@@ -33,6 +104,7 @@ const RouteResult = ({
   time,
   ascent,
   descent,
+  segments,
   onClick,
 }: RouteResultProps) => {
   const handleClick = () => {
@@ -105,6 +177,7 @@ const RouteResult = ({
           </span>
         </div>
         {routeMessage}
+        <RouteTrails segments={segments} />
       </a>
     </li>
   );

@@ -236,6 +236,7 @@ MapSidebarProps) => {
                   time={route.time}
                   ascent={route.ascent}
                   descent={route.descent}
+                  segments={route.segments}
                   onClick={() => onSelectRoute(idx)}
                 />
               ))}
