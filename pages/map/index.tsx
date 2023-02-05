@@ -46,12 +46,16 @@ export type Route = {
 
 export interface PopupState {
   type: 'start' | 'mid' | 'end';
+  feature: 'node' | 'trail' | null;
   name: string | null;
 }
 
 export interface PopupAction {
   type: 'START_NODE' | 'MIDDLE_NODE' | 'END_NODE';
-  payload: string | null;
+  payload: {
+    feature: 'node' | 'trail' | null;
+    name: string | null;
+  };
 }
 
 const popupReducer = (state: PopupState, action: PopupAction): PopupState => {
@@ -59,19 +63,22 @@ const popupReducer = (state: PopupState, action: PopupAction): PopupState => {
     case 'START_NODE': {
       return {
         type: 'start',
-        name: action.payload,
+        feature: action.payload.feature,
+        name: action.payload.name,
       };
     }
     case 'MIDDLE_NODE': {
       return {
         type: 'mid',
-        name: action.payload,
+        feature: action.payload.feature,
+        name: action.payload.name,
       };
     }
     case 'END_NODE': {
       return {
         type: 'end',
-        name: action.payload,
+        feature: action.payload.feature,
+        name: action.payload.name,
       };
     }
     default:
@@ -86,7 +93,8 @@ const MapPage = () => {
   const [index, setIndex] = useState(0);
   const [state, dispatch] = useReducer(popupReducer, {
     type: 'start',
-    name: '',
+    feature: null,
+    name: null,
   });
   const router = useRouter();
 

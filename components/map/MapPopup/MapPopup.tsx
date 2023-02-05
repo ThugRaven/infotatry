@@ -129,7 +129,10 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
           onClick={() =>
             dispatch({
               type: 'START_NODE',
-              payload: feature?.properties?.name ?? null,
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
             })
           }
         />
@@ -139,7 +142,10 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
           onClick={() =>
             dispatch({
               type: 'MIDDLE_NODE',
-              payload: feature?.properties?.name ?? null,
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
             })
           }
         />
@@ -149,7 +155,10 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
           onClick={() =>
             dispatch({
               type: 'END_NODE',
-              payload: feature?.properties?.name ?? null,
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
             })
           }
         />

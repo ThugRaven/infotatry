@@ -20,18 +20,33 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
   useEffect(() => {
     console.log(popupState);
     const newSearchForm = [...searchForm];
-    if (popupState.name) {
+    if (popupState.feature && popupState.name) {
+      const name = popupState.name.split('-').map((name) => name.trim());
       switch (popupState.type) {
         case 'start': {
-          newSearchForm[0] = popupState.name;
+          if (popupState.feature === 'node') {
+            newSearchForm[0] = popupState.name;
+          } else if (popupState.feature === 'trail') {
+            newSearchForm[0] = name[0];
+            newSearchForm[1] = name[1];
+          }
           break;
         }
         case 'mid': {
-          newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
+          if (popupState.feature === 'node') {
+            newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
+          } else if (popupState.feature === 'trail') {
+            newSearchForm.splice(searchForm.length - 1, 0, ...name);
+          }
           break;
         }
         case 'end': {
-          newSearchForm[searchForm.length - 1] = popupState.name;
+          if (popupState.feature === 'node') {
+            newSearchForm[searchForm.length - 1] = popupState.name;
+          } else if (popupState.feature === 'trail') {
+            newSearchForm[searchForm.length - 1] = name[0];
+            newSearchForm.push(name[1]);
+          }
           break;
         }
       }
