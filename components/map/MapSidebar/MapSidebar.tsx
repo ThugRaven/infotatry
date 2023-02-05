@@ -10,7 +10,7 @@ import {
 import RouteResult from '@components/route/RouteResult';
 import { SearchRoute } from '@components/search';
 import { PopupState } from 'pages/map';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import s from './MapSidebar.module.css';
 
 interface MapSidebarProps {
@@ -100,10 +100,9 @@ MapSidebarProps) => {
         <form onSubmit={handleSearchRoute}>
           <FormControl>
             <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<SearchIcon />}
-              />
+              <InputLeftElement pointerEvents="none">
+                <SearchIcon />
+              </InputLeftElement>
               <Input
                 type="text"
                 placeholder="Starting point"
@@ -117,10 +116,9 @@ MapSidebarProps) => {
 
           <FormControl>
             <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<SearchIcon />}
-              />
+              <InputLeftElement pointerEvents="none">
+                <SearchIcon />
+              </InputLeftElement>
               <Input
                 type="text"
                 placeholder="Destination"
@@ -139,10 +137,9 @@ MapSidebarProps) => {
                   return (
                     <FormControl key={index}>
                       <InputGroup>
-                        <InputLeftElement
-                          pointerEvents="none"
-                          children={<SearchIcon />}
-                        />
+                        <InputLeftElement pointerEvents="none">
+                          <SearchIcon />
+                        </InputLeftElement>
                         <Input
                           type="text"
                           placeholder="Destination"
@@ -229,6 +226,7 @@ MapSidebarProps) => {
               {data.toString()}
               {data.map((route: any, idx: number) => (
                 <RouteResult
+                  key={idx}
                   index={idx}
                   active={index === idx}
                   type={route.type}

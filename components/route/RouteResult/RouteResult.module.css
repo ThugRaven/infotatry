@@ -111,7 +111,61 @@
 }
 
 .trail {
+  position: relative;
   background-color: var(--background-color);
+  transition: transform 100ms ease-in-out;
+  transition-delay: 250ms;
+}
+
+/* .trail::after {
+  content: attr(data-part) '%';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--br-base);
+  background-color: var(--clr-900);
+  color: var(--text-primary-light);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 250ms ease-in-out;
+}
+
+.trail:hover::after {
+  opacity: 0;
+} */
+
+.trail:hover {
+  transform: scaleY(2);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--br-base);
+  background-color: var(--clr-900);
+  color: var(--text-primary-light);
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+  transition-delay: 250ms;
+}
+
+.tooltip--active {
+  opacity: 1;
+}
+
+.tooltip--active ~ .trail {
+  transition-delay: 0ms;
 }
 
 .trail--red {

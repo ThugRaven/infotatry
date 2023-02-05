@@ -1,5 +1,6 @@
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   MdCheckCircleOutline,
   MdErrorOutline,
@@ -51,27 +52,22 @@ const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
     segment.colors.forEach((color) => {
       switch (color) {
         case 'red': {
-          console.log('red');
           trailSegments.red += segment.distance;
           break;
         }
         case 'blue': {
-          console.log('blue');
           trailSegments.blue += segment.distance;
           break;
         }
         case 'yellow': {
-          console.log('yellow');
           trailSegments.yellow += segment.distance;
           break;
         }
         case 'green': {
-          console.log('green');
           trailSegments.green += segment.distance;
           break;
         }
         case 'black': {
-          console.log('black');
           trailSegments.black += segment.distance;
           break;
         }
@@ -79,20 +75,83 @@ const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
     });
   });
 
-  console.log(totalDistance, trailSegments);
+  const [value, setValue] = useState('');
+  const [hover, setHover] = useState(false);
+  const [x, setX] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      // console.log(e);
+      // console.log(e.x, e.y);
+      // console.log(hover);
+
+      if (ref.current && tooltipRef.current && hover) {
+        const tooltipWidth = tooltipRef.current.getBoundingClientRect().width;
+        const posX = e.clientX - ref.current.getBoundingClientRect().left;
+        const width = ref.current.getBoundingClientRect().width;
+        const padding = 10;
+        // console.log(posX, width);
+
+        setX(
+          posX <= tooltipWidth / 2 + padding
+            ? tooltipWidth / 2 + padding
+            : posX > width - tooltipWidth / 2 - padding
+            ? width - tooltipWidth / 2 - padding
+            : posX,
+        );
+      }
+    },
+    [hover],
+  );
+
+  useEffect(() => {
+    const div = ref.current;
+    if (div) {
+      div.addEventListener('mousemove', handleMouseMove);
+    }
+
+    return () => {
+      if (div) {
+        div.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, [handleMouseMove]);
+
+  console.log(totalDistance, totalCumulativeDistance, trailSegments);
 
   return (
-    <div className={s.trails}>
-      {Object.entries(trailSegments).map((segment) => (
+    <>
+      <div
+        ref={ref}
+        className={s.trails}
+        onMouseOver={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
         <div
-          className={classNames(s.trail, s[`trail--${segment[0]}`])}
-          style={{
-            width: `${(segment[1] / totalCumulativeDistance) * 100}%`,
-          }}
-          data-part={(segment[1] / totalDistance) * 100}
-        ></div>
-      ))}
-    </div>
+          ref={tooltipRef}
+          className={classNames(s.tooltip, { [s['tooltip--active']]: hover })}
+          style={{ left: x }}
+        >
+          {`${value}%`}
+        </div>
+
+        {Object.entries(trailSegments).map((segment) => (
+          <div
+            key={segment[0]}
+            className={classNames(s.trail, s[`trail--${segment[0]}`])}
+            style={{
+              width: `${(segment[1] / totalCumulativeDistance) * 100}%`,
+            }}
+            data-part={((segment[1] / totalDistance) * 100).toFixed(2)}
+            onMouseOver={() =>
+              setValue(((segment[1] / totalDistance) * 100).toFixed(2))
+            }
+          ></div>
+        ))}
+      </div>
+    </>
   );
 };
 
@@ -137,7 +196,7 @@ const RouteResult = ({
   );
 
   return (
-    <li key={index}>
+    <li>
       <a
         className={classNames(s.route, { [s['route--active']]: active })}
         onClick={handleClick}
