@@ -198,6 +198,46 @@ const MapPage = () => {
     },
   );
 
+  const fetchAvalanches = async () => {
+    console.log('data', data);
+
+    try {
+      console.log('fetch');
+      console.log(query);
+
+      const response = await fetch(`http://localhost:8080/avalanches/`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isLoadingAvalanches,
+    error: avalanchesError,
+    data: avalanchesData,
+  } = useQuery<any, Error>(['avalanche-bulletin'], () => fetchAvalanches(), {
+    refetchOnWindowFocus: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    onSuccess: (data) => {
+      console.log('onSuccess avalanche bulletin');
+      console.log(data);
+    },
+  });
+
   const handleSearch = (searchForm: SearchForm) => {
     let searchQuery = '';
     for (const key in searchForm) {
@@ -296,6 +336,7 @@ const MapPage = () => {
           index={index}
           onSelectRoute={handleSelectRoute}
           popupState={state}
+          dangerLevel={(avalanchesData && avalanchesData[0].danger) ?? null}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
         />

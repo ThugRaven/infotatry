@@ -6,11 +6,11 @@ import classNames from 'classnames';
 import s from './AvalancheInfo.module.css';
 
 interface AvalancheInfoProps {
-  level: number;
+  level: number | null;
 }
 
 const AvalancheInfo = ({ level }: AvalancheInfoProps) => {
-  const _level = level >= 0 && level <= 5 ? level : null;
+  const _level = level && level >= 0 && level <= 5 ? level : null;
 
   return (
     <div className={classNames(s.avalanche, s[`avalanche--${_level}`])}>

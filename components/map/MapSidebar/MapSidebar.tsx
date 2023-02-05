@@ -26,6 +26,7 @@ interface MapSidebarProps {
   index: number;
   onSelectRoute: (index: number) => void;
   popupState: PopupState;
+  dangerLevel: number | null;
   // onPreviousRoute: () => void;
   // onNextRoute: () => void;
 }
@@ -44,6 +45,7 @@ const MapSidebar = ({
   index,
   onSelectRoute,
   popupState,
+  dangerLevel,
 }: // onPreviousRoute,
 // onNextRoute,
 MapSidebarProps) => {
@@ -245,7 +247,7 @@ MapSidebarProps) => {
           data && data.message
         )}
 
-        <AvalancheInfo level={4} />
+        <AvalancheInfo level={dangerLevel} />
 
         {/* <HStack justifyContent={'center'} mt={2}>
           <IconButton aria-label="Previous route" onClick={onPreviousRoute}>
