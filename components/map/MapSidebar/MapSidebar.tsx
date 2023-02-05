@@ -7,6 +7,7 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
+import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import RouteResult from '@components/route/RouteResult';
 import { SearchRoute } from '@components/search';
 import { PopupState } from 'pages/map';
@@ -243,6 +244,8 @@ MapSidebarProps) => {
         ) : (
           data && data.message
         )}
+
+        <AvalancheInfo level={4} />
 
         {/* <HStack justifyContent={'center'} mt={2}>
           <IconButton aria-label="Previous route" onClick={onPreviousRoute}>
