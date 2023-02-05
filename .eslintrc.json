@@ -1,10 +1,12 @@
 {
   "extends": [
-    "plugin:storybook/recommended",
-    "next",
-    "next/core-web-vitals",
     "eslint:recommended",
-    "prettier"
+    "plugin:storybook/recommended",
+    "prettier",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "next",
+    "next/core-web-vitals"
   ],
   "plugins": ["testing-library"],
   "overrides": [
