@@ -202,11 +202,11 @@ const RouteResult = ({
         onClick={handleClick}
       >
         <div className={s.stats__main}>
-          <span className={s.value}>
+          <span className={s.value} title={`${time} min.`}>
             {formatMinutesToHours(time)}
             <span className={s.unit}>h</span>
           </span>
-          <span className={s.value}>
+          <span className={s.value} title={`${distance} m`}>
             {formatMetersToKm(distance)}
             <span className={s.unit}>km</span>
           </span>
