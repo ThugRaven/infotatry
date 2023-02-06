@@ -7,6 +7,7 @@
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr 1fr;
   align-items: center;
+  justify-items: flex-start;
   padding: var(--space-4);
   color: var(--text-primary-dark);
   cursor: pointer;
@@ -186,4 +187,8 @@
 
 .trail--black {
   --background-color: #000000;
+}
+
+.details__button {
+  margin: var(--space-4) var(--space-4) var(--space-1) var(--space-4);
 }
