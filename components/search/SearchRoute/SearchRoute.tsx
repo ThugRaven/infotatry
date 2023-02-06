@@ -19,39 +19,61 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
 
   useEffect(() => {
     console.log(popupState);
-    const newSearchForm = [...searchForm];
-    if (popupState.feature && popupState.name) {
-      const name = popupState.name.split('-').map((name) => name.trim());
-      switch (popupState.type) {
+    const { feature, name, type } = popupState;
+    if (feature && name) {
+      const trailNames = name.split('-').map((name) => name.trim());
+      switch (type) {
         case 'start': {
-          if (popupState.feature === 'node') {
-            newSearchForm[0] = popupState.name;
-          } else if (popupState.feature === 'trail') {
-            newSearchForm[0] = name[0];
-            newSearchForm[1] = name[1];
+          if (feature === 'node') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm[0] = name;
+              return newSearchForm;
+            });
+          } else if (feature === 'trail') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm[0] = trailNames[0];
+              newSearchForm[1] = trailNames[1];
+              return newSearchForm;
+            });
           }
           break;
         }
         case 'mid': {
-          if (popupState.feature === 'node') {
-            newSearchForm.splice(searchForm.length - 1, 0, popupState.name);
-          } else if (popupState.feature === 'trail') {
-            newSearchForm.splice(searchForm.length - 1, 0, ...name);
+          if (feature === 'node') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm.splice(oldSearchForm.length - 1, 0, name);
+              return newSearchForm;
+            });
+          } else if (feature === 'trail') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm.splice(oldSearchForm.length - 1, 0, ...trailNames);
+              return newSearchForm;
+            });
           }
           break;
         }
         case 'end': {
-          if (popupState.feature === 'node') {
-            newSearchForm[searchForm.length - 1] = popupState.name;
-          } else if (popupState.feature === 'trail') {
-            newSearchForm[searchForm.length - 1] = name[0];
-            newSearchForm.push(name[1]);
+          if (feature === 'node') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm[oldSearchForm.length - 1] = name;
+              return newSearchForm;
+            });
+          } else if (feature === 'trail') {
+            setSearchForm((oldSearchForm) => {
+              const newSearchForm = [...oldSearchForm];
+              newSearchForm[oldSearchForm.length - 1] = trailNames[0];
+              newSearchForm.push(trailNames[1]);
+              return newSearchForm;
+            });
           }
           break;
         }
       }
-
-      setSearchForm(newSearchForm);
     }
   }, [popupState]);
 
