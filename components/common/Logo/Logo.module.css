@@ -1,0 +1,14 @@
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-semi-bold);
+  gap: var(--space-4);
+}
+
+.icon {
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--br-base);
+}
