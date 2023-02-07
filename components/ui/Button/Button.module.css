@@ -1,9 +1,11 @@
 .button {
   padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-base);
   font-weight: var(--fw-semi-bold);
   border-radius: var(--br-base);
   outline: 0;
   user-select: none;
+  white-space: nowrap;
   transition: background-color 100ms ease-in-out, border-color 100ms ease-in-out,
     box-shadow 100ms ease-in-out;
 }
@@ -15,7 +17,7 @@
 .button--solid {
   color: var(--text-primary-light);
   background-color: var(--clr-800);
-  border: 1px solid var(--clr-800);
+  border: 2px solid var(--clr-800);
 }
 
 .button--solid:hover {
@@ -31,7 +33,7 @@
 .button--outline {
   color: var(--text-primary-dark);
   background-color: var(--clr-100);
-  border: 1px solid var(--clr-900);
+  border: 2px solid var(--clr-900);
 }
 
 .button--outline:hover {

@@ -1,8 +1,7 @@
-import { Avatar, Button, Link, Text } from '@chakra-ui/react';
+import Header from '@components/common/Header';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import NextLink from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 import s from './MainLayout.module.css';
@@ -19,7 +18,22 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <div className={s.container}>
-      <header className={s.header}>
+      <Header
+        navRoutes={[
+          {
+            name: 'Mapa',
+            path: '/map',
+          },
+          {
+            name: 'Dashboard',
+            path: '/dashboard',
+          },
+        ]}
+        isLoggedIn={false}
+      >
+        Test
+      </Header>
+      {/* <header className={s.header}>
         <nav>
           <ul className={s.nav}>
             <li>
@@ -33,6 +47,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             </li>
           </ul>
         </nav>
+
+        <Logo />
+        <CustomButton>Zaloguj się</CustomButton>
+        <CustomButton variant="outline">Zaloguj się</CustomButton>
         <div className={s.auth}>
           {status === 'authenticated' ? (
             <>
@@ -41,7 +59,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               <Button onClick={() => signOut()}>Wyloguj się</Button>
             </>
           ) : (
-            <Button onClick={() => signIn()}>Zaloguj się</Button>
+            <Button variant={'outline'} onClick={() => signIn()}>
+              Zaloguj się
+            </Button>
           )}
         </div>
         <div className={s.auth}>
@@ -59,7 +79,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             <Button onClick={() => router.push('/login')}>Zaloguj się</Button>
           )}
         </div>
-      </header>
+      </header> */}
       {children}
     </div>
   );
