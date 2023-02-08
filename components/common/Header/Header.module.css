@@ -10,6 +10,12 @@
   z-index: 1;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -54,4 +60,15 @@
   justify-content: center;
   gap: var(--space-4);
   margin-left: auto;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-left: auto;
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semi-bold);
+  white-space: nowrap;
 }

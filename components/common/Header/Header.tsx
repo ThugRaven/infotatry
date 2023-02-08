@@ -1,5 +1,8 @@
+import { Avatar } from '@chakra-ui/react';
 import Button from '@components/ui/Button';
 import classNames from 'classnames';
+import { User } from 'context/AuthContext';
+import { useSignOut } from 'hooks/useSignOut';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Logo from '../Logo';
@@ -11,18 +14,19 @@ type NavRoute = {
 };
 
 interface HeaderProps {
-  children: React.ReactNode;
   navRoutes: NavRoute[];
-  isLoggedIn: boolean;
+  user: User | null;
+  isLoggedIn?: boolean;
 }
 
-const Header = ({ children, navRoutes, isLoggedIn }: HeaderProps) => {
+const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
   const router = useRouter();
+  const handleSignOut = useSignOut();
 
   return (
     <header className={classNames(s.header)}>
       <Link href={'/'}>
-        <a>
+        <a className={s.logo}>
           <Logo />
         </a>
       </Link>
@@ -37,15 +41,21 @@ const Header = ({ children, navRoutes, isLoggedIn }: HeaderProps) => {
               </li>
             );
           })}
+          <Button onClick={handleSignOut}>Wyloguj się</Button>
         </ul>
       </nav>
-      <div className={s.actions}>
-        <Button onClick={() => router.push('/login')}>Zaloguj się</Button>
-        <Button variant="outline" onClick={() => router.push('/register')}>
-          Zarejestruj się
-        </Button>
-      </div>
-      <div className={s.profile}></div>
+      {user && isLoggedIn ? (
+        <div className={s.profile}>
+          {user.name} <Avatar name={user.name} src={user.image} />
+        </div>
+      ) : (
+        <div className={s.actions}>
+          <Button onClick={() => router.push('/login')}>Zaloguj się</Button>
+          <Button variant="outline" onClick={() => router.push('/register')}>
+            Zarejestruj się
+          </Button>
+        </div>
+      )}
     </header>
   );
 };

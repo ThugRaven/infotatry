@@ -29,10 +29,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
             path: '/dashboard',
           },
         ]}
-        isLoggedIn={false}
-      >
-        Test
-      </Header>
+        user={user}
+        isLoggedIn={authStatus === 'authenticated'}
+      />
+
       {/* <header className={s.header}>
         <nav>
           <ul className={s.nav}>
