@@ -2,10 +2,11 @@ import { Avatar } from '@chakra-ui/react';
 import Button from '@components/ui/Button';
 import classNames from 'classnames';
 import { User } from 'context/AuthContext';
-import { useSignOut } from 'hooks/useSignOut';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 import Logo from '../Logo';
+import ProfileDropdown from '../ProfileDropdown';
 import s from './Header.module.css';
 
 type NavRoute = {
@@ -21,32 +22,58 @@ interface HeaderProps {
 
 const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
   const router = useRouter();
-  const handleSignOut = useSignOut();
+  const [open, setOpen] = useState(false);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      console.log('handle');
+
+      if (!ref.current?.contains(e.target as HTMLElement)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, []);
 
   return (
     <header className={classNames(s.header)}>
-      <Link href={'/'}>
-        <a className={s.logo}>
-          <Logo />
-        </a>
-      </Link>
-      <nav className={s.nav}>
-        <ul className={s.nav__routes}>
-          {navRoutes.map((route) => {
-            return (
-              <li key={route.name}>
-                <Link href={route.path}>
-                  <a className={s.route__item}>{route.name}</a>
-                </Link>
-              </li>
-            );
-          })}
-          <Button onClick={handleSignOut}>Wyloguj się</Button>
-        </ul>
-      </nav>
+      <div className={s.wrapper}>
+        <Link href={'/'}>
+          <a className={s.logo}>
+            <Logo />
+          </a>
+        </Link>
+        <nav className={s.nav}>
+          <ul className={s.nav__routes}>
+            {navRoutes.map((route) => {
+              return (
+                <li key={route.name}>
+                  <Link href={route.path}>
+                    <a className={s.route__item}>{route.name}</a>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
       {user && isLoggedIn ? (
-        <div className={s.profile}>
-          {user.name} <Avatar name={user.name} src={user.image} />
+        <div className={s.profile} ref={ref}>
+          <button
+            className={classNames(s.profile__btn, {
+              [s['profile--active']]: open,
+            })}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {user.name} <Avatar name={user.name} src={user.image} />
+          </button>
+          {open && <ProfileDropdown />}
         </div>
       ) : (
         <div className={s.actions}>

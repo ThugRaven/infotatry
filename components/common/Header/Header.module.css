@@ -1,13 +1,18 @@
 .header {
   position: relative;
   display: flex;
-  padding: var(--space-3) var(--space-4);
+  align-items: center;
   background-color: var(--clr-50);
   color: var(--text-primary-dark);
   font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
   box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.25);
-  z-index: 1;
+  z-index: 10;
+}
+
+.wrapper {
+  display: flex;
+  padding: var(--space-3) var(--space-4);
 }
 
 .logo {
@@ -59,16 +64,31 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
-  margin-left: auto;
+  margin: 0 var(--space-2) 0 auto;
 }
 
 .profile {
+  position: relative;
+  margin: 0 var(--space-2) 0 auto;
+}
+
+.profile__btn {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-2);
-  margin-left: auto;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--br-base);
   font-size: var(--fs-2xl);
   font-weight: var(--fw-semi-bold);
   white-space: nowrap;
+}
+
+.profile__btn:hover {
+  background-color: var(--clr-200);
+}
+
+.profile__btn:active,
+.profile__btn--active {
+  background-color: var(--clr-300);
 }
