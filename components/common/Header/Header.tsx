@@ -28,8 +28,6 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
 
   useEffect(() => {
     const handleDocumentClick = (e: MouseEvent) => {
-      console.log('handle');
-
       if (!ref.current?.contains(e.target as HTMLElement)) {
         setOpen(false);
       }
@@ -73,7 +71,7 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
           >
             {user.name} <Avatar name={user.name} src={user.image} />
           </button>
-          {open && <ProfileDropdown />}
+          {open && <ProfileDropdown onClick={() => setOpen(false)} />}
         </div>
       ) : (
         <div className={s.actions}>

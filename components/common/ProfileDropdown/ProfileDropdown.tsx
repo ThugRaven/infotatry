@@ -9,7 +9,11 @@ import {
 } from 'react-icons/md';
 import s from './ProfileDropdown.module.css';
 
-const ProfileDropdown = () => {
+interface ProfileDropdownProps {
+  onClick: () => void;
+}
+
+const ProfileDropdown = ({ onClick }: ProfileDropdownProps) => {
   const handleSignOut = useSignOut();
 
   return (
@@ -30,7 +34,7 @@ const ProfileDropdown = () => {
         ].map(({ name, icon, path }) => (
           <li key={name}>
             <Link href={path}>
-              <a className={s.list__item}>
+              <a className={s.list__item} onClick={onClick}>
                 <div className={s.icon}>{icon}</div>
                 {name}
               </a>
