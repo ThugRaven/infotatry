@@ -1,7 +1,19 @@
-import { Avatar, Button, Text } from '@chakra-ui/react';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import AvalancheDry0 from '@components/icons/AvalancheDry0';
+import classNames from 'classnames';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
+import { FaHiking } from 'react-icons/fa';
+import {
+  MdBarChart,
+  MdMap,
+  MdOutlineCampaign,
+  MdOutlineDashboard,
+  MdOutlineSettings,
+  MdPeopleOutline,
+  MdPersonOutline,
+} from 'react-icons/md';
+import MainLayout from '../MainLayout';
 import s from './DashboardLayout.module.css';
 
 interface DashboardLayoutProps {
@@ -9,53 +21,91 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const { data: session, status } = useSession();
+  const router = useRouter();
 
   return (
-    <div className={s.container}>
-      <header className={s.header}>
-        <nav>
-          <ul className={s.nav}>
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/dashboard">Dashboard</Link>
-            </li>
-            <div>Admin</div>
-            <li>
-              <Link href="/dashboard/admin">Admin Dashboard</Link>
-            </li>
-            <li>
-              <Link href="/dashboard/admin/map">Map</Link>
-            </li>
-            <li>
-              <Link href="/dashboard/admin/announcements">Announcements</Link>
-            </li>
-            <li>
-              <Link href="/dashboard/admin/avalanches">
-                Avalanche bulletins
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/admin/users">Users</Link>
-            </li>
+    <MainLayout>
+      <div className={s.container}>
+        <nav className={s.nav}>
+          <ul className={s.list}>
+            {[
+              {
+                icon: <MdOutlineDashboard />,
+                name: 'Dashboard',
+                path: '/dashboard',
+              },
+              { icon: <MdPersonOutline />, name: 'Profil', path: '/user' },
+              {
+                icon: <FaHiking />,
+                name: 'Wędrówki',
+                path: '/hikes',
+              },
+              {
+                icon: <MdBarChart />,
+                name: 'Statystyki',
+                path: '/statistics',
+              },
+              {
+                icon: <MdOutlineSettings />,
+                name: 'Ustawienia',
+                path: '/settings',
+              },
+            ].map(({ name, icon, path }) => (
+              <li key={name}>
+                <Link href={path}>
+                  <a
+                    className={classNames(s.list__item, {
+                      [s['list__item--active']]: path === router.pathname,
+                    })}
+                  >
+                    <div className={s.icon}>{icon}</div>
+                    {name}
+                  </a>
+                </Link>
+              </li>
+            ))}
+            <div className={s.list__title}>Admin</div>
+            {[
+              {
+                icon: <MdOutlineDashboard />,
+                name: 'Admin Dashboard',
+                path: '/dashboard/admin',
+              },
+              { icon: <MdMap />, name: 'Mapa', path: '/dashboard/admin/map' },
+              {
+                icon: <MdOutlineCampaign />,
+                name: 'Ogłoszenia',
+                path: '/dashboard/admin/announcements',
+              },
+              {
+                icon: <AvalancheDry0 />,
+                name: 'Komunikaty lawinowe',
+                path: '/dashboard/admin/avalanches',
+              },
+              {
+                icon: <MdPeopleOutline />,
+                name: 'Użytkownicy',
+                path: '/dashboard/admin/users',
+              },
+            ].map(({ name, icon, path }) => (
+              <li key={name}>
+                <Link href={path}>
+                  <a
+                    className={classNames(s.list__item, {
+                      [s['list__item--active']]: path === router.pathname,
+                    })}
+                  >
+                    <div className={s.icon}>{icon}</div>
+                    {name}
+                  </a>
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
-        <div className={s.auth}>
-          {status === 'authenticated' ? (
-            <>
-              {session.user?.image && <Avatar src={session.user.image} />}
-              <Text fontSize={'lg'}>Witaj {session.user?.name}!</Text>
-              <Button onClick={() => signOut()}>Wyloguj się</Button>
-            </>
-          ) : (
-            <Button onClick={() => signIn()}>Zaloguj się</Button>
-          )}
-        </div>
-      </header>
-      {children}
-    </div>
+        {children}
+      </div>
+    </MainLayout>
   );
 };
 

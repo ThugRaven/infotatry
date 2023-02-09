@@ -91,15 +91,6 @@ const MapSidebar = ({
           )}
 
           <AvalancheInfo level={dangerLevel} />
-
-          {/* <HStack justifyContent={'center'} mt={2}>
-          <IconButton aria-label="Previous route" onClick={onPreviousRoute}>
-          <ChevronLeftIcon boxSize={6} />
-          </IconButton>
-          <IconButton aria-label="Next route" onClick={onNextRoute}>
-            <ChevronRightIcon boxSize={6} />
-          </IconButton>
-        </HStack> */}
         </div>
       </div>
     </div>
