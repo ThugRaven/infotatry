@@ -33,11 +33,14 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
       }
     };
 
-    document.addEventListener('click', handleDocumentClick);
+    if (open) {
+      document.addEventListener('click', handleDocumentClick);
+    }
+
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, []);
+  }, [open]);
 
   return (
     <header className={classNames(s.header)}>
