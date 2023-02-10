@@ -1,7 +1,7 @@
-import { Button, Flex } from '@chakra-ui/react';
 import NodeIcon from '@components/icons/NodeIcon';
+import { useDebounce } from 'hooks/useDebounce';
 import { PopupState } from 'pages/map';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaHiking } from 'react-icons/fa';
 import { MdAdd, MdLandscape, MdSwapVert } from 'react-icons/md';
 import SearchInputTest from '../SearchInputTest';
@@ -16,6 +16,7 @@ export type SearchForm = { [key: number]: string };
 
 const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
+  const debouncedSearchForm = useDebounce<string[]>(searchForm, 1000);
 
   useEffect(() => {
     console.log(popupState);
@@ -85,15 +86,18 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
     setSearchForm(newSearchForm);
   };
 
-  const handleSearchRoute = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchForm.some((value) => value == '')) {
+  const handleSearchRoute = useCallback(() => {
+    if (debouncedSearchForm.some((value) => value == '')) {
       console.log('Search cancelled - not every field is filled in');
       return;
     }
     console.log('Search');
-    onSearch(searchForm);
-  };
+    onSearch(debouncedSearchForm);
+  }, [debouncedSearchForm, onSearch]);
+
+  useEffect(() => {
+    handleSearchRoute();
+  }, [debouncedSearchForm, handleSearchRoute]);
 
   const handleAddDestination = () => {
     setSearchForm((state) => [...state, '']);
@@ -117,7 +121,7 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
   };
 
   return (
-    <form onSubmit={handleSearchRoute}>
+    <>
       <div className={s.search}>
         <SearchInputTest
           icon={<FaHiking />}
@@ -206,13 +210,7 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
           <span>Odwróć trasę</span>
         </button>
       </div>
-
-      <Flex direction="column" gap={2}>
-        <Button colorScheme="blue" type="submit">
-          Search
-        </Button>
-      </Flex>
-    </form>
+    </>
   );
 };
 
