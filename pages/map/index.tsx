@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
+import WeatherModal from '@components/weather/WeatherModal';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
@@ -100,6 +101,11 @@ const MapPage = () => {
   const router = useRouter();
 
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isWeatherModalOpen,
+    onOpen: onWeatherModalOpen,
+    onClose: onWeatherModalClose,
+  } = useDisclosure();
   let nextDay = new Date();
   nextDay = new Date(
     new Date(nextDay.setDate(new Date().getDate() + 1)).setHours(15, 0, 0, 0),
@@ -206,56 +212,57 @@ const MapPage = () => {
       },
     },
   );
-  // const fetchWeather = async (name?: string) => {
-  //   console.log('data', data);
 
-  //   try {
-  //     if (!name) {
-  //       return false;
-  //     }
-  //     console.log('fetch');
-  //     console.log(query);
+  const fetchWeatherForecast = async (name?: string) => {
+    console.log('data', data);
 
-  //     const response = await fetch(
-  //       `http://localhost:8080/weather/forecast/${name}`,
-  //       {
-  //         method: 'GET',
-  //         headers: { 'Content-Type': 'application/json' },
-  //       },
-  //     );
+    try {
+      if (!name) {
+        return false;
+      }
+      console.log('fetch');
+      console.log(query);
 
-  //     if (!response.ok) {
-  //       const data = await response.json();
-  //       throw new Error(data.message);
-  //     }
+      const response = await fetch(
+        `http://localhost:8080/weather/forecast/${name}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
-  //     return response.json();
-  //   } catch (error) {
-  //     console.log(error);
-  //     if (error instanceof Error) {
-  //       throw new Error(error.message);
-  //     }
-  //   }
-  // };
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
 
-  // const {
-  //   isLoading: isLoadingForecast,
-  //   error: forecastError,
-  //   data: forecastData,
-  // } = useQuery<any, Error>(
-  //   ['weather', data && data[0].weatherSite?.name],
-  //   () => fetchWeather(data && data[0].weatherSite?.name),
-  //   {
-  //     enabled: Boolean(data),
-  //     refetchOnWindowFocus: false,
-  //     cacheTime: 15 * 60 * 1000, // 15 minutes
-  //     staleTime: 10 * 60 * 1000, // 10 minutes
-  //     onSuccess: (data) => {
-  //       console.log('onSuccess Weather');
-  //       console.log(data);
-  //     },
-  //   },
-  // );
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isLoadingWeatherForecast,
+    error: weatherForecastError,
+    data: weatherForecastData,
+  } = useQuery<any, Error>(
+    ['weather', data && data[0].weatherSite?.name],
+    () => fetchWeatherForecast(data && data[0].weatherSite?.name),
+    {
+      enabled: Boolean(isWeatherModalOpen),
+      refetchOnWindowFocus: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess weather forecast');
+        console.log(data);
+      },
+    },
+  );
 
   const fetchAvalanches = async () => {
     console.log('data', data);
@@ -397,6 +404,7 @@ const MapPage = () => {
           popupState={state}
           dangerLevel={(avalanchesData && avalanchesData[0].danger) ?? null}
           currentWeather={currentWeatherData}
+          onWeatherModalOpen={onWeatherModalOpen}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
         />
@@ -434,6 +442,14 @@ const MapPage = () => {
             </form>
           </ModalContent>
         </Modal>
+        <WeatherModal
+          weatherData={{
+            currentWeather: currentWeatherData,
+            weatherForecast: weatherForecastData,
+          }}
+          isOpen={isWeatherModalOpen}
+          onClose={onWeatherModalClose}
+        />
       </div>
     </>
   );

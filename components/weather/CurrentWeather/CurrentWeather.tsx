@@ -1,10 +1,14 @@
+import classNames from 'classnames';
 import Image from 'next/image';
+import { MdSouth } from 'react-icons/md';
 import { CurrentWeatherResponse } from 'types/weather-types';
 import s from './CurrentWeather.module.css';
 
 interface CurrentWeatherProps {
   location: string;
   weather?: CurrentWeatherResponse;
+  full?: boolean;
+  onWeatherModalOpen?: () => void;
 }
 
 const dateTimeFormat = Intl.DateTimeFormat(undefined, {
@@ -20,7 +24,12 @@ const timeFormat = Intl.DateTimeFormat(undefined, {
   minute: 'numeric',
 });
 
-const CurrentWeather = ({ location, weather }: CurrentWeatherProps) => {
+const CurrentWeather = ({
+  location,
+  weather,
+  full = false,
+  onWeatherModalOpen,
+}: CurrentWeatherProps) => {
   return (
     <section className={s.container}>
       <div className={s.location}>
@@ -41,15 +50,18 @@ const CurrentWeather = ({ location, weather }: CurrentWeatherProps) => {
         Odczuwalna {Math.round(weather?.main.feels_like ?? 0)}
         <span>°C</span>
       </div>
-      <Image
-        src={`https://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`}
-        alt={weather?.weather[0].main}
-        width={100}
-        height={100}
-      />
+      {weather && (
+        <Image
+          className={s.icon}
+          src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+          alt={weather.weather[0].main}
+          width={100}
+          height={100}
+        />
+      )}
       <span>{weather?.weather[0].main}</span>
       <span className={s.desc}>{weather?.weather[0].description}</span>
-      {/* {weather && (
+      {full && weather ? (
         <ul className={s['weather-data__grid']}>
           {[
             {
@@ -119,8 +131,11 @@ const CurrentWeather = ({ location, weather }: CurrentWeatherProps) => {
             </li>
           ))}
         </ul>
-      )} */}
-      <button className={s.details__btn}>Szczegóły</button>
+      ) : (
+        <button className={s.details__btn} onClick={onWeatherModalOpen}>
+          Szczegóły
+        </button>
+      )}
     </section>
   );
 };

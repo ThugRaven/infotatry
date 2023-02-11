@@ -23,6 +23,7 @@ interface MapSidebarProps {
   popupState: PopupState;
   dangerLevel: number | null;
   currentWeather?: CurrentWeatherResponse;
+  onWeatherModalOpen: () => void;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -41,6 +42,7 @@ const MapSidebar = ({
   popupState,
   dangerLevel,
   currentWeather,
+  onWeatherModalOpen,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -90,6 +92,7 @@ const MapSidebar = ({
               <CurrentWeather
                 location={data[0].weatherSite?.name}
                 weather={currentWeather}
+                onWeatherModalOpen={onWeatherModalOpen}
               />
             </>
           ) : (
