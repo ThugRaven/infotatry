@@ -1,0 +1,119 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--br-base);
+  color: var(--text-primary-dark);
+  text-align: center;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: var(--clr-300);
+}
+
+.location > svg {
+  flex-shrink: 0;
+  margin: 0 var(--space-1);
+  width: var(--icon-24dp);
+  height: var(--icon-24dp);
+}
+
+.location .location__name {
+  margin: var(--space-2) 0;
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-medium);
+}
+
+.date {
+  color: var(--text-primary-dark);
+}
+
+.temperature {
+  display: flex;
+  align-items: flex-start;
+  margin: var(--space-4);
+}
+
+.temperature__value {
+  line-height: 1;
+  font-size: var(--fs-5xl);
+  font-weight: var(--fw-bold);
+}
+
+.temperature__unit {
+  font-size: var(--fs-xl);
+}
+
+.feels-like {
+  color: var(--text-primary-dark);
+}
+
+.desc {
+  font-size: var(--fs-sm);
+  color: var(--text-primary-dark);
+}
+
+.weather-data__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: var(--space-4) 0;
+  gap: var(--space-2);
+}
+
+.weather-data__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  background-color: var(--clr-100);
+  border-radius: var(--br-base);
+}
+
+.data__name {
+  color: var(--text-primary-dark);
+}
+
+.data__value {
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xl);
+}
+
+.data__unit {
+  color: var(--text-primary-dark);
+}
+
+.weather-data__item--wind-dir {
+  position: relative;
+}
+
+.weather-data__item--wind-dir > svg {
+  fill: var(--clr-accent);
+  width: var(--icon-32dp);
+  height: var(--icon-32dp);
+  transition: transform 250ms ease-in-out;
+}
+
+.details__btn {
+  width: 100%;
+  margin: var(--space-4);
+  padding: var(--space-3) var(--space-8);
+  background-color: var(--clr-200);
+  font-weight: var(--fw-medium);
+  border-radius: var(--br-base);
+  cursor: pointer;
+  transition: background-color 150ms ease-in-out;
+}
+
+.details__btn:hover {
+  background-color: var(--clr-300);
+}
+
+.details__btn:active {
+  background-color: var(--clr-400);
+}

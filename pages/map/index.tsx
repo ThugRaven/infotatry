@@ -19,6 +19,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
 import { ReactElement, useReducer, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import { CurrentWeatherResponse } from 'types/weather-types';
 import { SearchForm } from '../../components/map/MapSidebar/MapSidebar';
 
 interface HikeArgs {
@@ -155,7 +156,7 @@ const MapPage = () => {
     },
   );
 
-  const fetchWeather = async (name?: string) => {
+  const fetchCurrentWeather = async (name?: string) => {
     console.log('data', data);
 
     try {
@@ -166,7 +167,7 @@ const MapPage = () => {
       console.log(query);
 
       const response = await fetch(
-        `http://localhost:8080/weather/forecast/${name}`,
+        `http://localhost:8080/weather/current/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -188,23 +189,73 @@ const MapPage = () => {
   };
 
   const {
-    isLoading: isLoadingForecast,
-    error: forecastError,
-    data: forecastData,
-  } = useQuery<any, Error>(
-    ['weather', data && data[0].weatherSite?.name],
-    () => fetchWeather(data && data[0].weatherSite?.name),
+    isLoading: isLoadingCurrentWeather,
+    error: currentWeatherError,
+    data: currentWeatherData,
+  } = useQuery<CurrentWeatherResponse, Error>(
+    ['current-weather', data && data[0].weatherSite?.name],
+    () => fetchCurrentWeather(data && data[0].weatherSite?.name),
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
       cacheTime: 15 * 60 * 1000, // 15 minutes
       staleTime: 10 * 60 * 1000, // 10 minutes
       onSuccess: (data) => {
-        console.log('onSuccess Weather');
+        console.log('onSuccess current weather');
         console.log(data);
       },
     },
   );
+  // const fetchWeather = async (name?: string) => {
+  //   console.log('data', data);
+
+  //   try {
+  //     if (!name) {
+  //       return false;
+  //     }
+  //     console.log('fetch');
+  //     console.log(query);
+
+  //     const response = await fetch(
+  //       `http://localhost:8080/weather/forecast/${name}`,
+  //       {
+  //         method: 'GET',
+  //         headers: { 'Content-Type': 'application/json' },
+  //       },
+  //     );
+
+  //     if (!response.ok) {
+  //       const data = await response.json();
+  //       throw new Error(data.message);
+  //     }
+
+  //     return response.json();
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error instanceof Error) {
+  //       throw new Error(error.message);
+  //     }
+  //   }
+  // };
+
+  // const {
+  //   isLoading: isLoadingForecast,
+  //   error: forecastError,
+  //   data: forecastData,
+  // } = useQuery<any, Error>(
+  //   ['weather', data && data[0].weatherSite?.name],
+  //   () => fetchWeather(data && data[0].weatherSite?.name),
+  //   {
+  //     enabled: Boolean(data),
+  //     refetchOnWindowFocus: false,
+  //     cacheTime: 15 * 60 * 1000, // 15 minutes
+  //     staleTime: 10 * 60 * 1000, // 10 minutes
+  //     onSuccess: (data) => {
+  //       console.log('onSuccess Weather');
+  //       console.log(data);
+  //     },
+  //   },
+  // );
 
   const fetchAvalanches = async () => {
     console.log('data', data);
@@ -345,10 +396,11 @@ const MapPage = () => {
           onSelectRoute={handleSelectRoute}
           popupState={state}
           dangerLevel={(avalanchesData && avalanchesData[0].danger) ?? null}
+          currentWeather={currentWeatherData}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
         />
-        <span>{forecastData?.list[0].main.temp}</span>
+        {/* <span>{forecastData?.list[0].main.temp}</span> */}
         <MapContainer
           padding={isOpen ? width : 0}
           trailIds={data && data[index].trails}

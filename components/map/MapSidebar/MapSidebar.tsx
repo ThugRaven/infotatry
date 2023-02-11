@@ -2,9 +2,11 @@ import { Button, Spinner } from '@chakra-ui/react';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import RouteResult from '@components/route/RouteResult';
 import { SearchRoute } from '@components/search';
+import CurrentWeather from '@components/weather/CurrentWeather';
 import { PopupState } from 'pages/map';
 import { useEffect, useRef } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
+import { CurrentWeatherResponse } from 'types/weather-types';
 import s from './MapSidebar.module.css';
 
 interface MapSidebarProps {
@@ -20,6 +22,7 @@ interface MapSidebarProps {
   onSelectRoute: (index: number) => void;
   popupState: PopupState;
   dangerLevel: number | null;
+  currentWeather?: CurrentWeatherResponse;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -37,6 +40,7 @@ const MapSidebar = ({
   onSelectRoute,
   popupState,
   dangerLevel,
+  currentWeather,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -58,9 +62,7 @@ const MapSidebar = ({
           <Button colorScheme="blue" mt={2} onClick={onPlanHike}>
             Plan a hike
           </Button>
-
           <SearchRoute onSearch={onSearch} popupState={popupState} />
-
           {isLoading ? (
             <div className={s.spinner}>
               <Spinner thickness="5px" size="xl" color="black" />
@@ -85,11 +87,16 @@ const MapSidebar = ({
                   />
                 ))}
               </ul>
+              <CurrentWeather
+                location={data[0].weatherSite?.name}
+                weather={currentWeather}
+              />
             </>
           ) : (
             data && data.message
           )}
 
+          <div>Przebieg Trasy</div>
           <AvalancheInfo level={dangerLevel} />
         </div>
       </div>
