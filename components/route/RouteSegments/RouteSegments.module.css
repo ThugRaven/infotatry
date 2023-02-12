@@ -46,3 +46,9 @@
   justify-content: center;
   gap: var(--space-1);
 }
+
+.closed {
+  width: var(--icon-24dp);
+  height: var(--icon-24dp);
+  fill: var(--clr-red);
+}

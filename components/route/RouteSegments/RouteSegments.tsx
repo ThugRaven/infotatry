@@ -3,6 +3,7 @@ import NodeIcon from '@components/icons/NodeIcon';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
 import { TrailColor } from 'pages/dashboard/admin/map';
+import { MdErrorOutline } from 'react-icons/md';
 import s from './RouteSegments.module.css';
 
 type TrailSegment = {
@@ -10,6 +11,7 @@ type TrailSegment = {
   colors: TrailColor[];
   distance: number;
   time: number;
+  closed: boolean;
 };
 
 interface RouteSegmentsProps {
@@ -77,6 +79,12 @@ const RouteSegments = ({ segments, onClick }: RouteSegmentsProps) => {
                             : `${segment.distance} m`
                         })`}</span>
                       </div>
+                      {segment.closed && (
+                        <MdErrorOutline
+                          className={s.closed}
+                          title={'Zamknięcie szlaku'}
+                        />
+                      )}
                     </div>
                   </a>
                 </li>
