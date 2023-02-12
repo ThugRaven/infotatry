@@ -20,7 +20,6 @@ const WeatherDataItem = ({
 }: WeatherDataItemProps & LiHTMLAttributes<HTMLLIElement>) => {
   return (
     <li
-      key={data.name}
       className={classNames(
         s.item,
         {

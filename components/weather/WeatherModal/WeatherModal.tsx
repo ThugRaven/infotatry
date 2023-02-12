@@ -106,6 +106,7 @@ const WeatherModal = ({
                         className={s.icon}
                         src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
                         alt={data.weather[0].main}
+                        layout={'fixed'}
                         width={100}
                         height={100}
                       />
@@ -146,6 +147,7 @@ const WeatherModal = ({
                       className={s.icon}
                       src={`https://openweathermap.org/img/wn/${selectedItem.weather[0].icon}@2x.png`}
                       alt={selectedItem.weather[0].main}
+                      layout={'fixed'}
                       width={100}
                       height={100}
                     />
@@ -219,8 +221,11 @@ const WeatherModal = ({
                             : selectedItem.visibility,
                         unit: selectedItem.visibility > 1000 ? 'km' : 'm',
                       },
-                    ].map((data) => (
-                      <WeatherDataItem key={data.name} data={data}>
+                    ].map((data, index) => (
+                      <WeatherDataItem
+                        key={`${index}-${data.name}`}
+                        data={data}
+                      >
                         {data.children}
                       </WeatherDataItem>
                     ))}
