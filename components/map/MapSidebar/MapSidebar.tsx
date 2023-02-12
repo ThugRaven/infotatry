@@ -1,6 +1,7 @@
 import { Button, Spinner } from '@chakra-ui/react';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import RouteResult from '@components/route/RouteResult';
+import RouteSegments from '@components/route/RouteSegments';
 import { SearchRoute } from '@components/search';
 import CurrentWeather from '@components/weather/CurrentWeather';
 import { PopupState } from 'pages/map';
@@ -99,7 +100,7 @@ const MapSidebar = ({
             data && data.message
           )}
 
-          <div>Przebieg Trasy</div>
+          <RouteSegments segments={(data && data[0].segments) ?? []} />
           <AvalancheInfo level={dangerLevel} />
         </div>
       </div>
