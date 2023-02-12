@@ -443,6 +443,7 @@ const MapPage = () => {
           </ModalContent>
         </Modal>
         <WeatherModal
+          location={(data && data[index].weatherSite?.name) ?? ''}
           weatherData={{
             currentWeather: currentWeatherData,
             weatherForecast: weatherForecastData,

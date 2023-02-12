@@ -1,36 +1,76 @@
 .modal.modal__content {
   display: grid;
+  grid-template-areas:
+    'location location'
+    'aside main';
   grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
   gap: var(--space-4);
   margin: var(--space-8);
   padding: var(--space-4);
   color: var(--text-primary-dark);
   background-color: var(--clr-100);
   border-radius: var(--br-base);
-}
-
-.main {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--space-4);
+  line-height: 1.2;
 }
 
 .card {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   background-color: var(--clr-50);
   border-radius: var(--br-base);
+}
+
+.popup__close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.location {
+  grid-area: location;
+}
+
+.location__name {
+  margin: var(--space-4) 0;
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-semi-bold);
+  text-align: center;
+}
+
+.aside {
+  display: grid;
+  grid-area: aside;
+  grid-template-rows: auto 1fr;
+}
+
+.main {
+  display: grid;
+  grid-area: main;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-4);
 }
 
 .card--forecast {
   overflow-x: auto;
 }
 
+.card--forecast-details {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.forecast__details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+}
+
 .title {
   margin: var(--space-3) var(--space-1);
   font-size: var(--fs-3xl);
-  font-weight: var(--fw-semi-bold);
+  font-weight: var(--fw-medium);
   text-align: center;
 }
 
@@ -59,13 +99,17 @@
   background-color: var(--clr-100);
 }
 
-.forecast__btn:active,
-.forecast__btn--active {
+.forecast__btn:active {
   background-color: var(--clr-200);
 }
 
-.forecast__btn--active:hover {
-  background-color: var(--clr-300);
+.forecast__btn--active {
+  background-color: var(--clr-accent-light);
+}
+
+.forecast__btn--active:hover,
+.forecast__btn--active:focus-visible {
+  background-color: var(--clr-accent);
 }
 
 .forecast__date {
@@ -81,7 +125,7 @@
   color: var(--text-primary-dark);
 }
 
-.temperature {
+.forecast__temperature {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,4 +142,44 @@
   font-size: var(--fs-2xl);
   font-weight: var(--fw-medium);
   color: var(--clr-600);
+}
+
+.forecast-data__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: var(--space-4) 0;
+  gap: var(--space-2);
+}
+
+.wind-dir {
+  fill: var(--clr-accent);
+  width: var(--icon-32dp);
+  height: var(--icon-32dp);
+  transition: transform 250ms ease-in-out;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.temperature {
+  display: flex;
+  align-items: flex-start;
+  margin: var(--space-4) 0;
+}
+
+.temperature__value {
+  line-height: 1;
+  font-size: var(--fs-5xl);
+  font-weight: var(--fw-bold);
+}
+
+.temperature__unit {
+  font-size: var(--fs-xl);
+}
+
+.feels-like {
+  color: var(--text-primary-dark);
 }

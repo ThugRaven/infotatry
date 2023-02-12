@@ -32,10 +32,12 @@ const CurrentWeather = ({
 }: CurrentWeatherProps) => {
   return (
     <section className={s.container}>
-      <div className={s.location}>
-        {/* <MdOutlinePlace /> */}
-        <span className={s.location__name}>{location}</span>
-      </div>
+      {!full && (
+        <div className={s.location}>
+          {/* <MdOutlinePlace /> */}
+          <span className={s.location__name}>{location}</span>
+        </div>
+      )}
       <span className={s.date}>
         {weather?.dt && dateTimeFormat.format(weather?.dt * 1000)}
       </span>
@@ -71,8 +73,11 @@ const CurrentWeather = ({
             },
             {
               name: 'Widoczność',
-              value: Math.round(weather.visibility / 100) / 10,
-              unit: 'km',
+              value:
+                weather.visibility > 1000
+                  ? Math.round(weather.visibility / 100) / 10
+                  : weather.visibility,
+              unit: weather.visibility > 1000 ? 'km' : 'm',
             },
             {
               name: 'Wilgotność',
