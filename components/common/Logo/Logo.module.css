@@ -8,6 +8,7 @@
 }
 
 .icon {
+  flex-shrink: 0;
   width: var(--space-12);
   height: var(--space-12);
   border-radius: var(--br-base);
