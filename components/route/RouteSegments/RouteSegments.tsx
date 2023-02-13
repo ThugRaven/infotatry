@@ -1,9 +1,11 @@
 import { TrailMarking } from '@components/common';
+import CaveIcon from '@components/icons/CaveIcon';
 import NodeIcon from '@components/icons/NodeIcon';
+import ShelterIcon from '@components/icons/ShelterIcon';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
 import { TrailColor } from 'pages/dashboard/admin/map';
-import { MdErrorOutline } from 'react-icons/md';
+import { MdErrorOutline, MdLandscape } from 'react-icons/md';
 import s from './RouteSegments.module.css';
 
 type TrailSegment = {
@@ -12,6 +14,7 @@ type TrailSegment = {
   distance: number;
   time: number;
   closed: boolean;
+  type: string;
 };
 
 interface RouteSegmentsProps {
@@ -45,7 +48,16 @@ const RouteSegments = ({ segments, onClick }: RouteSegmentsProps) => {
                 <a onClick={handleClick}>
                   <div className={classNames(s.item, s['item--node'])}>
                     <div className={s.wrapper}>
-                      <NodeIcon className={s.icon} />
+                      {segment.type === 'shelter' ? (
+                        <ShelterIcon className={s.icon} />
+                      ) : segment.type === 'peak' ? (
+                        <MdLandscape className={s.icon} />
+                      ) : segment.type === 'cave' ? (
+                        <CaveIcon className={s.icon} />
+                      ) : (
+                        <NodeIcon className={s.icon} />
+                      )}
+
                       <span className={s.item__name}>{segment.name}</span>
                     </div>
                     <div className={s.item__stats}>{`${formatMinutesToHours(

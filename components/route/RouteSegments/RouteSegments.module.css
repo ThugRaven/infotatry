@@ -38,6 +38,8 @@
 
 .icon {
   flex-shrink: 0;
+  width: var(--icon-24dp);
+  height: var(--icon-24dp);
 }
 
 .markings {
