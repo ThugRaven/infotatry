@@ -44,6 +44,12 @@
   --text-primary-dark: var(--clr-900);
 
   --br-base: 0.5rem;
+  --br-lg: 0.75rem;
+  --br-xl: 1rem;
+  --br-2xl: 1.5rem;
+  --br-3xl: 2rem;
+  --br-4xl: 3rem;
+  --br-5xl: 4rem;
 
   --space-0-5: 0.125rem;
   --space-1: 0.25rem;
@@ -73,6 +79,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-family: var(--ff-primary) !important;
+  background-color: var(--clr-50) !important;
 }
 
 a {

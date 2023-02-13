@@ -1,0 +1,137 @@
+.image__wrapper {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+@media screen and (min-width: 1024px) {
+  .image__wrapper {
+    grid-column: 2 / 3;
+  }
+}
+
+.image {
+  object-fit: cover;
+}
+
+@media screen and (min-width: 1024px) {
+  .image {
+    border-radius: var(--br-5xl) 0 0 var(--br-5xl);
+  }
+}
+
+.container {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+@media screen and (min-width: 375px) {
+  .container {
+    margin: var(--space-8);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    background-color: var(--clr-50);
+    grid-column: 1 / 2;
+    margin: 0;
+  }
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-4);
+  width: min(100%, 768px);
+  height: 100%;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-primary-dark);
+  background-color: var(--clr-50);
+  border-radius: var(--br-base);
+}
+
+@media screen and (min-width: 375px) {
+  .login__form {
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .login__form {
+    gap: var(--space-8);
+    padding: var(--space-8);
+  }
+}
+
+.logo {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-2);
+}
+
+@media screen and (min-width: 1024px) {
+  .logo {
+    align-self: flex-start;
+    font-size: var(--fs-3xl);
+  }
+}
+
+.action {
+  text-align: center;
+  font-size: var(--fs-4xl);
+  font-weight: var(--fw-semi-bold);
+  margin-bottom: var(--space-4);
+}
+
+@media screen and (min-width: 1024px) {
+  .action {
+    text-align: start;
+    font-size: var(--fs-5xl);
+  }
+}
+
+.divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: inherit;
+}
+
+.divider__text {
+  padding: 0 var(--space-2);
+  background-color: inherit;
+  z-index: 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--clr-300);
+}
+
+.google {
+  width: 100%;
+  white-space: normal;
+}
+
+.register {
+  margin-top: var(--space-4);
+  color: var(--clr-600);
+  font-weight: var(--fw-medium);
+  text-align: center;
+}
+
+.register__link {
+  color: var(--clr-accent-dark);
+}

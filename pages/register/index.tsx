@@ -1,10 +1,15 @@
-import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react';
-import { MainLayout } from '@components/layouts';
-import s from '@styles/Hikes.module.css';
+import Logo from '@components/common/Logo';
+import GridLayout from '@components/layouts/GridLayout';
+import { Input } from '@components/ui';
+import Button from '@components/ui/Button';
+import s from '@styles/Register.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
 import { useMutation } from 'react-query';
+import image_2 from '../../public/image_2.jpg';
 
 interface RegisterForm {
   name: string;
@@ -61,49 +66,71 @@ const Register = () => {
   };
 
   return (
-    <div className={s.container}>
-      <form onSubmit={handleRegister}>
-        <FormControl isRequired>
-          <FormLabel>Name</FormLabel>
+    <>
+      <div className={s.container}>
+        <form onSubmit={handleRegister} className={s.login__form}>
+          <Link href={'/'}>
+            <a className={s.logo}>
+              <Logo />
+            </a>
+          </Link>
+          <span className={s.action}>Zarejestruj się</span>
           <Input
             type="text"
             name="name"
+            placeholder="Nazwa użytkownika"
             value={name}
-            mb={2}
             onChange={(e) => setName(e.target.value)}
           />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel>Email</FormLabel>
           <Input
             type="email"
             name="email"
+            placeholder="Email"
             value={email}
-            mb={2}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel>Password</FormLabel>
           <Input
             type="password"
             name="password"
+            placeholder="Hasło"
             value={password}
-            mb={2}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </FormControl>
-
-        <Button colorScheme="blue" mr={3} type="submit">
-          Register
-        </Button>
-      </form>
-    </div>
+          <Button>Zarejestruj się</Button>
+          <div className={s.divider}>
+            <span className={s.divider__text}>lub</span>
+          </div>
+          <a href="http://localhost:8080/auth/login/google">
+            <Button variant="outline" className={s.google}>
+              Zaloguj się przez Google
+            </Button>
+          </a>
+          <span className={s.register}>
+            Masz konto?{' '}
+            <Link href={'/login'}>
+              <a className={s.register__link}>Zaloguj się</a>
+            </Link>
+          </span>
+        </form>
+      </div>
+      <div className={s.image__wrapper}>
+        <Image
+          className={s.image}
+          src={image_2}
+          alt="Giewont"
+          layout="fill"
+          objectFit="cover"
+          sizes="(max-width: 1024px) 100vw,
+              50vw"
+          placeholder="blur"
+        />
+      </div>
+    </>
   );
 };
 
 Register.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <GridLayout>{page}</GridLayout>;
 };
 
 export default Register;
