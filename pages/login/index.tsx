@@ -11,20 +11,20 @@ import React, { ReactElement, useState } from 'react';
 import image_1 from '../../public/image_1.jpg';
 
 interface LoginForm {
-  name: string;
   email: string;
   password: string;
 }
 
 const Login = () => {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const signIn = useSignIn();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signIn({ name, email, password });
+    console.log({ email, password });
+
+    signIn({ email, password });
   };
 
   return (

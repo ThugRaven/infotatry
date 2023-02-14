@@ -3,7 +3,6 @@ import { useMutation } from 'react-query';
 import { useAuth } from './useAuth';
 
 interface SignInForm {
-  name: string;
   email: string;
   password: string;
 }
@@ -39,14 +38,14 @@ export const useSignIn = () => {
 
   const signInMutation = useMutation(signInFetch);
 
-  const handleSignIn = ({ name, email, password }: SignInForm) => {
+  const handleSignIn = ({ email, password }: SignInForm) => {
     signInMutation.mutate(
-      { name, email, password },
+      { email, password },
       {
         onSuccess: (data) => {
           console.log(data);
           console.log(data && data._id);
-          
+
           if (auth.refetch) {
             auth.refetch();
             return router.push('/');
