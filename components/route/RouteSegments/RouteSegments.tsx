@@ -35,9 +35,9 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
   let totalTime = 0;
   let totalDistance = 0;
 
-  return (
+  return segments.length > 0 ? (
     <section>
-      <h2>Przebieg trasy</h2>
+      <h2 className={s.title}>Przebieg trasy</h2>
       <ul className={s.list}>
         {segments.map((segment, index) => {
           const _totalTime = totalTime;
@@ -117,7 +117,7 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
         })}
       </ul>
     </section>
-  );
+  ) : null;
 };
 
 export default RouteSegments;
