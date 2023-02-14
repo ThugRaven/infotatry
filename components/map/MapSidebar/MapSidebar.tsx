@@ -93,7 +93,7 @@ const MapSidebar = ({
                 ))}
               </ul>
               <CurrentWeather
-                location={data[0].weatherSite?.name}
+                location={data[index].weatherSite?.name}
                 weather={currentWeather}
                 onWeatherModalOpen={onWeatherModalOpen}
               />
@@ -103,7 +103,7 @@ const MapSidebar = ({
           )}
 
           <RouteSegments
-            segments={(data && data[0].segments) ?? []}
+            segments={(data && data[index].segments) ?? []}
             onHover={onHover}
           />
           <AvalancheInfo level={dangerLevel} />
