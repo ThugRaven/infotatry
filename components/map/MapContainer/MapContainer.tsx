@@ -56,8 +56,8 @@ type MapContainerProps = {
   padding?: number;
   isLoading?: boolean;
   popupDispatch: Dispatch<PopupAction>;
-  hoveredNode: number;
-  hoveredTrail: number;
+  hoveredNode?: number;
+  hoveredTrail?: number;
 };
 
 interface PopupInfo {
@@ -477,7 +477,7 @@ const MapContainer = ({
         <Layer {...trailsDirectionEndStartLayer} />
         <Layer
           {...trailHighlightLayer}
-          filter={['==', hoveredTrail, ['get', 'id']]}
+          filter={['==', hoveredTrail ?? null, ['get', 'id']]}
         />
       </Source>
       <Source type="geojson" data={routeData} lineMetrics={true}>
@@ -487,7 +487,7 @@ const MapContainer = ({
         <Layer {...nodesDrawLayer} />
         <Layer
           {...nodeHighlightLayer}
-          filter={['==', hoveredNode, ['get', 'id']]}
+          filter={['==', hoveredNode ?? null, ['get', 'id']]}
         />
       </Source>
       <Source type="geojson" data={closedTrailsData}>
