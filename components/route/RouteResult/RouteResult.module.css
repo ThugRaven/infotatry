@@ -188,7 +188,3 @@
 .trail--black {
   --background-color: #000000;
 }
-
-.details__button {
-  margin: var(--space-4) var(--space-4) var(--space-1) var(--space-4);
-}

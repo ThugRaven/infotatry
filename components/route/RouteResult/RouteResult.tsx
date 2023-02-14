@@ -237,14 +237,6 @@ const RouteResult = ({
         </div>
         {routeMessage}
         <RouteTrails segments={segments} />
-        {active && (
-          <button
-            className={s.details__button}
-            onClick={() => console.log('details')}
-          >
-            Szczegóły
-          </button>
-        )}
       </a>
     </li>
   );
