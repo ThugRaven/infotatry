@@ -1,4 +1,5 @@
 import Header from '@components/common/Header';
+import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
 import { useSession } from 'next-auth/react';
@@ -10,14 +11,18 @@ interface MainLayoutProps {
   children: ReactNode;
 }
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = ({
+  children,
+  className,
+  ...props
+}: MainLayoutProps & React.HTMLAttributes<HTMLDivElement>) => {
   const { data: session, status } = useSession();
   const { user, status: authStatus } = useAuth();
   const router = useRouter();
   const handleSignOut = useSignOut();
 
   return (
-    <div className={s.container}>
+    <div className={classNames(s.container, className)} {...props}>
       <Header
         navRoutes={[
           {
