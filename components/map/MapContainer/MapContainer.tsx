@@ -1,7 +1,9 @@
 import { Spinner } from '@chakra-ui/react';
 import {
+  nodeHighlightLayer,
   nodesDrawLayer,
   routeLayer,
+  trailHighlightLayer,
   trailsClosedLayer,
   trailsDataLayer,
   trailsDirectionEndStartLayer,
@@ -54,6 +56,8 @@ type MapContainerProps = {
   padding?: number;
   isLoading?: boolean;
   popupDispatch: Dispatch<PopupAction>;
+  hoveredNode: number;
+  hoveredTrail: number;
 };
 
 interface PopupInfo {
@@ -82,6 +86,8 @@ const MapContainer = ({
   padding,
   isLoading = false,
   popupDispatch,
+  hoveredNode,
+  hoveredTrail,
 }: MapContainerProps) => {
   const mapRef = useRef<MapRef | null>(null);
   const mapInitializeRef = useCallback((node: MapRef) => {
@@ -211,7 +217,7 @@ const MapContainer = ({
             bounds.extend([node[0], node[1]]);
           });
 
-          let properties: GeoJSON.GeoJsonProperties = {
+          const properties: GeoJSON.GeoJsonProperties = {
             id: trail.id,
             name: `${trail.name.start} - ${trail.name.end}`,
           };
@@ -228,7 +234,7 @@ const MapContainer = ({
         bounds.extend([node[0], node[1]]);
       });
 
-      let properties: GeoJSON.GeoJsonProperties = {
+      const properties: GeoJSON.GeoJsonProperties = {
         id: hike._id,
         name: `${hike.name.start} - ${hike.name.end}`,
       };
@@ -306,7 +312,7 @@ const MapContainer = ({
             let decoded = decode(trail.encoded);
             decoded = swapCoordinates(decoded);
 
-            let properties: GeoJSON.GeoJsonProperties = {
+            const properties: GeoJSON.GeoJsonProperties = {
               id: trail.id,
               name: `${trail.name.start} - ${trail.name.end}`,
             };
@@ -330,7 +336,7 @@ const MapContainer = ({
       return;
     }
 
-    let mapPadding: PaddingOptions = { top: 0, bottom: 0, left: 0, right: 0 };
+    const mapPadding: PaddingOptions = { top: 0, bottom: 0, left: 0, right: 0 };
     if (padding > 0) {
       mapPadding.left = padding;
     } else {
@@ -400,7 +406,7 @@ const MapContainer = ({
           setSelectedNode(node);
         }
 
-        let trailInfo = {
+        const trailInfo = {
           lngLat: e.lngLat,
           features: features,
           trail: trail,
@@ -469,12 +475,20 @@ const MapContainer = ({
         <Layer {...trailsDrawOffset3in3Layer} />
         <Layer {...trailsDirectionStartEndLayer} />
         <Layer {...trailsDirectionEndStartLayer} />
-      </Source>
-      <Source type="geojson" data={nodesData}>
-        <Layer {...nodesDrawLayer} />
+        <Layer
+          {...trailHighlightLayer}
+          filter={['==', hoveredTrail, ['get', 'id']]}
+        />
       </Source>
       <Source type="geojson" data={routeData} lineMetrics={true}>
         <Layer {...routeLayer} />
+      </Source>
+      <Source type="geojson" data={nodesData}>
+        <Layer {...nodesDrawLayer} />
+        <Layer
+          {...nodeHighlightLayer}
+          filter={['==', hoveredNode, ['get', 'id']]}
+        />
       </Source>
       <Source type="geojson" data={closedTrailsData}>
         <Layer {...trailsClosedLayer} />

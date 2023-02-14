@@ -99,6 +99,8 @@ const MapPage = () => {
     name: null,
   });
   const router = useRouter();
+  const [hoveredNode, setHoveredNode] = useState(-1);
+  const [hoveredTrail, setHoveredTrail] = useState(-1);
 
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -373,6 +375,14 @@ const MapPage = () => {
     setIndex(index);
   };
 
+  const handleHover = (id: number, type: 'node' | 'trail') => {
+    if (type === 'node') {
+      setHoveredNode(id);
+    } else {
+      setHoveredTrail(id);
+    }
+  };
+
   // const handlePreviousRoute = () => {
   //   if (data) {
   //     setIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
@@ -405,6 +415,7 @@ const MapPage = () => {
           dangerLevel={(avalanchesData && avalanchesData[0].danger) ?? null}
           currentWeather={currentWeatherData}
           onWeatherModalOpen={onWeatherModalOpen}
+          onHover={handleHover}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
         />
@@ -413,6 +424,8 @@ const MapPage = () => {
           padding={isOpen ? width : 0}
           trailIds={data && data[index].trails}
           popupDispatch={dispatch}
+          hoveredNode={hoveredNode}
+          hoveredTrail={hoveredTrail}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />

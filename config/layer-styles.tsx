@@ -26,6 +26,8 @@ const TRAIL_DRAW_WIDTH_ARRAY = [
 ];
 const TRAIL_DRAW_DASH_ARRAY = [6 * 2, 2 * 2];
 const TRAIL_OUTLINE_RATIO = 0.5;
+const ROUTE_RATIO = 2;
+const TRAIL_HIGHTLIGHT_RATIO = 3;
 
 const trailDrawWidth =
   TRAIL_DRAW_WIDTH_ARRAY[TRAIL_DRAW_WIDTH_ARRAY.length - 1][1];
@@ -38,15 +40,21 @@ const trailDrawOutlineDashArray = [
 ];
 
 const trailDrawOutlineWidthArray: number[] = [];
+const routeWidthArray: number[] = [];
+const trailHighlightWidthArray: number[] = [];
 TRAIL_DRAW_WIDTH_ARRAY.forEach((value) => {
   const zoom = value[0];
   const width = value[1];
 
   const outlineWidth = width * TRAIL_OUTLINE_RATIO * 2 + width;
   trailDrawOutlineWidthArray.push(zoom, outlineWidth);
+  routeWidthArray.push(zoom, outlineWidth * ROUTE_RATIO);
+  trailHighlightWidthArray.push(zoom, outlineWidth * TRAIL_HIGHTLIGHT_RATIO);
   console.log(trailOutlineWidth);
 });
 console.log(trailDrawOutlineWidthArray);
+console.log(routeWidthArray);
+console.log(trailHighlightWidthArray);
 console.log(trailOutlineWidth);
 console.log(dashArrayRatio);
 console.log(trailDrawOutlineDashArray);
@@ -333,10 +341,55 @@ export const routeLayer: LineLayer = {
   source: 'composite',
   layout: { 'line-cap': 'round' },
   paint: {
-    'line-width': ['interpolate', ['linear'], ['zoom'], 9, 3, 11, 5, 22, 20],
+    'line-width': ['interpolate', ['linear'], ['zoom'], ...routeWidthArray],
     'line-dasharray': [0.25, 1.5],
     // 'line-color': '#0081cc',
     // 'line-color': '#f89012',
     'line-color': '#000000',
+  },
+};
+
+export const trailHighlightLayer: LineLayer = {
+  id: 'trail-highlight-layer',
+  type: 'line',
+  source: 'composite',
+  layout: { 'line-cap': 'round' },
+  paint: {
+    'line-width': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      ...trailHighlightWidthArray,
+    ],
+    // 'line-color': '#0081cc',
+    'line-color': '#f9a743',
+  },
+};
+
+export const nodeHighlightLayer: CircleLayer = {
+  id: 'node-highlight-layer',
+  type: 'circle',
+  source: 'composite',
+  paint: {
+    'circle-radius': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      4,
+      22,
+      8,
+    ],
+    'circle-color': '#f9a743',
+    'circle-stroke-color': '#ffffff',
+    'circle-stroke-width': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      1.5,
+      22,
+      3,
+    ],
   },
 };

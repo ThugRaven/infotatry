@@ -25,6 +25,7 @@ interface MapSidebarProps {
   dangerLevel: number | null;
   currentWeather?: CurrentWeatherResponse;
   onWeatherModalOpen: () => void;
+  onHover: (id: number, type: 'node' | 'trail') => void;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -44,6 +45,7 @@ const MapSidebar = ({
   dangerLevel,
   currentWeather,
   onWeatherModalOpen,
+  onHover,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -100,7 +102,10 @@ const MapSidebar = ({
             data && data.message
           )}
 
-          <RouteSegments segments={(data && data[0].segments) ?? []} />
+          <RouteSegments
+            segments={(data && data[0].segments) ?? []}
+            onHover={onHover}
+          />
           <AvalancheInfo level={dangerLevel} />
         </div>
       </div>

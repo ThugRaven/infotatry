@@ -15,14 +15,17 @@ type TrailSegment = {
   time: number;
   closed: boolean;
   type: string;
+  node_id: number;
+  trail_id: number;
 };
 
 interface RouteSegmentsProps {
   segments: TrailSegment[];
   onClick?: () => void;
+  onHover: (id: number, type: 'node' | 'trail') => void;
 }
 
-const RouteSegments = ({ segments, onClick }: RouteSegmentsProps) => {
+const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
   console.log('segments', segments);
 
   const handleClick = () => {
@@ -44,7 +47,11 @@ const RouteSegments = ({ segments, onClick }: RouteSegmentsProps) => {
 
           return (
             <>
-              <li key={`${index}-node`}>
+              <li
+                key={`${index}-node`}
+                onMouseOver={() => onHover(segment.node_id, 'node')}
+                onMouseLeave={() => onHover(-1, 'node')}
+              >
                 <a onClick={handleClick}>
                   <div className={classNames(s.item, s['item--node'])}>
                     <div className={s.wrapper}>
@@ -68,7 +75,11 @@ const RouteSegments = ({ segments, onClick }: RouteSegmentsProps) => {
                 </a>
               </li>
               {segment.distance > 0 && (
-                <li key={`${index}-trail`}>
+                <li
+                  key={`${index}-trail`}
+                  onMouseOver={() => onHover(segment.trail_id, 'trail')}
+                  onMouseLeave={() => onHover(-1, 'trail')}
+                >
                   <a onClick={handleClick}>
                     <div className={classNames(s.item, s['item--trail'])}>
                       <div className={s.wrapper}>
