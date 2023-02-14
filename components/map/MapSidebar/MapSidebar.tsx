@@ -102,11 +102,11 @@ const MapSidebar = ({
             data && data.message
           )}
 
+          <AvalancheInfo level={dangerLevel} />
           <RouteSegments
             segments={(data && data[index].segments) ?? []}
             onHover={onHover}
           />
-          <AvalancheInfo level={dangerLevel} />
         </div>
       </div>
     </div>
