@@ -1,11 +1,20 @@
-import { Button } from '@chakra-ui/react';
+import {
+  Button,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
-import s from '@styles/Hikes.module.css';
+import RouteSegments from '@components/route/RouteSegments';
+import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
+import s from '@styles/PlannedHike.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { useMutation } from 'react-query';
 
 export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
@@ -59,8 +68,9 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
 const PlannedHike = ({ hike }: any) => {
   const router = useRouter();
   const { id } = router.query;
-  const data = hike;
-  console.log('getServerSideProps', data);
+  const [hoveredNode, setHoveredNode] = useState(-1);
+  const [hoveredTrail, setHoveredTrail] = useState(-1);
+  console.log('getServerSideProps', hike);
 
   const saveHike = async (id: string | string[] | undefined) => {
     try {
@@ -95,8 +105,8 @@ const PlannedHike = ({ hike }: any) => {
   );
 
   const handleSaveHike = () => {
-    if (data) {
-      console.log(data);
+    if (hike) {
+      console.log(hike);
     }
 
     hikeMutation.mutate(id, {
@@ -110,66 +120,96 @@ const PlannedHike = ({ hike }: any) => {
     });
   };
   console.log('TEST');
-  console.log(data && data.encoded != '' ? data.trails : null);
-  console.log(data && data.encoded == '' ? null : data);
+  console.log(hike && hike.encoded != '' ? hike.trails : null);
+  console.log(hike && hike.encoded == '' ? null : hike);
+
+  const handleHover = (id: number, type: 'node' | 'trail') => {
+    if (type === 'node') {
+      setHoveredNode(id);
+    } else {
+      setHoveredTrail(id);
+    }
+  };
 
   return (
     <div className={s.container}>
-      {/* <ul>
-        {routeNodes.map((node, index) => (
-          <li key={`${node.id}-${index}`}>
-            {node.id} | {node.name}
-          </li>
+      <aside className={s.segments}>
+        <RouteSegments
+          segments={(hike && hike.segments) ?? []}
+          onHover={handleHover}
+        />
+      </aside>
+      <section className={s.stats}>
+        <h2
+          className={s.location__name}
+        >{`${hike.name.start} - ${hike.name.end}`}</h2>
+        <ul className={s.stats__list}>
+          {[
+            {
+              name: 'Dystans',
+              value: formatMetersToKm(hike.distance),
+              unit: 'km',
+            },
+            {
+              name: 'Czas',
+              value: formatMinutesToHours(hike.time),
+              unit: 'h',
+            },
+            {
+              name: 'Podejścia',
+              value: hike.ascent,
+              unit: 'm',
+            },
+            {
+              name: 'Zejścia',
+              value: hike.descent,
+              unit: 'm',
+            },
+          ].map((item) => (
+            <li key={item.name} className={s.stats__item}>
+              <span className={s.item__name}>{item.name}</span>
+              <span className={s.item__value}>
+                {item.value}
+                <span className={s.item__unit}>{item.unit}</span>
+              </span>
+            </li>
           ))}
-      </ul> */}
+        </ul>
+        <Button colorScheme="blue" mb={2} onClick={handleSaveHike}>
+          Save hike
+        </Button>
+      </section>
+      <section className={s.map}>
+        <MapContainer
+          trailIds={hike && hike.encoded != '' ? hike.trails : null}
+          hike={hike && hike.encoded == '' ? null : hike}
+          hoveredNode={hoveredNode}
+          hoveredTrail={hoveredTrail}
+        />
+      </section>
+      <section className={s.details}>
+        <Tabs>
+          <TabList>
+            <Tab>Profil wysokości</Tab>
+            <Tab>Pogoda</Tab>
+            <Tab>Informacje</Tab>
+            <Tab>Zapisz</Tab>
+          </TabList>
 
-      {data && (
-        <>
-          <h1
-            className={s.hike__names}
-          >{`${data.name.start} - ${data.name.end}`}</h1>
-          <ul className={s.hike__info}>
-            <li title={`${data.distance} m`}>
-              <span>Distance</span>
-              {`${
-                (Math.floor(data.distance / 1000) * 1000 +
-                  Math.round((data.distance % 1000) / 100) * 100) /
-                1000
-              } km`}
-            </li>
-            <li title={`${data.time} min.`}>
-              <span>Time</span>
-              {`${Math.floor(data.time / 60)}:${
-                data.time % 60 >= 10 ? data.time % 60 : `0${data.time % 60}`
-              } h`}
-            </li>
-            <li>
-              <span>Ascent</span>
-              {`${data.ascent} m`}
-            </li>
-            <li>
-              <span>Descent</span>
-              {`${data.descent} m`}
-            </li>
-          </ul>
-          <Button colorScheme="blue" mb={2} onClick={handleSaveHike}>
-            Save hike
-          </Button>
-        </>
-      )}
-
-      <MapContainer
-        trailIds={data && data.encoded != '' ? data.trails : null}
-        hike={data && data.encoded == '' ? null : data}
-      ></MapContainer>
-
-      <div>Elevation profile</div>
+          <TabPanels>
+            <TabPanel>Profil wysokości</TabPanel>
+            <TabPanel>Pogoda</TabPanel>
+            <TabPanel>Informacje</TabPanel>
+            <TabPanel>Zapisz</TabPanel>
+          </TabPanels>
+        </Tabs>
+      </section>
     </div>
   );
 };
 
 PlannedHike.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <MainLayout className={s.layout}>{page}</MainLayout>;
 };
 
 export default PlannedHike;
