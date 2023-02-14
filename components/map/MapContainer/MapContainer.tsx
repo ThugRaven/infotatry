@@ -55,7 +55,8 @@ type MapContainerProps = {
   children?: React.ReactNode;
   padding?: number;
   isLoading?: boolean;
-  popupDispatch: Dispatch<PopupAction>;
+  popup?: boolean;
+  popupDispatch?: Dispatch<PopupAction>;
   hoveredNode?: number;
   hoveredTrail?: number;
 };
@@ -85,6 +86,7 @@ const MapContainer = ({
   children,
   padding,
   isLoading = false,
+  popup = true,
   popupDispatch,
   hoveredNode,
   hoveredTrail,
@@ -443,7 +445,7 @@ const MapContainer = ({
         />
       )}
       {children}
-      {popupInfo && (
+      {popupInfo && popup && (
         <MapPopup
           lngLat={popupInfo.lngLat}
           features={popupInfo.features}

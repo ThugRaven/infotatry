@@ -19,7 +19,7 @@ interface MapPopupProps {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
   onClose: () => void;
-  dispatch: Dispatch<PopupAction>;
+  dispatch?: Dispatch<PopupAction>;
 }
 
 const InfoItem = ({ icon, text }: { icon: ReactNode; text?: string }) => {
@@ -120,7 +120,7 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
     </>
   );
 
-  const buttons = (
+  const buttons = dispatch ? (
     <div className={s.buttons}>
       <div className={s.buttons__route}>
         <PopupButton
@@ -169,7 +169,7 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
         onClick={() => console.log('target')}
       />
     </div>
-  );
+  ) : null;
 
   return (
     <Popup
