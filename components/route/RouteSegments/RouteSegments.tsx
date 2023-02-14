@@ -8,7 +8,7 @@ import { TrailColor } from 'pages/dashboard/admin/map';
 import { MdErrorOutline, MdLandscape } from 'react-icons/md';
 import s from './RouteSegments.module.css';
 
-type TrailSegment = {
+export type TrailSegment = {
   name: string;
   colors: TrailColor[];
   distance: number;
@@ -26,8 +26,6 @@ interface RouteSegmentsProps {
 }
 
 const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
-  console.log('segments', segments);
-
   const handleClick = () => {
     // onClick();
   };

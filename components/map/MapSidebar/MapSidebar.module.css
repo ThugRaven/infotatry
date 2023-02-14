@@ -70,3 +70,7 @@
   justify-content: center;
   margin: var(--space-6);
 }
+
+.plan-btn {
+  margin: var(--space-4) var(--space-4) 0;
+}

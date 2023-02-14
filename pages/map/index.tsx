@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
+import { TrailSegment } from '@components/route/RouteSegments/RouteSegments';
 import WeatherModal from '@components/weather/WeatherModal';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -39,10 +40,12 @@ export type Route = {
     end: string;
   };
   trails: number[];
+  segments?: TrailSegment[];
   distance: number;
   time: number;
   ascent: number;
   descent: number;
+  type: 'normal' | 'closed' | 'shortest';
   weatherSite: WeatherSite | null;
 };
 
@@ -307,6 +310,7 @@ const MapPage = () => {
   });
 
   const handleSearch = (searchForm: SearchForm) => {
+    console.log('handleSearch');
     let searchQuery = '';
     for (const key in searchForm) {
       const element = searchForm[key];

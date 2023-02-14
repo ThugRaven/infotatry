@@ -106,7 +106,7 @@
 
 .details__btn {
   width: 100%;
-  margin: var(--space-4);
+  margin: var(--space-4) var(--space-4) 0;
   padding: var(--space-3) var(--space-8);
   background-color: var(--clr-200);
   font-weight: var(--fw-medium);

@@ -1,8 +1,9 @@
-import { Button, Spinner } from '@chakra-ui/react';
+import { Spinner } from '@chakra-ui/react';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import RouteResult from '@components/route/RouteResult';
 import RouteSegments from '@components/route/RouteSegments';
 import { SearchRoute } from '@components/search';
+import Button from '@components/ui/Button';
 import CurrentWeather from '@components/weather/CurrentWeather';
 import { PopupState } from 'pages/map';
 import { useEffect, useRef } from 'react';
@@ -64,9 +65,6 @@ const MapSidebar = ({
         </button>
 
         <div className={s.content}>
-          <Button colorScheme="blue" mt={2} onClick={onPlanHike}>
-            Plan a hike
-          </Button>
           <SearchRoute onSearch={onSearch} popupState={popupState} />
           {isLoading ? (
             <div className={s.spinner}>
@@ -92,6 +90,9 @@ const MapSidebar = ({
                   />
                 ))}
               </ul>
+              <Button className={s['plan-btn']} onClick={onPlanHike}>
+                Zaplanuj wędrówkę
+              </Button>
               <CurrentWeather
                 location={data[index].weatherSite?.name}
                 weather={currentWeather}
