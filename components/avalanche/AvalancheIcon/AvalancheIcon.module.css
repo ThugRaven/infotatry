@@ -1,0 +1,22 @@
+.avalanche {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 var(--space-4);
+  color: var(--text-primary-dark);
+}
+
+.level {
+  font-size: var(--fs-5xl);
+  font-weight: var(--fw-semi-bold);
+}
+
+.level__icon > svg {
+  width: var(--icon-64dp);
+  height: var(--icon-64dp);
+}
+
+.level__name {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-medium);
+}
