@@ -1,0 +1,145 @@
+.container {
+  display: flex;
+  justify-content: center;
+  background-color: var(--clr-100);
+}
+
+.wrapper {
+  display: grid;
+  grid-template-areas:
+    'current details'
+    'bulletins bulletins';
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  width: min(1280px, 100%);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.layout {
+  height: 100vh;
+}
+
+.card {
+  padding: var(--space-4);
+  background-color: var(--clr-50);
+  border-radius: var(--br-base);
+}
+
+.current {
+  grid-area: current;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.avalanche__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.current__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: var(--fs-xl);
+  color: var(--clr-700);
+}
+
+.info--left {
+  align-items: flex-start;
+  text-align: start;
+}
+
+.info--right {
+  align-items: flex-end;
+  text-align: end;
+}
+
+.info__value {
+  font-size: var(--fs-2xl);
+  color: var(--text-primary-dark);
+}
+
+.details {
+  grid-area: details;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.details__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.details__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: var(--space-4);
+}
+
+.details__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.details__list li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.elevation {
+  width: var(--icon-96dp);
+  height: var(--icon-96dp);
+}
+
+.bulletins {
+  grid-area: bulletins;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bulletins__list {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2);
+  overflow-x: auto;
+}
+
+.bulletins__list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--clr-700);
+}
+
+.icon {
+  gap: var(--space-2);
+}
+
+.icon__level {
+  font-size: var(--fs-xl);
+}

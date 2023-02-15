@@ -313,7 +313,7 @@ const Avalanches = () => {
           'avalanche-bulletins-all',
           (bulletins) => {
             if (bulletins) {
-              let bulletin = bulletins.find(
+              const bulletin = bulletins.find(
                 (bulletin) => bulletin._id === data._id,
               );
               if (bulletin) {

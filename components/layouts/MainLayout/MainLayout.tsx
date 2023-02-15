@@ -33,6 +33,10 @@ const MainLayout = ({
             name: 'Dashboard',
             path: '/dashboard',
           },
+          {
+            name: 'Lawiny',
+            path: '/avalanches',
+          },
         ]}
         user={user}
         isLoggedIn={authStatus === 'authenticated'}
