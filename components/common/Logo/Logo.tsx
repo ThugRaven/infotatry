@@ -7,12 +7,13 @@ import s from './Logo.module.css';
 // {}: LogoProps
 const Logo = ({
   className,
+  textClassName,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => {
+}: { textClassName?: string } & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={classNames(className, s.logo)} {...props}>
       <LogoIcon className={s.icon} />
-      InfoTatry
+      <span className={textClassName}>InfoTatry</span>
     </div>
   );
 };

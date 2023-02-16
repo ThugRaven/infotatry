@@ -10,22 +10,93 @@
   z-index: 10;
 }
 
+.menu {
+  display: block;
+  margin: var(--space-4);
+  width: var(--icon-40dp);
+  height: var(--icon-40dp);
+}
+
+@media screen and (min-width: 768px) {
+  .menu {
+    display: none;
+  }
+}
+
+.drawer__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
 .wrapper {
-  display: flex;
-  padding: var(--space-3) var(--space-4);
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .wrapper {
+    display: flex;
+    margin: var(--space-3) var(--space-4);
+  }
 }
 
 .logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.logo__text {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  .logo__text {
+    display: block;
+  }
 }
 
 .nav {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 var(--space-4);
+    font-size: var(--fs-lg);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 var(--space-4) 0 var(--space-8);
+    font-size: var(--fs-xl);
+  }
+}
+
+.drawer__nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 var(--space-12);
+  margin: var(--space-2);
+  font-size: var(--fs-lg);
+}
+
+.drawer__nav .nav__routes {
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .nav__routes {
@@ -69,7 +140,13 @@
 
 .profile {
   position: relative;
-  margin: 0 var(--space-2) 0 auto;
+  margin: var(--space-1) var(--space-2) var(--space-1) auto;
+}
+
+@media screen and (min-width: 768px) {
+  .profile {
+    margin: 0 var(--space-2) 0 auto;
+  }
 }
 
 .profile__btn {
@@ -91,4 +168,14 @@
 .profile__btn:active,
 .profile__btn--active {
   background-color: var(--clr-300);
+}
+
+.profile__name {
+  display: none;
+}
+
+@media screen and (min-width: 1280px) {
+  .profile__name {
+    display: block;
+  }
 }
