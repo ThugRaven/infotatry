@@ -206,6 +206,17 @@ const Avalanches = () => {
                   )}
               </span>
             </div>
+            <div className={classNames(s.info, s['info--center'])}>
+              <span>Źródło</span>
+              <a
+                href="https://lawiny.topr.pl/"
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                className={s.info__link}
+              >
+                lawiny.topr.pl
+              </a>
+            </div>
             <div className={classNames(s.info, s['info--right'])}>
               <span>Obowiązuję do</span>
               <span className={s.info__value}>
