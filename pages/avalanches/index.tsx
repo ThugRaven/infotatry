@@ -6,7 +6,7 @@ import { MainLayout } from '@components/layouts';
 import s from '@styles/Avalanches.module.css';
 import classNames from 'classnames';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { ReactElement, useState } from 'react';
+import { ReactElement, useId, useState } from 'react';
 import { useQuery } from 'react-query';
 
 export type Avalanche = {
@@ -75,7 +75,8 @@ const AvalancheInfoItem = ({
   problem: string[];
   aspect: string[];
 }) => {
-  const offset = (elevation ?? 0) / 2500;
+  const offset = (elevation ?? 0) / 3000;
+  const id = useId();
 
   const getStopColor = (level: number) => {
     return level === 1
@@ -103,14 +104,17 @@ const AvalancheInfoItem = ({
         >
           <path
             d="M9.33332 4L6.83332 7.33333L8.73332 9.86667L7.66666 10.6667C6.53999 9.16667 4.66666 6.66667 4.66666 6.66667L0.666656 12H15.3333L9.33332 4Z"
-            fill="url(#gradient)"
+            fill={`url(#gradient-${id})`}
             stroke="black"
             strokeWidth="0.25"
           />
           <defs>
-            <linearGradient id="gradient" x2="0%" y2="100%">
-              <stop offset={offset} stopColor={getStopColor(danger[1])} />
+            <linearGradient id={`gradient-${id}`} x2="0%" y1="100%">
               <stop offset={offset} stopColor={getStopColor(danger[0])} />
+              <stop
+                offset={offset}
+                stopColor={getStopColor(danger[1] ?? danger[0])}
+              />
             </linearGradient>
           </defs>
         </svg>
@@ -220,10 +224,10 @@ const Avalanches = () => {
             increase={
               (avalanchesData && avalanchesData[index].am.increase) ?? []
             }
-            problem={
-              (avalanchesData && avalanchesData[index].am.problem) ?? ['']
+            problem={(avalanchesData && avalanchesData[index].am.problem) ?? []}
+            aspect={
+              (avalanchesData && avalanchesData[index].am.aspect) ?? ['', '']
             }
-            aspect={(avalanchesData && avalanchesData[index].am.aspect) ?? ['']}
           />
           <AvalancheInfoItem
             am={false}
@@ -232,10 +236,10 @@ const Avalanches = () => {
             increase={
               (avalanchesData && avalanchesData[index].pm.increase) ?? []
             }
-            problem={
-              (avalanchesData && avalanchesData[index].pm.problem) ?? ['']
+            problem={(avalanchesData && avalanchesData[index].pm.problem) ?? []}
+            aspect={
+              (avalanchesData && avalanchesData[index].pm.aspect) ?? ['', '']
             }
-            aspect={(avalanchesData && avalanchesData[index].pm.aspect) ?? ['']}
           />
         </section>
 
@@ -243,43 +247,42 @@ const Avalanches = () => {
           <h2 className={s.title}>Historia i prognoza</h2>
           <ul className={s.bulletins__list}>
             {avalanchesData &&
-              avalanchesData
-                .slice(0)
-                .reverse()
-                .map((avalanche, index) => {
-                  return (
-                    <>
-                      <li key={new Date(avalanche.until).getTime()}>
-                        <span>
-                          {dateFormat.format(new Date(avalanche.until))}
-                        </span>
-                        <AvalancheIcon
-                          level={avalanche.danger}
-                          increase={avalanche.increase}
-                          className={s.icon}
-                          levelClassName={s.icon__level}
-                        />
-                      </li>
-                      {avalanchesData && avalanchesData.length - 1 === index && (
-                        <li key={'forecast'}>
-                          <span>
-                            {dateFormat.format(
-                              new Date(avalanche.until).setDate(
-                                new Date(avalanche.until).getDate() + 1,
-                              ),
-                            )}
-                          </span>
-                          <AvalancheIcon
-                            level={avalanche.forecast}
-                            increase={false}
-                            className={s.icon}
-                            levelClassName={s.icon__level}
-                          />
-                        </li>
-                      )}
-                    </>
-                  );
-                })}
+              avalanchesData.map((avalanche, index, array) => {
+                const _index = array.length - 1 - index;
+                const data = array[_index];
+
+                return (
+                  <li
+                    key={new Date(data.until).getTime()}
+                    onClick={() => setIndex(_index)}
+                  >
+                    <span>{dateFormat.format(new Date(data.until))}</span>
+                    <AvalancheIcon
+                      level={data.danger}
+                      increase={data.increase}
+                      className={s.icon}
+                      levelClassName={s.icon__level}
+                    />
+                  </li>
+                );
+              })}
+            {avalanchesData && (
+              <li key={'forecast'}>
+                <span>
+                  {dateFormat.format(
+                    new Date(avalanchesData[0].until).setDate(
+                      new Date(avalanchesData[0].until).getDate() + 1,
+                    ),
+                  )}
+                </span>
+                <AvalancheIcon
+                  level={avalanchesData[0].forecast}
+                  increase={false}
+                  className={s.icon}
+                  levelClassName={s.icon__level}
+                />
+              </li>
+            )}
           </ul>
         </section>
       </div>
