@@ -7,13 +7,26 @@
 }
 
 .level {
-  font-size: var(--fs-5xl);
+  font-size: var(--fs-3xl);
   font-weight: var(--fw-semi-bold);
 }
 
+@media screen and (min-width: 768px) {
+  .level {
+    font-size: var(--fs-5xl);
+  }
+}
+
 .level__icon > svg {
-  width: var(--icon-64dp);
-  height: var(--icon-64dp);
+  width: var(--icon-48dp);
+  height: var(--icon-48dp);
+}
+
+@media screen and (min-width: 768px) {
+  .level__icon > svg {
+    width: var(--icon-64dp);
+    height: var(--icon-64dp);
+  }
 }
 
 .level__name {
