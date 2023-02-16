@@ -126,7 +126,7 @@ const AvalancheInfoItem = ({
               level={danger[1]}
               increase={increase[1]}
               problem={problem[1]}
-              aspect={aspect[1]}
+              aspect={aspect[1] ?? ''}
             />
           )}
           <AvalancheInfoItemStats
@@ -134,7 +134,7 @@ const AvalancheInfoItem = ({
             level={danger[0]}
             increase={increase[0]}
             problem={problem[0]}
-            aspect={aspect[0]}
+            aspect={aspect[0] ?? ''}
           />
         </ul>
       </div>
@@ -258,8 +258,8 @@ const Avalanches = () => {
           <h2 className={s.title}>Historia i prognoza</h2>
           <ul className={s.bulletins__list}>
             {avalanchesData &&
-              avalanchesData.map((avalanche, index, array) => {
-                const _index = array.length - 1 - index;
+              avalanchesData.map((avalanche, idx, array) => {
+                const _index = array.length - 1 - idx;
                 const data = array[_index];
 
                 return (
@@ -267,31 +267,44 @@ const Avalanches = () => {
                     key={new Date(data.until).getTime()}
                     onClick={() => setIndex(_index)}
                   >
-                    <span>{dateFormat.format(new Date(data.until))}</span>
-                    <AvalancheIcon
-                      level={data.danger}
-                      increase={data.increase}
-                      className={s.icon}
-                      levelClassName={s.icon__level}
-                    />
+                    <button
+                      className={classNames(s.bulletins__item, {
+                        [s['bulletins__item--active']]: _index === index,
+                      })}
+                    >
+                      <span>{dateFormat.format(new Date(data.until))}</span>
+                      <AvalancheIcon
+                        level={data.danger}
+                        increase={data.increase}
+                        className={s.icon}
+                        levelClassName={s.icon__level}
+                      />
+                    </button>
                   </li>
                 );
               })}
             {avalanchesData && (
               <li key={'forecast'}>
-                <span>
-                  {dateFormat.format(
-                    new Date(avalanchesData[0].until).setDate(
-                      new Date(avalanchesData[0].until).getDate() + 1,
-                    ),
+                <button
+                  className={classNames(
+                    s.bulletins__item,
+                    s.bulletins__forecast,
                   )}
-                </span>
-                <AvalancheIcon
-                  level={avalanchesData[0].forecast}
-                  increase={false}
-                  className={s.icon}
-                  levelClassName={s.icon__level}
-                />
+                >
+                  <span>
+                    {dateFormat.format(
+                      new Date(avalanchesData[0].until).setDate(
+                        new Date(avalanchesData[0].until).getDate() + 1,
+                      ),
+                    )}
+                  </span>
+                  <AvalancheIcon
+                    level={avalanchesData[0].forecast}
+                    increase={false}
+                    className={s.icon}
+                    levelClassName={s.icon__level}
+                  />
+                </button>
               </li>
             )}
           </ul>
