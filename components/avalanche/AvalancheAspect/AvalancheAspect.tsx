@@ -12,6 +12,7 @@ const AvalancheAspect = ({ aspect }: AvalancheAspectProps) => {
   const end = cardinalDirectionToBooleanArray(aspects[1]);
   const startIndex = start.findIndex((value) => value);
   const endIndex = end.findIndex((value) => value);
+
   let aspectArray: boolean[] = [];
 
   if (startIndex < endIndex) {
@@ -31,11 +32,14 @@ const AvalancheAspect = ({ aspect }: AvalancheAspectProps) => {
       }
     });
   } else {
-    aspectArray = Array(8).fill(1, 0);
+    aspectArray = Array(8).fill(
+      startIndex === -1 && endIndex === -1 ? 0 : 1,
+      0,
+    );
   }
 
   return (
-    <div title={`Wystawy niekorzystne - ${aspect}`}>
+    <div title={`Wystawy niekorzystne - ${aspect ? aspect : 'Brak'}`}>
       <AspectIcon
         aspect={aspectArray}
         fill={'var(--clr-100)'}
