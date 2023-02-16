@@ -37,6 +37,10 @@ const MainLayout = ({
             name: 'Lawiny',
             path: '/avalanches',
           },
+          {
+            name: 'Zamknięcia',
+            path: '/closures',
+          },
         ]}
         user={user}
         isLoggedIn={authStatus === 'authenticated'}

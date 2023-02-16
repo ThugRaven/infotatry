@@ -210,8 +210,8 @@ const Avalanches = () => {
               <span>Źródło</span>
               <a
                 href="https://lawiny.topr.pl/"
-                target={'_blank'}
-                rel={'noopener noreferrer'}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={s.info__link}
               >
                 lawiny.topr.pl
