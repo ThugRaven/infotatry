@@ -173,7 +173,7 @@ const Avalanches = () => {
     error: avalanchesError,
     data: avalanchesData,
   } = useQuery<Avalanche[], Error>(
-    ['avalanche-bulletin'],
+    ['avalanches-week'],
     () => fetchAvalanches(),
     {
       refetchOnWindowFocus: false,

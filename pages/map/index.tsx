@@ -299,7 +299,7 @@ const MapPage = () => {
     isLoading: isLoadingAvalanches,
     error: avalanchesError,
     data: avalanchesData,
-  } = useQuery<any, Error>(['avalanche-bulletin'], () => fetchAvalanches(), {
+  } = useQuery<any, Error>(['avalanches-last'], () => fetchAvalanches(), {
     refetchOnWindowFocus: false,
     cacheTime: 15 * 60 * 1000, // 15 minutes
     staleTime: 10 * 60 * 1000, // 10 minutes
