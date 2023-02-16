@@ -33,3 +33,16 @@
 .closure__source:hover {
   text-decoration: underline;
 }
+
+@media screen and (min-width: 1024px) {
+  .closure__type,
+  .closure__desc {
+    font-size: var(--fs-sm);
+  }
+
+  .closure__reason,
+  .closure__date,
+  .closure__source {
+    font-size: var(--fs-base);
+  }
+}
