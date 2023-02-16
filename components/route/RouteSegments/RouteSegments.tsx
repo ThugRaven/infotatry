@@ -5,6 +5,7 @@ import ShelterIcon from '@components/icons/ShelterIcon';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
 import { TrailColor } from 'pages/dashboard/admin/map';
+import { Fragment } from 'react';
 import { MdErrorOutline, MdLandscape } from 'react-icons/md';
 import s from './RouteSegments.module.css';
 
@@ -44,7 +45,7 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
           totalDistance += segment.distance;
 
           return (
-            <>
+            <Fragment key={index}>
               <li
                 key={`${index}-node`}
                 onMouseOver={() => onHover(segment.node_id, 'node')}
@@ -110,7 +111,7 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
                   </a>
                 </li>
               )}
-            </>
+            </Fragment>
           );
         })}
       </ul>
