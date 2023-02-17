@@ -2190,7 +2190,7 @@ const DashboardAdminMap = () => {
 };
 
 DashboardAdminMap.getLayout = function getLayout(page: ReactElement) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout maxHeight={true}>{page}</DashboardLayout>;
 };
 
 export default DashboardAdminMap;

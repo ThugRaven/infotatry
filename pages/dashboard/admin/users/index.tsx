@@ -13,7 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
-import s from '@styles/Hikes.module.css';
+import s from '@styles/DashboardAdminUsers.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -420,7 +420,7 @@ const Users = () => {
 };
 
 Users.getLayout = function getLayout(page: ReactElement) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout maxHeight={true}>{page}</DashboardLayout>;
 };
 
 export default Users;

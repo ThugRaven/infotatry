@@ -8,10 +8,12 @@ import { ReactNode } from 'react';
 import s from './MainLayout.module.css';
 
 interface MainLayoutProps {
+  maxHeight?: boolean;
   children: ReactNode;
 }
 
 const MainLayout = ({
+  maxHeight = false,
   children,
   className,
   ...props
@@ -22,7 +24,9 @@ const MainLayout = ({
   const handleSignOut = useSignOut();
 
   return (
-    <div className={classNames(s.container, className)} {...props}>
+    <div className={classNames(s.container, {
+      [s['max-height']]: maxHeight
+    },className)} {...props}>
       <Header
         navRoutes={[
           {

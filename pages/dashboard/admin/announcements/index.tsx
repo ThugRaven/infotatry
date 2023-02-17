@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
-import s from '@styles/Hikes.module.css';
+import s from '@styles/DashboardAdminAnnouncements.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -312,7 +312,7 @@ const Announcements = () => {
           'announcements-all',
           (announcements) => {
             if (announcements) {
-              let announcement = announcements.find(
+              const announcement = announcements.find(
                 (announcement) => announcement._id === data._id,
               );
               if (announcement) {
@@ -500,7 +500,7 @@ const Announcements = () => {
 };
 
 Announcements.getLayout = function getLayout(page: ReactElement) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout maxHeight={true}>{page}</DashboardLayout>;
 };
 
 export default Announcements;

@@ -17,14 +17,18 @@ import MainLayout from '../MainLayout';
 import s from './DashboardLayout.module.css';
 
 interface DashboardLayoutProps {
+  maxHeight?: boolean;
   children: ReactNode;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = ({
+  maxHeight = false,
+  children,
+}: DashboardLayoutProps) => {
   const router = useRouter();
 
   return (
-    <MainLayout>
+    <MainLayout maxHeight={maxHeight}>
       <div className={s.container}>
         <nav className={s.nav}>
           <ul className={s.list}>

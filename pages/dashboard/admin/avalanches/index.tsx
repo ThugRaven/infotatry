@@ -7,7 +7,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
-import s from '@styles/Hikes.module.css';
+import s from '@styles/DashboardAdminAvalanches.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -653,7 +653,7 @@ const Avalanches = () => {
 };
 
 Avalanches.getLayout = function getLayout(page: ReactElement) {
-  return <DashboardLayout>{page}</DashboardLayout>;
+  return <DashboardLayout maxHeight={true}>{page}</DashboardLayout>;
 };
 
 export default Avalanches;
