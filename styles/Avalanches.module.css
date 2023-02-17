@@ -45,7 +45,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2);
+}
+
+@media screen and (min-width: 768px) {
+  .current {
+    gap: var(--space-4);
+  }
 }
 
 .avalanche__info {
@@ -56,35 +62,67 @@
 }
 
 .current__info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-areas:
+    'update'
+    'until'
+    'source';
+  grid-template-rows: 1fr 1fr auto;
   gap: var(--space-4);
+}
+
+@media screen and (min-width: 768px) {
+  .current__info {
+    grid-template-areas: 'update source until';
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+  }
 }
 
 .info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-size: var(--fs-xl);
   color: var(--clr-700);
+  font-size: var(--fs-lg);
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .info {
+    font-size: var(--fs-xl);
+  }
 }
 
 .info--left {
-  align-items: flex-start;
-  text-align: start;
+  grid-area: update;
 }
 
 .info--center {
-  align-items: center;
-  align-self: flex-end;
+  grid-area: source;
   margin: 0 var(--space-2);
   font-size: var(--fs-base);
 }
 
 .info--right {
-  align-items: flex-end;
-  text-align: end;
+  grid-area: until;
+}
+
+@media screen and (min-width: 768px) {
+  .info--left {
+    align-items: flex-start;
+    text-align: start;
+  }
+
+  .info--center {
+    align-items: center;
+    align-self: flex-end;
+  }
+
+  .info--right {
+    align-items: flex-end;
+    text-align: end;
+  }
 }
 
 .info__link {
@@ -98,8 +136,14 @@
 }
 
 .info__value {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-xl);
   color: var(--text-primary-dark);
+}
+
+@media screen and (min-width: 768px) {
+  .info__value {
+    font-size: var(--fs-2xl);
+  }
 }
 
 .details {
@@ -115,13 +159,26 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
 }
 
 .details__info {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  gap: var(--space-4);
+  gap: var(--space-2);
+}
+
+@media screen and (min-width: 640px) {
+  .details__wrapper {
+    text-align: left;
+  }
+
+  .details__info {
+    flex-direction: row;
+    gap: var(--space-4);
+  }
 }
 
 .details__list {
@@ -199,8 +256,14 @@
 }
 
 .title {
-  margin: var(--space-3) var(--space-1);
-  font-size: var(--fs-2xl);
+  margin: var(--space-3) var(--space-1) 0;
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
   text-align: center;
+}
+
+@media screen and (min-width: 640px) {
+  .title {
+    font-size: var(--fs-2xl);
+  }
 }

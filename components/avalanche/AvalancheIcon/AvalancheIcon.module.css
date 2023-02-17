@@ -7,8 +7,14 @@
 }
 
 .level {
-  font-size: var(--fs-3xl);
+  font-size: var(--fs-2xl);
   font-weight: var(--fw-semi-bold);
+}
+
+@media screen and (min-width: 640px) {
+  .level {
+    font-size: var(--fs-3xl);
+  }
 }
 
 @media screen and (min-width: 768px) {
