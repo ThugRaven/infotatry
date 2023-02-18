@@ -194,6 +194,7 @@ const Avalanches = () => {
           <div className={s.avalanche__info}>
             <AvalancheInfo
               level={(avalanchesData && avalanchesData[index].danger) ?? 0}
+              increase={avalanchesData && avalanchesData[index].increase}
             />
           </div>
           <div className={s.current__info}>
