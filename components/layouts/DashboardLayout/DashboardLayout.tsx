@@ -63,12 +63,13 @@ const DashboardLayout = ({
                     })}
                   >
                     <div className={s.icon}>{icon}</div>
-                    {name}
+                    <span className={s.item__text}>{name}</span>
                   </a>
                 </Link>
               </li>
             ))}
             <div className={s.list__title}>Admin</div>
+            <div className={s.list__divider}></div>
             {[
               {
                 icon: <MdOutlineDashboard />,
@@ -100,7 +101,7 @@ const DashboardLayout = ({
                     })}
                   >
                     <div className={s.icon}>{icon}</div>
-                    {name}
+                    <span className={s.item__text}>{name}</span>
                   </a>
                 </Link>
               </li>
