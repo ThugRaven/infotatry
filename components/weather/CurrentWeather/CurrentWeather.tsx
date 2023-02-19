@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import Image from 'next/image';
 import { MdSouth } from 'react-icons/md';
 import { CurrentWeatherResponse } from 'types/weather-types';
+import WeatherDataItem from '../WeatherDataItem';
 import s from './CurrentWeather.module.css';
 
 interface CurrentWeatherProps {
@@ -104,37 +104,25 @@ const CurrentWeather = ({
               unit: '%',
             },
             {
-              name: 'Kierunek wiatru',
-              value: weather.wind.deg,
+              children: (
+                <MdSouth
+                  className={s['wind-dir']}
+                  style={{
+                    transform: `rotate(${weather.wind.deg}deg)`,
+                  }}
+                />
+              ),
+              value: `${weather.wind.deg}°`,
             },
             {
               name: 'Opad',
               value: (weather.rain?.['1h'] || weather.snow?.['1h']) ?? 0,
               unit: 'mm/h',
             },
-          ].map((data) => (
-            <li
-              key={data.name}
-              className={classNames(s['weather-data__item'], {
-                [s['weather-data__item--wind-dir']]:
-                  data.name === 'Kierunek wiatru',
-              })}
-            >
-              {data.name !== 'Kierunek wiatru' ? (
-                <>
-                  <span className={s.data__name}>{data.name}</span>
-                  <span className={s.data__value}>{data.value}</span>
-                  {data.unit && (
-                    <span className={s.data__unit}>{data.unit}</span>
-                  )}
-                </>
-              ) : (
-                <>
-                  <MdSouth style={{ transform: `rotate(${data.value}deg)` }} />
-                  <span className={s.data__value}>{data.value}°</span>
-                </>
-              )}
-            </li>
+          ].map((data, index) => (
+            <WeatherDataItem key={`${index}-${data.name}`} data={data}>
+              {data.children}
+            </WeatherDataItem>
           ))}
         </ul>
       ) : (
