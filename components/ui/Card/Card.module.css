@@ -1,0 +1,18 @@
+.card {
+  padding: var(--space-4);
+  background-color: var(--clr-50);
+  border-radius: var(--br-base);
+}
+
+.title {
+  /* margin: var(--space-3) var(--space-1) 0; */
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  text-align: center;
+}
+
+@media screen and (min-width: 640px) {
+  .title {
+    font-size: var(--fs-2xl);
+  }
+}
