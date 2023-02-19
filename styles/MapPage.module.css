@@ -1,5 +1,33 @@
 .container {
-  display: flex;
-  background-color: #222222;
   position: relative;
+  display: grid;
+  /* grid-template-areas:
+    'map'
+    'sidebar';
+  grid-template-rows: 1fr 300px; */
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  overflow-y: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    grid-template-rows: 1fr;
+  }
+}
+
+.map {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.sidebar {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+@media screen and (min-width: 768px) {
+  .sidebar {
+    /* grid-area: map; */
+  }
 }

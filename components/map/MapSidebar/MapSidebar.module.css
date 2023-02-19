@@ -1,14 +1,33 @@
 .wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
   flex-direction: column;
-  width: min(400px, 100%);
+  max-height: 300px;
   height: 100%;
-  padding: 0.5rem;
-  z-index: 10;
-  pointer-events: none;
+  transition: max-height 250ms ease-in-out;
+  grid-row: 1 / -1;
+  align-self: flex-end;
+  overflow-y: auto;
+}
+
+.wrapper--collapsed {
+  max-height: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 100%;
+    max-height: 100%;
+    padding: 0.5rem;
+    z-index: 10;
+    pointer-events: none;
+    overflow-y: visible;
+  }
 }
 
 .container {
@@ -17,46 +36,91 @@
   transition: transform 250ms ease-in-out;
   z-index: 10;
   pointer-events: all;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    overflow-y: visible;
+  }
 }
 
 .content {
-  position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
   background-color: var(--clr-50);
-  border-radius: var(--br-base);
   box-shadow: 0 0 8px 2px hsla(0, 0%, 0%, 0.25);
   overflow-y: auto;
+  height: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--clr-50);
+    border-radius: var(--br-base);
+    box-shadow: 0 0 8px 2px hsla(0, 0%, 0%, 0.25);
+    overflow-y: auto;
+  }
 }
 
 .toggle {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  bottom: 0;
-  height: min-content;
-  margin: auto 0;
-  padding: 0.75rem 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
   background-color: var(--clr-50);
-  border-radius: 0 var(--br-base) var(--br-base) 0;
-  box-shadow: 0 0 8px 2px hsla(0, 0%, 0%, 0.25);
 }
 
-.collapsed {
-  transform: translateX(calc(-100% - 0.5rem));
+@media screen and (min-width: 768px) {
+  .toggle {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    bottom: 0;
+    display: block;
+    height: min-content;
+    margin: auto 0;
+    padding: 0.75rem 0rem;
+    background-color: var(--clr-50);
+    border-radius: 0 var(--br-base) var(--br-base) 0;
+    box-shadow: 0 0 8px 2px hsla(0, 0%, 0%, 0.25);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .collapsed {
+    transform: translateX(calc(-100% - 0.5rem));
+  }
 }
 
 .toggle__icon {
   width: var(--space-6);
   height: var(--space-6);
   fill: var(--clr-900);
-  transform: rotate(0deg);
+  transform: rotate(90deg);
   transition: transform 250ms ease-in-out;
 }
 
+@media screen and (min-width: 768px) {
+  .toggle__icon {
+    transform: rotate(0deg);
+  }
+}
+
 .rotate {
-  transform: rotate(180deg);
+  transform: rotate(270deg);
+}
+
+@media screen and (min-width: 768px) {
+  .rotate {
+    transform: rotate(180deg);
+  }
 }
 
 .route__info {

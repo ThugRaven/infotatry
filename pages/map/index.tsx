@@ -404,6 +404,16 @@ const MapPage = () => {
   return (
     <>
       <div className={s.container}>
+        {/* <span>{forecastData?.list[0].main.temp}</span> */}
+        <div className={s.map}>
+          <MapContainer
+            padding={isOpen ? width : 0}
+            trailIds={data && data[index].trails}
+            popupDispatch={dispatch}
+            hoveredNode={hoveredNode}
+            hoveredTrail={hoveredTrail}
+          />
+        </div>
         <MapSidebar
           isOpen={isOpen}
           onToggle={onToggle}
@@ -417,19 +427,13 @@ const MapPage = () => {
           onSelectRoute={handleSelectRoute}
           popupState={state}
           dangerLevel={(avalanchesData && avalanchesData[0].danger) ?? null}
+          increase={avalanchesData && avalanchesData[0].increase}
           currentWeather={currentWeatherData}
           onWeatherModalOpen={onWeatherModalOpen}
           onHover={handleHover}
+          className={s.sidebar}
           // onPreviousRoute={handlePreviousRoute}
           // onNextRoute={handleNextRoute}
-        />
-        {/* <span>{forecastData?.list[0].main.temp}</span> */}
-        <MapContainer
-          padding={isOpen ? width : 0}
-          trailIds={data && data[index].trails}
-          popupDispatch={dispatch}
-          hoveredNode={hoveredNode}
-          hoveredTrail={hoveredTrail}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
@@ -474,7 +478,7 @@ const MapPage = () => {
 };
 
 MapPage.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <MainLayout maxHeight={true}>{page}</MainLayout>;
 };
 
 export default MapPage;

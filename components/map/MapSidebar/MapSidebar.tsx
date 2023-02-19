@@ -5,6 +5,7 @@ import RouteSegments from '@components/route/RouteSegments';
 import { SearchRoute } from '@components/search';
 import Button from '@components/ui/Button';
 import CurrentWeather from '@components/weather/CurrentWeather';
+import classNames from 'classnames';
 import { PopupState } from 'pages/map';
 import { useEffect, useRef } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
@@ -24,9 +25,11 @@ interface MapSidebarProps {
   onSelectRoute: (index: number) => void;
   popupState: PopupState;
   dangerLevel: number | null;
+  increase?: boolean;
   currentWeather?: CurrentWeatherResponse;
   onWeatherModalOpen: () => void;
   onHover: (id: number, type: 'node' | 'trail') => void;
+  className?: string;
 }
 
 export type SearchForm = { [key: number]: string };
@@ -44,9 +47,11 @@ const MapSidebar = ({
   onSelectRoute,
   popupState,
   dangerLevel,
+  increase,
   currentWeather,
   onWeatherModalOpen,
   onHover,
+  className,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -56,7 +61,15 @@ const MapSidebar = ({
   }, [onWidthChange]);
 
   return (
-    <div className={s.wrapper}>
+    <div
+      className={classNames(
+        s.wrapper,
+        {
+          [s['wrapper--collapsed']]: !isOpen,
+        },
+        className,
+      )}
+    >
       <div className={`${s.container} ${!isOpen ? s.collapsed : ''}`} ref={ref}>
         <button className={s.toggle} onClick={onToggle}>
           <MdChevronLeft
@@ -103,7 +116,7 @@ const MapSidebar = ({
             data && data.message
           )}
 
-          <AvalancheInfo level={dangerLevel} />
+          <AvalancheInfo level={dangerLevel} increase={increase} />
           <RouteSegments
             segments={(data && data[index].segments) ?? []}
             onHover={onHover}
