@@ -64,6 +64,7 @@ const DashboardLayout = ({
                   >
                     <div className={s.icon}>{icon}</div>
                     <span className={s.item__text}>{name}</span>
+                    <span className={s.item__tooltip}>{name}</span>
                   </a>
                 </Link>
               </li>
@@ -102,6 +103,7 @@ const DashboardLayout = ({
                   >
                     <div className={s.icon}>{icon}</div>
                     <span className={s.item__text}>{name}</span>
+                    <span className={s.item__tooltip}>{name}</span>
                   </a>
                 </Link>
               </li>
