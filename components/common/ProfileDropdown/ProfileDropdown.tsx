@@ -20,7 +20,11 @@ const ProfileDropdown = ({ onClick }: ProfileDropdownProps) => {
     <nav className={s.dropdown}>
       <ul className={s.list}>
         {[
-          { icon: <MdPersonOutline />, name: 'Profil', path: '/user' },
+          {
+            icon: <MdPersonOutline />,
+            name: 'Profil',
+            path: '/dashboard/profile',
+          },
           {
             icon: <MdOutlineDashboard />,
             name: 'Dashboard',

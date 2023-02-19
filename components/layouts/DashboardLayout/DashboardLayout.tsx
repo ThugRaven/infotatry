@@ -38,7 +38,11 @@ const DashboardLayout = ({
                 name: 'Dashboard',
                 path: '/dashboard',
               },
-              { icon: <MdPersonOutline />, name: 'Profil', path: '/user' },
+              {
+                icon: <MdPersonOutline />,
+                name: 'Profil',
+                path: '/dashboard/profile',
+              },
               {
                 icon: <FaHiking />,
                 name: 'Wędrówki',

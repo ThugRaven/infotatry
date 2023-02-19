@@ -1,7 +1,7 @@
 import { Avatar } from '@chakra-ui/react';
-import { MainLayout } from '@components/layouts';
+import { DashboardLayout } from '@components/layouts';
 import Card from '@components/ui/Card';
-import s from '@styles/User.module.css';
+import s from '@styles/Profile.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -41,7 +41,7 @@ const ListItem = ({
   );
 };
 
-const User = () => {
+const Profile = () => {
   const { user, status } = useAuth();
 
   const fetchLastHikes = async () => {
@@ -122,8 +122,8 @@ const User = () => {
   );
 };
 
-User.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+Profile.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout maxHeight={true}>{page}</DashboardLayout>;
 };
 
-export default User;
+export default Profile;
