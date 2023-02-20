@@ -5,6 +5,7 @@
   margin: 0.5rem;
   padding: 0.375rem 0.75rem;
   border-radius: 4px;
-  background-color: #222222;
+  color: var(--text-primary-dark);
+  background-color: var(--clr-50);
   z-index: 10;
 }
