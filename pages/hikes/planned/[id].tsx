@@ -209,7 +209,7 @@ const PlannedHike = ({ hike }: any) => {
 };
 
 PlannedHike.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout className={s.layout}>{page}</MainLayout>;
+  return <MainLayout maxHeight={true}>{page}</MainLayout>;
 };
 
 export default PlannedHike;
