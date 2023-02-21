@@ -83,6 +83,12 @@
   }
 }
 
+@media screen and (min-width: 768px) {
+  .weather-data__grid {
+    width: auto;
+  }
+}
+
 .data__name {
   color: var(--text-primary-dark);
 }

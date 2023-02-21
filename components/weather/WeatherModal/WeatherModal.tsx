@@ -67,18 +67,18 @@ const WeatherModal = ({
     >
       <ModalOverlay />
       <ModalContent className={classNames(s.modal, s.modal__content)}>
+        <IconButton
+          buttonType="action"
+          aria-label="Close"
+          onClick={onClose}
+          className={s.popup__close}
+        >
+          <MdClose />
+        </IconButton>
+        <div className={classNames(s.card, s.location)}>
+          <h2 className={s.location__name}>{location}</h2>
+        </div>
         <div className={s.modal__wrapper}>
-          <IconButton
-            buttonType="action"
-            aria-label="Close"
-            onClick={onClose}
-            className={s.popup__close}
-          >
-            <MdClose />
-          </IconButton>
-          <div className={classNames(s.card, s.location)}>
-            <h2 className={s.location__name}>{location}</h2>
-          </div>
           <aside className={classNames(s.card, s.aside)}>
             <h3 className={s.title}>Aktualna pogoda</h3>
             <CurrentWeather
