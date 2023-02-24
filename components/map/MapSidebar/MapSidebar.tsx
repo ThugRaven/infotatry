@@ -69,8 +69,9 @@ const MapSidebar = ({
         },
         className,
       )}
+      ref={ref}
     >
-      <div className={`${s.container} ${!isOpen ? s.collapsed : ''}`} ref={ref}>
+      <div className={`${s.container} ${!isOpen ? s.collapsed : ''}`}>
         <button className={s.toggle} onClick={onToggle}>
           <MdChevronLeft
             className={`${s.toggle__icon} ${!isOpen ? s.rotate : ''}`}

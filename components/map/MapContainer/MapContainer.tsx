@@ -34,6 +34,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from 'react';
@@ -47,6 +48,7 @@ import Map, {
 import { useQuery } from 'react-query';
 import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
+import MapStyles from '../MapStyles';
 import s from './MapContainer.module.css';
 
 type MapContainerProps = {
@@ -78,6 +80,43 @@ export type Announcement = {
   description: string;
   source: string | null;
   isClosed?: boolean;
+};
+
+export interface MapStyleState {
+  type: 'DEFAULT' | 'SATELLITE';
+  terrain: boolean;
+}
+
+export interface MapStyleAction {
+  type: 'DEFAULT' | 'SATELLITE' | '3D';
+}
+
+const mapStyleReducer = (
+  state: MapStyleState,
+  action: MapStyleAction,
+): MapStyleState => {
+  switch (action.type) {
+    case 'DEFAULT': {
+      return {
+        type: 'DEFAULT',
+        terrain: state.terrain,
+      };
+    }
+    case 'SATELLITE': {
+      return {
+        type: 'SATELLITE',
+        terrain: state.terrain,
+      };
+    }
+    case '3D': {
+      return {
+        type: state.type,
+        terrain: !state.terrain,
+      };
+    }
+    default:
+      return state;
+  }
 };
 
 const MapContainer = ({
@@ -119,6 +158,11 @@ const MapContainer = ({
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const [style, styleDispatch] = useReducer(mapStyleReducer, {
+    type: 'DEFAULT',
+    terrain: false,
+  });
 
   useEffect(() => {
     const data = features;
@@ -357,19 +401,25 @@ const MapContainer = ({
       ref={mapInitializeRef}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
-      maxPitch={60}
+      maxPitch={85}
       reuseMaps
       // mapStyle="mapbox://styles/mapbox/streets-v9"
       // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
-      mapStyle="mapbox://styles/thugraven/clb2uwq4o000a14rpcner8xhe"
-      // terrain={terrainMode ? { source: 'mapbox-dem' } : undefined}
+      mapStyle={
+        style.type === 'DEFAULT'
+          ? 'mapbox://styles/thugraven/clehrcew3004k01ms03lduzd0'
+          : 'mapbox://styles/thugraven/clehrkw8q004901kgbft6gbhz'
+      }
+      terrain={style.terrain ? { source: 'mapbox-dem' } : undefined}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
       interactiveLayerIds={INTERACTIVE_LAYER_IDS}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      onLoad={() => mapRef.current?.resize()}
+      onLoad={() => {
+        mapRef.current?.resize();
+      }}
       cursor={cursor}
       onClick={(e) => {
         // console.log(mapRef.current?.getStyle().layers);
@@ -455,6 +505,7 @@ const MapContainer = ({
           dispatch={popupDispatch}
         />
       )}
+      <MapStyles padding={padding} style={style} dispatch={styleDispatch} />
       <Source
         id="mapbox-dem"
         type="raster-dem"

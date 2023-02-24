@@ -387,24 +387,9 @@ const MapPage = () => {
     }
   };
 
-  // const handlePreviousRoute = () => {
-  //   if (data) {
-  //     setIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
-  //   }
-  // };
-
-  // const handleNextRoute = () => {
-  //   if (data) {
-  //     setIndex((prevIndex) =>
-  //       prevIndex === data.length - 1 ? prevIndex : prevIndex + 1,
-  //     );
-  //   }
-  // };
-
   return (
     <>
       <div className={s.container}>
-        {/* <span>{forecastData?.list[0].main.temp}</span> */}
         <div className={s.map}>
           <MapContainer
             padding={isOpen ? width : 0}
@@ -432,8 +417,6 @@ const MapPage = () => {
           onWeatherModalOpen={onWeatherModalOpen}
           onHover={handleHover}
           className={s.sidebar}
-          // onPreviousRoute={handlePreviousRoute}
-          // onNextRoute={handleNextRoute}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />

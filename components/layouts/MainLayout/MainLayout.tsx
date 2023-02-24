@@ -24,18 +24,21 @@ const MainLayout = ({
   const handleSignOut = useSignOut();
 
   return (
-    <div className={classNames(s.container, {
-      [s['max-height']]: maxHeight
-    },className)} {...props}>
+    <div
+      className={classNames(
+        s.container,
+        {
+          [s['max-height']]: maxHeight,
+        },
+        className,
+      )}
+      {...props}
+    >
       <Header
         navRoutes={[
           {
             name: 'Mapa',
             path: '/map',
-          },
-          {
-            name: 'Dashboard',
-            path: '/dashboard',
           },
           {
             name: 'Lawiny',
