@@ -1,4 +1,5 @@
 import { Avatar } from '@chakra-ui/react';
+import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import Card from '@components/ui/Card';
 import s from '@styles/Profile.module.css';
@@ -80,45 +81,48 @@ const Profile = () => {
   });
 
   return (
-    <div className={s.container}>
-      {user && (
-        <div className={s.wrapper}>
-          <Card className={classNames(s.user, s.card)}>
-            <Avatar name={user?.name} src={user?.image} />
-            <span>{user.name}</span>
-          </Card>
-          <Card cardTitle="Ostatnie wędrówki" className={s.card} />
-          <div className={s.hikes}>
-            <Card cardTitle={'Zaplanowane'} className={s.card}>
-              <ul className={s.hikes__list}>
-                {lastHikes?.plannedHikes?.map((hike) => (
-                  <ListItem
-                    key={hike._id}
-                    date={hike.createdAt}
-                    nameStart={hike.name.start}
-                    nameEnd={hike.name.end}
-                    path={`/hikes/planned/${hike._id}`}
-                  />
-                ))}
-              </ul>
+    <>
+      <SEO title="Mój profil" />
+      <div className={s.container}>
+        {user && (
+          <div className={s.wrapper}>
+            <Card className={classNames(s.user, s.card)}>
+              <Avatar name={user?.name} src={user?.image} />
+              <span>{user.name}</span>
             </Card>
-            <Card cardTitle={'Przebyte'} className={s.card}>
-              <ul className={s.hikes__list}>
-                {lastHikes?.completedHikes?.map((hike) => (
-                  <ListItem
-                    key={hike._id}
-                    date={hike.createdAt}
-                    nameStart={hike.name.start}
-                    nameEnd={hike.name.end}
-                    path={`/hikes/completed/${hike._id}`}
-                  />
-                ))}
-              </ul>
-            </Card>
+            <Card cardTitle="Ostatnie wędrówki" className={s.card} />
+            <div className={s.hikes}>
+              <Card cardTitle={'Zaplanowane'} className={s.card}>
+                <ul className={s.hikes__list}>
+                  {lastHikes?.plannedHikes?.map((hike) => (
+                    <ListItem
+                      key={hike._id}
+                      date={hike.createdAt}
+                      nameStart={hike.name.start}
+                      nameEnd={hike.name.end}
+                      path={`/hikes/planned/${hike._id}`}
+                    />
+                  ))}
+                </ul>
+              </Card>
+              <Card cardTitle={'Przebyte'} className={s.card}>
+                <ul className={s.hikes__list}>
+                  {lastHikes?.completedHikes?.map((hike) => (
+                    <ListItem
+                      key={hike._id}
+                      date={hike.createdAt}
+                      nameStart={hike.name.start}
+                      nameEnd={hike.name.end}
+                      path={`/hikes/completed/${hike._id}`}
+                    />
+                  ))}
+                </ul>
+              </Card>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

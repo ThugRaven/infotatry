@@ -6,6 +6,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
 import RouteSegments from '@components/route/RouteSegments';
@@ -132,79 +133,89 @@ const PlannedHike = ({ hike }: any) => {
   };
 
   return (
-    <div className={s.container}>
-      <aside className={s.segments}>
-        <RouteSegments
-          segments={(hike && hike.segments) ?? []}
-          onHover={handleHover}
-        />
-      </aside>
-      <section className={s.stats}>
-        <h2
-          className={s.location__name}
-        >{`${hike.name.start} - ${hike.name.end}`}</h2>
-        <ul className={s.stats__list}>
-          {[
-            {
-              name: 'Dystans',
-              value: formatMetersToKm(hike.distance),
-              unit: 'km',
-            },
-            {
-              name: 'Czas',
-              value: formatMinutesToHours(hike.time),
-              unit: 'h',
-            },
-            {
-              name: 'Podejścia',
-              value: hike.ascent,
-              unit: 'm',
-            },
-            {
-              name: 'Zejścia',
-              value: hike.descent,
-              unit: 'm',
-            },
-          ].map((item) => (
-            <li key={item.name} className={s.stats__item}>
-              <span className={s.item__name}>{item.name}</span>
-              <span className={s.item__value}>
-                {item.value}
-                <span className={s.item__unit}>{item.unit}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-        <Button colorScheme="blue" mb={2} onClick={handleSaveHike}>
-          Save hike
-        </Button>
-      </section>
-      <section className={s.map}>
-        <MapContainer
-          trailIds={hike && hike.encoded != '' ? hike.trails : null}
-          hike={hike && hike.encoded == '' ? null : hike}
-          hoveredNode={hoveredNode}
-          hoveredTrail={hoveredTrail}
-        />
-      </section>
-      <section className={s.details}>
-        <Tabs>
-          <TabList>
-            <Tab>Profil wysokości</Tab>
-            <Tab>Pogoda</Tab>
-            <Tab>Informacje</Tab>
-            <Tab>Zapisz</Tab>
-          </TabList>
+    <>
+      <SEO
+        title={`Zaplanowana wędrówka: ${hike.name.start} - ${
+          hike.name.end
+        }, ${formatMetersToKm(hike.distance)} km, ${formatMinutesToHours(
+          hike.time,
+        )} h`}
+      />
 
-          <TabPanels>
-            <TabPanel>Profil wysokości</TabPanel>
-            <TabPanel>Pogoda</TabPanel>
-            <TabPanel>Informacje</TabPanel>
-            <TabPanel>Zapisz</TabPanel>
-          </TabPanels>
-        </Tabs>
-      </section>
-    </div>
+      <div className={s.container}>
+        <aside className={s.segments}>
+          <RouteSegments
+            segments={(hike && hike.segments) ?? []}
+            onHover={handleHover}
+          />
+        </aside>
+        <section className={s.stats}>
+          <h2
+            className={s.location__name}
+          >{`${hike.name.start} - ${hike.name.end}`}</h2>
+          <ul className={s.stats__list}>
+            {[
+              {
+                name: 'Dystans',
+                value: formatMetersToKm(hike.distance),
+                unit: 'km',
+              },
+              {
+                name: 'Czas',
+                value: formatMinutesToHours(hike.time),
+                unit: 'h',
+              },
+              {
+                name: 'Podejścia',
+                value: hike.ascent,
+                unit: 'm',
+              },
+              {
+                name: 'Zejścia',
+                value: hike.descent,
+                unit: 'm',
+              },
+            ].map((item) => (
+              <li key={item.name} className={s.stats__item}>
+                <span className={s.item__name}>{item.name}</span>
+                <span className={s.item__value}>
+                  {item.value}
+                  <span className={s.item__unit}>{item.unit}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <Button colorScheme="blue" mb={2} onClick={handleSaveHike}>
+            Save hike
+          </Button>
+        </section>
+        <section className={s.map}>
+          <MapContainer
+            trailIds={hike && hike.encoded != '' ? hike.trails : null}
+            hike={hike && hike.encoded == '' ? null : hike}
+            hoveredNode={hoveredNode}
+            hoveredTrail={hoveredTrail}
+          />
+        </section>
+        <section className={s.details}>
+          <Tabs>
+            <TabList>
+              <Tab>Profil wysokości</Tab>
+              <Tab>Pogoda</Tab>
+              <Tab>Informacje</Tab>
+              <Tab>Zapisz</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>Profil wysokości</TabPanel>
+              <TabPanel>Pogoda</TabPanel>
+              <TabPanel>Informacje</TabPanel>
+              <TabPanel>Zapisz</TabPanel>
+            </TabPanels>
+          </Tabs>
+        </section>
+      </div>
+    </>
   );
 };
 

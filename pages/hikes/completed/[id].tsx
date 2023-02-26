@@ -1,5 +1,7 @@
+import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
+import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Hikes.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetServerSideProps } from 'next';
@@ -60,54 +62,63 @@ const CompletedHike = ({ hike }: any) => {
   console.log('getServerSideProps', hike);
 
   return (
-    <div className={s.container}>
-      {/* <ul>
+    <>
+      <SEO
+        title={`Przebyta wędrówka: ${hike.name.start} - ${
+          hike.name.end
+        }, ${formatMetersToKm(hike.distance)} km, ${formatMinutesToHours(
+          hike.time,
+        )} h`}
+      />
+      <div className={s.container}>
+        {/* <ul>
         {routeNodes.map((node, index) => (
           <li key={`${node.id}-${index}`}>
             {node.id} | {node.name}
-          </li>
+            </li>
         ))}
       </ul> */}
 
-      {hike && (
-        <>
-          <h1
-            className={s.hike__names}
-          >{`${hike.name.start} - ${hike.name.end}`}</h1>
-          <ul className={s.hike__info}>
-            <li title={`${hike.distance} m`}>
-              <span>Distance</span>
-              {`${
-                (Math.floor(hike.distance / 1000) * 1000 +
-                  Math.round((hike.distance % 1000) / 100) * 100) /
-                1000
-              } km`}
-            </li>
-            <li title={`${hike.time} min.`}>
-              <span>Time</span>
-              {`${Math.floor(hike.time / 60)}:${
-                hike.time % 60 >= 10 ? hike.time % 60 : `0${hike.time % 60}`
-              } h`}
-            </li>
-            <li>
-              <span>Ascent</span>
-              {`${hike.ascent} m`}
-            </li>
-            <li>
-              <span>Descent</span>
-              {`${hike.descent} m`}
-            </li>
-          </ul>
-        </>
-      )}
+        {hike && (
+          <>
+            <h1
+              className={s.hike__names}
+            >{`${hike.name.start} - ${hike.name.end}`}</h1>
+            <ul className={s.hike__info}>
+              <li title={`${hike.distance} m`}>
+                <span>Distance</span>
+                {`${
+                  (Math.floor(hike.distance / 1000) * 1000 +
+                    Math.round((hike.distance % 1000) / 100) * 100) /
+                  1000
+                } km`}
+              </li>
+              <li title={`${hike.time} min.`}>
+                <span>Time</span>
+                {`${Math.floor(hike.time / 60)}:${
+                  hike.time % 60 >= 10 ? hike.time % 60 : `0${hike.time % 60}`
+                } h`}
+              </li>
+              <li>
+                <span>Ascent</span>
+                {`${hike.ascent} m`}
+              </li>
+              <li>
+                <span>Descent</span>
+                {`${hike.descent} m`}
+              </li>
+            </ul>
+          </>
+        )}
 
-      <MapContainer
-        trailIds={hike && hike.encoded != '' ? hike.trails : null}
-        hike={hike && hike.encoded == '' ? null : hike}
-      ></MapContainer>
+        <MapContainer
+          trailIds={hike && hike.encoded != '' ? hike.trails : null}
+          hike={hike && hike.encoded == '' ? null : hike}
+        ></MapContainer>
 
-      <div>Elevation profile</div>
-    </div>
+        <div>Elevation profile</div>
+      </div>
+    </>
   );
 };
 

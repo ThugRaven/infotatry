@@ -1,4 +1,5 @@
 import Closure from '@components/closures/Closure';
+import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import s from '@styles/Closures.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -56,27 +57,30 @@ const Closures = () => {
   });
 
   return (
-    <div className={s.container}>
-      <div className={s.wrapper}>
-        <section className={s.card}>
-          <h2 className={s.title}>Zamknięcia szlaków</h2>
-          <ul className={s.closures}>
-            {closuresData &&
-              closuresData.map((closure) => (
-                <Closure
-                  key={closure._id}
-                  title={closure.title}
-                  reason={closure.reason}
-                  since={closure.since}
-                  until={closure.until}
-                  source={closure.source}
-                  description={closure.description}
-                />
-              ))}
-          </ul>
-        </section>
+    <>
+      <SEO title="Zamknięcia szlaków" />
+      <div className={s.container}>
+        <div className={s.wrapper}>
+          <section className={s.card}>
+            <h2 className={s.title}>Zamknięcia szlaków</h2>
+            <ul className={s.closures}>
+              {closuresData &&
+                closuresData.map((closure) => (
+                  <Closure
+                    key={closure._id}
+                    title={closure.title}
+                    reason={closure.reason}
+                    since={closure.since}
+                    until={closure.until}
+                    source={closure.source}
+                    description={closure.description}
+                  />
+                ))}
+            </ul>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import AvalancheAspect from '@components/avalanche/AvalancheAspect';
 import AvalancheIcon from '@components/avalanche/AvalancheIcon';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import AvalancheProblem from '@components/avalanche/AvalancheProblem';
+import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import s from '@styles/Avalanches.module.css';
 import classNames from 'classnames';
@@ -187,131 +188,140 @@ const Avalanches = () => {
   );
 
   return (
-    <div className={s.container}>
-      <div className={s.wrapper}>
-        <section className={classNames(s.card, s.current)}>
-          <h2 className={s.title}>Aktualne zagrożenie lawinowe</h2>
-          <div className={s.avalanche__info}>
-            <AvalancheInfo
-              level={(avalanchesData && avalanchesData[index].danger) ?? 0}
-              increase={avalanchesData && avalanchesData[index].increase}
-            />
-          </div>
-          <div className={s.current__info}>
-            <div className={classNames(s.info, s['info--left'])}>
-              <span>Aktualizacja</span>
-              <span className={s.info__value}>
-                {avalanchesData &&
-                  dateTimeFormat.format(
-                    new Date(avalanchesData[index].createdAt),
-                  )}
-              </span>
+    <>
+      <SEO title="Komunikaty lawinowe" />
+      <div className={s.container}>
+        <div className={s.wrapper}>
+          <section className={classNames(s.card, s.current)}>
+            <h2 className={s.title}>Aktualne zagrożenie lawinowe</h2>
+            <div className={s.avalanche__info}>
+              <AvalancheInfo
+                level={(avalanchesData && avalanchesData[index].danger) ?? 0}
+                increase={avalanchesData && avalanchesData[index].increase}
+              />
             </div>
-            <div className={classNames(s.info, s['info--center'])}>
-              <span>Źródło</span>
-              <a
-                href="https://lawiny.topr.pl/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.info__link}
-              >
-                lawiny.topr.pl
-              </a>
-            </div>
-            <div className={classNames(s.info, s['info--right'])}>
-              <span>Obowiązuję do</span>
-              <span className={s.info__value}>
-                {avalanchesData &&
-                  dateTimeFormat.format(new Date(avalanchesData[index].until))}
-              </span>
-            </div>
-          </div>
-        </section>
-        <section className={classNames(s.card, s.details)}>
-          <h2 className={s.title}>Szczegóły zagrożenia</h2>
-          <AvalancheInfoItem
-            am={true}
-            elevation={avalanchesData && avalanchesData[index].am.elevation}
-            danger={(avalanchesData && avalanchesData[index].am.danger) ?? []}
-            increase={
-              (avalanchesData && avalanchesData[index].am.increase) ?? []
-            }
-            problem={(avalanchesData && avalanchesData[index].am.problem) ?? []}
-            aspect={
-              (avalanchesData && avalanchesData[index].am.aspect) ?? ['', '']
-            }
-          />
-          <AvalancheInfoItem
-            am={false}
-            elevation={avalanchesData && avalanchesData[index].pm.elevation}
-            danger={(avalanchesData && avalanchesData[index].pm.danger) ?? []}
-            increase={
-              (avalanchesData && avalanchesData[index].pm.increase) ?? []
-            }
-            problem={(avalanchesData && avalanchesData[index].pm.problem) ?? []}
-            aspect={
-              (avalanchesData && avalanchesData[index].pm.aspect) ?? ['', '']
-            }
-          />
-        </section>
-
-        <section className={classNames(s.card, s.bulletins)}>
-          <h2 className={s.title}>Historia i prognoza</h2>
-          <ul className={s.bulletins__list}>
-            {avalanchesData &&
-              avalanchesData.map((avalanche, idx, array) => {
-                const _index = array.length - 1 - idx;
-                const data = array[_index];
-
-                return (
-                  <li
-                    key={new Date(data.until).getTime()}
-                    onClick={() => setIndex(_index)}
-                  >
-                    <button
-                      className={classNames(s.bulletins__item, {
-                        [s['bulletins__item--active']]: _index === index,
-                      })}
-                    >
-                      <span>{dateFormat.format(new Date(data.until))}</span>
-                      <AvalancheIcon
-                        level={data.danger}
-                        increase={data.increase}
-                        className={s.icon}
-                        levelClassName={s.icon__level}
-                      />
-                    </button>
-                  </li>
-                );
-              })}
-            {avalanchesData && (
-              <li key={'forecast'}>
-                <button
-                  className={classNames(
-                    s.bulletins__item,
-                    s.bulletins__forecast,
-                  )}
-                >
-                  <span>
-                    {dateFormat.format(
-                      new Date(avalanchesData[0].until).setDate(
-                        new Date(avalanchesData[0].until).getDate() + 1,
-                      ),
+            <div className={s.current__info}>
+              <div className={classNames(s.info, s['info--left'])}>
+                <span>Aktualizacja</span>
+                <span className={s.info__value}>
+                  {avalanchesData &&
+                    dateTimeFormat.format(
+                      new Date(avalanchesData[index].createdAt),
                     )}
-                  </span>
-                  <AvalancheIcon
-                    level={avalanchesData[0].forecast}
-                    increase={false}
-                    className={s.icon}
-                    levelClassName={s.icon__level}
-                  />
-                </button>
-              </li>
-            )}
-          </ul>
-        </section>
+                </span>
+              </div>
+              <div className={classNames(s.info, s['info--center'])}>
+                <span>Źródło</span>
+                <a
+                  href="https://lawiny.topr.pl/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={s.info__link}
+                >
+                  lawiny.topr.pl
+                </a>
+              </div>
+              <div className={classNames(s.info, s['info--right'])}>
+                <span>Obowiązuję do</span>
+                <span className={s.info__value}>
+                  {avalanchesData &&
+                    dateTimeFormat.format(
+                      new Date(avalanchesData[index].until),
+                    )}
+                </span>
+              </div>
+            </div>
+          </section>
+          <section className={classNames(s.card, s.details)}>
+            <h2 className={s.title}>Szczegóły zagrożenia</h2>
+            <AvalancheInfoItem
+              am={true}
+              elevation={avalanchesData && avalanchesData[index].am.elevation}
+              danger={(avalanchesData && avalanchesData[index].am.danger) ?? []}
+              increase={
+                (avalanchesData && avalanchesData[index].am.increase) ?? []
+              }
+              problem={
+                (avalanchesData && avalanchesData[index].am.problem) ?? []
+              }
+              aspect={
+                (avalanchesData && avalanchesData[index].am.aspect) ?? ['', '']
+              }
+            />
+            <AvalancheInfoItem
+              am={false}
+              elevation={avalanchesData && avalanchesData[index].pm.elevation}
+              danger={(avalanchesData && avalanchesData[index].pm.danger) ?? []}
+              increase={
+                (avalanchesData && avalanchesData[index].pm.increase) ?? []
+              }
+              problem={
+                (avalanchesData && avalanchesData[index].pm.problem) ?? []
+              }
+              aspect={
+                (avalanchesData && avalanchesData[index].pm.aspect) ?? ['', '']
+              }
+            />
+          </section>
+
+          <section className={classNames(s.card, s.bulletins)}>
+            <h2 className={s.title}>Historia i prognoza</h2>
+            <ul className={s.bulletins__list}>
+              {avalanchesData &&
+                avalanchesData.map((avalanche, idx, array) => {
+                  const _index = array.length - 1 - idx;
+                  const data = array[_index];
+
+                  return (
+                    <li
+                      key={new Date(data.until).getTime()}
+                      onClick={() => setIndex(_index)}
+                    >
+                      <button
+                        className={classNames(s.bulletins__item, {
+                          [s['bulletins__item--active']]: _index === index,
+                        })}
+                      >
+                        <span>{dateFormat.format(new Date(data.until))}</span>
+                        <AvalancheIcon
+                          level={data.danger}
+                          increase={data.increase}
+                          className={s.icon}
+                          levelClassName={s.icon__level}
+                        />
+                      </button>
+                    </li>
+                  );
+                })}
+              {avalanchesData && (
+                <li key={'forecast'}>
+                  <button
+                    className={classNames(
+                      s.bulletins__item,
+                      s.bulletins__forecast,
+                    )}
+                  >
+                    <span>
+                      {dateFormat.format(
+                        new Date(avalanchesData[0].until).setDate(
+                          new Date(avalanchesData[0].until).getDate() + 1,
+                        ),
+                      )}
+                    </span>
+                    <AvalancheIcon
+                      level={avalanchesData[0].forecast}
+                      increase={false}
+                      className={s.icon}
+                      levelClassName={s.icon__level}
+                    />
+                  </button>
+                </li>
+              )}
+            </ul>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
