@@ -6,6 +6,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
+import LineChart from '@components/charts/LineChart';
 import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
@@ -207,7 +208,9 @@ const PlannedHike = ({ hike }: any) => {
             </TabList>
 
             <TabPanels>
-              <TabPanel>Profil wysokości</TabPanel>
+              <TabPanel>
+                <LineChart ids={hike.trails} segments={hike.segments} />
+              </TabPanel>
               <TabPanel>Pogoda</TabPanel>
               <TabPanel>Informacje</TabPanel>
               <TabPanel>Zapisz</TabPanel>
