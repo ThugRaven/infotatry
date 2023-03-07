@@ -514,7 +514,6 @@ const MapContainer = ({
         maxzoom={14}
       />
       <Source type="geojson" data={trailsData}>
-        {/* <Layer {...trailsDataLayer} beforeId="trails-data-layer" /> */}
         <Layer {...trailsDataLayer} />
         <Layer {...trailsDrawOutlineLayer} />
         <Layer {...trailsDrawOffset1in2OutlineLayer} />

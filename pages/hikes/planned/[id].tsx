@@ -72,7 +72,6 @@ const PlannedHike = ({ hike }: any) => {
   const { id } = router.query;
   const [hoveredNode, setHoveredNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
-  console.log('getServerSideProps', hike);
 
   const saveHike = async (id: string | string[] | undefined) => {
     try {

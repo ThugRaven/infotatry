@@ -10,11 +10,6 @@ import Link from 'next/link';
 import React, { ReactElement, useState } from 'react';
 import image_1 from '../../public/image_1.jpg';
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

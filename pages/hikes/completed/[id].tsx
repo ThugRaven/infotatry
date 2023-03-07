@@ -66,7 +66,6 @@ const CompletedHike = ({ hike }: any) => {
   const { id } = router.query;
   const [hoveredNode, setHoveredNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
-  console.log('getServerSideProps', hike);
 
   const handleHover = (id: number, type: 'node' | 'trail') => {
     if (type === 'node') {
