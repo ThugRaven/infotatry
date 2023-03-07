@@ -1,11 +1,14 @@
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
+import RouteSegments from '@components/route/RouteSegments';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
-import s from '@styles/Hikes.module.css';
+import s from '@styles/CompletedHike.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetServerSideProps } from 'next';
-import { ReactElement } from 'react';
+import { useRouter } from 'next/router';
+import { ReactElement, useState } from 'react';
 
 export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
   context,
@@ -59,7 +62,19 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
 };
 
 const CompletedHike = ({ hike }: any) => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [hoveredNode, setHoveredNode] = useState(-1);
+  const [hoveredTrail, setHoveredTrail] = useState(-1);
   console.log('getServerSideProps', hike);
+
+  const handleHover = (id: number, type: 'node' | 'trail') => {
+    if (type === 'node') {
+      setHoveredNode(id);
+    } else {
+      setHoveredTrail(id);
+    }
+  };
 
   return (
     <>
@@ -70,60 +85,81 @@ const CompletedHike = ({ hike }: any) => {
           hike.time,
         )} h`}
       />
+
       <div className={s.container}>
-        {/* <ul>
-        {routeNodes.map((node, index) => (
-          <li key={`${node.id}-${index}`}>
-            {node.id} | {node.name}
-            </li>
-        ))}
-      </ul> */}
+        <aside className={s.segments}>
+          <RouteSegments
+            segments={(hike && hike.segments) ?? []}
+            onHover={handleHover}
+          />
+        </aside>
+        <section className={s.stats}>
+          <h2
+            className={s.location__name}
+          >{`${hike.name.start} - ${hike.name.end}`}</h2>
+          <ul className={s.stats__list}>
+            {[
+              {
+                name: 'Dystans',
+                value: formatMetersToKm(hike.distance),
+                unit: 'km',
+              },
+              {
+                name: 'Czas',
+                value: formatMinutesToHours(hike.time),
+                unit: 'h',
+              },
+              {
+                name: 'Podejścia',
+                value: hike.ascent,
+                unit: 'm',
+              },
+              {
+                name: 'Zejścia',
+                value: hike.descent,
+                unit: 'm',
+              },
+            ].map((item) => (
+              <li key={item.name} className={s.stats__item}>
+                <span className={s.item__name}>{item.name}</span>
+                <span className={s.item__value}>
+                  {item.value}
+                  <span className={s.item__unit}>{item.unit}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className={s.map}>
+          <MapContainer
+            trailIds={hike && hike.encoded != '' ? hike.trails : null}
+            hike={hike && hike.encoded == '' ? null : hike}
+            hoveredNode={hoveredNode}
+            hoveredTrail={hoveredTrail}
+          />
+        </section>
+        <section className={s.details}>
+          <Tabs>
+            <TabList>
+              <Tab>Profil wysokości</Tab>
+              <Tab>Pogoda</Tab>
+              <Tab>Informacje</Tab>
+              <Tab>Zapisz</Tab>
+            </TabList>
 
-        {hike && (
-          <>
-            <h1
-              className={s.hike__names}
-            >{`${hike.name.start} - ${hike.name.end}`}</h1>
-            <ul className={s.hike__info}>
-              <li title={`${hike.distance} m`}>
-                <span>Distance</span>
-                {`${
-                  (Math.floor(hike.distance / 1000) * 1000 +
-                    Math.round((hike.distance % 1000) / 100) * 100) /
-                  1000
-                } km`}
-              </li>
-              <li title={`${hike.time} min.`}>
-                <span>Time</span>
-                {`${Math.floor(hike.time / 60)}:${
-                  hike.time % 60 >= 10 ? hike.time % 60 : `0${hike.time % 60}`
-                } h`}
-              </li>
-              <li>
-                <span>Ascent</span>
-                {`${hike.ascent} m`}
-              </li>
-              <li>
-                <span>Descent</span>
-                {`${hike.descent} m`}
-              </li>
-            </ul>
-          </>
-        )}
-
-        <MapContainer
-          trailIds={hike && hike.encoded != '' ? hike.trails : null}
-          hike={hike && hike.encoded == '' ? null : hike}
-        ></MapContainer>
-
-        <div>Elevation profile</div>
+            <TabPanels>
+              <TabPanel>Pogoda</TabPanel>
+              <TabPanel>Informacje</TabPanel>
+            </TabPanels>
+          </Tabs>
+        </section>
       </div>
     </>
   );
 };
 
 CompletedHike.getLayout = function getLayout(page: ReactElement) {
-  return <MainLayout>{page}</MainLayout>;
+  return <MainLayout maxHeight={true}>{page}</MainLayout>;
 };
 
 export default CompletedHike;
