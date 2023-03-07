@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: min(768px, 100%);
+  gap: var(--space-2);
+  margin: auto 0;
+}
+
+.card {
+  background-color: var(--clr-100);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-4);
+}

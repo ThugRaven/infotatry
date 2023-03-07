@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { useAuth } from './useAuth';
 
-export const useSignOut = () => {
+export const useSignOut = (callbackUrl?: string) => {
   const auth = useAuth();
   const router = useRouter();
 
@@ -38,7 +38,7 @@ export const useSignOut = () => {
 
         if (auth.refetch) {
           auth.refetch();
-          return router.push('/');
+          return router.push(callbackUrl ?? '/');
         }
         return router.push('/login');
       },
