@@ -1,7 +1,6 @@
 import {
   Button,
   FormControl,
-  FormLabel,
   Input,
   Modal,
   ModalBody,
@@ -421,12 +420,11 @@ const MapPage = () => {
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Select date and time of hike</ModalHeader>
+            <ModalHeader>Wybierz datę i godzinę wędrówki</ModalHeader>
             <ModalCloseButton />
             <form onSubmit={handlePlanHike}>
               <ModalBody>
                 <FormControl isRequired>
-                  <FormLabel>Date</FormLabel>
                   <Input
                     type="datetime-local"
                     name="date"
@@ -439,9 +437,9 @@ const MapPage = () => {
 
               <ModalFooter>
                 <Button colorScheme="blue" mr={3} type="submit">
-                  Plan a hike
+                  Zaplanuj wędrówkę
                 </Button>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={onClose}>Anuluj</Button>
               </ModalFooter>
             </form>
           </ModalContent>
