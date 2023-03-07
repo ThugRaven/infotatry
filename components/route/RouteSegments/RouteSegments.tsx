@@ -11,7 +11,7 @@ import s from './RouteSegments.module.css';
 
 export type TrailSegment = {
   name: string;
-  colors: TrailColor[];
+  color: TrailColor[];
   distance: number;
   time: number;
   closed: boolean;
@@ -83,7 +83,7 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
                     <div className={classNames(s.item, s['item--trail'])}>
                       <div className={s.wrapper}>
                         <div className={s.markings}>
-                          {segment.colors.map((color) => (
+                          {segment.color.map((color) => (
                             <TrailMarking
                               key={color}
                               color={color}

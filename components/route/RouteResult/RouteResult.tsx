@@ -10,7 +10,7 @@ import {
 import s from './RouteResult.module.css';
 
 type Segment = {
-  colors: string[];
+  color: string[];
   distance: number;
 };
 
@@ -36,7 +36,7 @@ const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
 
   const totalCumulativeDistance =
     segments?.reduce(
-      (sum, segment) => sum + segment.distance * segment.colors.length,
+      (sum, segment) => sum + segment.distance * segment.color.length,
       0,
     ) ?? 0;
 
@@ -49,7 +49,7 @@ const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
   };
 
   segments?.forEach((segment) => {
-    segment.colors.forEach((color) => {
+    segment.color.forEach((color) => {
       switch (color) {
         case 'red': {
           trailSegments.red += segment.distance;
