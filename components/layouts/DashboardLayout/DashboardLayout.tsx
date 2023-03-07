@@ -1,5 +1,6 @@
 import AvalancheDry0 from '@components/icons/AvalancheDry0';
 import classNames from 'classnames';
+import { useAuth } from 'hooks/useAuth';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -26,6 +27,7 @@ const DashboardLayout = ({
   children,
 }: DashboardLayoutProps) => {
   const router = useRouter();
+  const { user, status: authStatus } = useAuth();
 
   return (
     <MainLayout maxHeight={maxHeight}>
@@ -73,45 +75,53 @@ const DashboardLayout = ({
                 </Link>
               </li>
             ))}
-            <div className={s.list__title}>Admin</div>
-            <div className={s.list__divider}></div>
-            {[
-              {
-                icon: <MdOutlineDashboard />,
-                name: 'Admin Dashboard',
-                path: '/dashboard/admin',
-              },
-              { icon: <MdMap />, name: 'Mapa', path: '/dashboard/admin/map' },
-              {
-                icon: <MdOutlineCampaign />,
-                name: 'Ogłoszenia',
-                path: '/dashboard/admin/announcements',
-              },
-              {
-                icon: <AvalancheDry0 />,
-                name: 'Komunikaty lawinowe',
-                path: '/dashboard/admin/avalanches',
-              },
-              {
-                icon: <MdPeopleOutline />,
-                name: 'Użytkownicy',
-                path: '/dashboard/admin/users',
-              },
-            ].map(({ name, icon, path }) => (
-              <li key={name}>
-                <Link href={path}>
-                  <a
-                    className={classNames(s.list__item, {
-                      [s['list__item--active']]: path === router.pathname,
-                    })}
-                  >
-                    <div className={s.icon}>{icon}</div>
-                    <span className={s.item__text}>{name}</span>
-                    <span className={s.item__tooltip}>{name}</span>
-                  </a>
-                </Link>
-              </li>
-            ))}
+            {user && user.roles.includes('admin') && (
+              <>
+                <div className={s.list__title}>Admin</div>
+                <div className={s.list__divider}></div>
+                {[
+                  {
+                    icon: <MdOutlineDashboard />,
+                    name: 'Admin Dashboard',
+                    path: '/dashboard/admin',
+                  },
+                  {
+                    icon: <MdMap />,
+                    name: 'Mapa',
+                    path: '/dashboard/admin/map',
+                  },
+                  {
+                    icon: <MdOutlineCampaign />,
+                    name: 'Ogłoszenia',
+                    path: '/dashboard/admin/announcements',
+                  },
+                  {
+                    icon: <AvalancheDry0 />,
+                    name: 'Komunikaty lawinowe',
+                    path: '/dashboard/admin/avalanches',
+                  },
+                  {
+                    icon: <MdPeopleOutline />,
+                    name: 'Użytkownicy',
+                    path: '/dashboard/admin/users',
+                  },
+                ].map(({ name, icon, path }) => (
+                  <li key={name}>
+                    <Link href={path}>
+                      <a
+                        className={classNames(s.list__item, {
+                          [s['list__item--active']]: path === router.pathname,
+                        })}
+                      >
+                        <div className={s.icon}>{icon}</div>
+                        <span className={s.item__text}>{name}</span>
+                        <span className={s.item__tooltip}>{name}</span>
+                      </a>
+                    </Link>
+                  </li>
+                ))}
+              </>
+            )}
           </ul>
         </nav>
         {children}

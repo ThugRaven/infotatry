@@ -5,6 +5,7 @@ export type User = {
   name: string;
   email: string;
   image?: string;
+  roles: string[];
 };
 
 export type AuthValue = {
