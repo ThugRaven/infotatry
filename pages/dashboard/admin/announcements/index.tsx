@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
+import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAnnouncements.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
@@ -36,6 +37,8 @@ const initialAnnouncementValues: AnnouncementForm = {
   source: '',
   description: '',
 };
+
+export const getServerSideProps = getServerSidePropsIsAdmin;
 
 const Announcements = () => {
   const [announcementForm, setAnnouncementForm] = useState(

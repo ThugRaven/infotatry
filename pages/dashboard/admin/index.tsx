@@ -1,7 +1,10 @@
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
+import { getServerSidePropsIsAdmin } from '@lib/api';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement } from 'react';
+
+export const getServerSideProps = getServerSidePropsIsAdmin;
 
 const DashboardAdmin = () => {
   return (

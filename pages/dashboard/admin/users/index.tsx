@@ -13,6 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
+import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminUsers.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
@@ -43,6 +44,8 @@ type UserFull = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export const getServerSideProps = getServerSidePropsIsAdmin;
 
 const Users = () => {
   const [userForm, setUserForm] = useState(initialUserValues);

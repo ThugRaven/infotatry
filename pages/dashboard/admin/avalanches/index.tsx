@@ -7,6 +7,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { DashboardLayout } from '@components/layouts';
+import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAvalanches.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
@@ -74,6 +75,8 @@ const initialAvalancheBulletinValues: AvalancheBulletinForm = {
     .toISOString()
     .slice(0, -1),
 };
+
+export const getServerSideProps = getServerSidePropsIsAdmin;
 
 const Avalanches = () => {
   const [bulletinForm, setBulletinForm] = useState(

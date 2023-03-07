@@ -47,6 +47,7 @@ import {
   trailsDrawOffset3in3OutlineLayer,
   trailsDrawOutlineLayer,
 } from '@config/layer-styles';
+import { getServerSidePropsIsAdmin } from '@lib/api';
 import {
   createLineString,
   createPoint,
@@ -171,6 +172,8 @@ const interactiveLayerIds = [
   // 'nodes-draw-local-layer',
   'trail-nodes-local-layer',
 ];
+
+export const getServerSideProps = getServerSidePropsIsAdmin;
 
 const DashboardAdminMap = () => {
   const mapRef = useRef<MapRef>(null);
