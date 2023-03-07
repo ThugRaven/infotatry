@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { Input } from '@components/ui';
@@ -16,6 +17,7 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const toast = useToast();
 
   const fetchUser = async () => {
     try {
@@ -25,12 +27,12 @@ const Settings = () => {
         credentials: 'include',
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.message);
       }
 
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -64,15 +66,22 @@ const Settings = () => {
         body: JSON.stringify({ name }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message);
+        throw new Error(data.message || response.status.toString());
       }
 
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
+        toast({
+          title: 'Wystąpił błąd!',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         throw new Error(error.message);
       }
     }
@@ -87,6 +96,12 @@ const Settings = () => {
       onSuccess: (data) => {
         console.log(data);
         refetch && refetch();
+        toast({
+          title: 'Dane zaktualizowane!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
       },
     });
   };
@@ -113,15 +128,22 @@ const Settings = () => {
         },
       );
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message);
+        throw new Error(data.message || response.status.toString());
       }
 
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
+        toast({
+          title: 'Wystąpił błąd!',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         throw new Error(error.message);
       }
     }
@@ -150,6 +172,13 @@ const Settings = () => {
         onSuccess: (data) => {
           console.log(data);
           handleSignOut();
+          toast({
+            title: 'Hasło zaktualizowane!',
+            description: 'Zaloguj się ponownie do aplikacji.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
         },
       },
     );
@@ -161,7 +190,7 @@ const Settings = () => {
       <div className={s.container}>
         {user && userData && (
           <div className={s.wrapper}>
-            <Card cardTitle="Zmień dane" className={s.card}>
+            <Card cardTitle="Zmień nazwę użytkownika" className={s.card}>
               <form onSubmit={handleEditUser} className={s.form}>
                 <div className={s.inputs}>
                   <Input

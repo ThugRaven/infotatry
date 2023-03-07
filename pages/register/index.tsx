@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import Logo from '@components/common/Logo';
 import GridLayout from '@components/layouts/GridLayout';
 import { Input } from '@components/ui';
@@ -21,6 +22,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const toast = useToast();
 
   const router = useRouter();
 
@@ -32,15 +34,22 @@ const Register = () => {
         body: JSON.stringify(registerForm),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.message);
       }
 
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
+        toast({
+          title: 'Wystąpił błąd!',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         throw new Error(error.message);
       }
     }

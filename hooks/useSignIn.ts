@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { useAuth } from './useAuth';
@@ -10,6 +11,7 @@ interface SignInForm {
 export const useSignIn = () => {
   const auth = useAuth();
   const router = useRouter();
+  const toast = useToast();
 
   const signInFetch = async (signInForm: SignInForm) => {
     try {
@@ -20,17 +22,22 @@ export const useSignIn = () => {
         credentials: 'include',
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        // const data = await response.json();
-        throw new Error(response.status.toString());
+        throw new Error(data.message || response.status.toString());
       }
 
-      console.log(response);
-
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
+        toast({
+          title: 'Wystąpił błąd!',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
         throw new Error(error.message);
       }
     }
@@ -48,6 +55,7 @@ export const useSignIn = () => {
 
           if (auth.refetch) {
             auth.refetch();
+            toast.closeAll();
             return router.push('/');
           }
           return router.push('/login');
