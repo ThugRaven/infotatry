@@ -93,30 +93,34 @@ const Profile = () => {
             <Card cardTitle="Ostatnie wędrówki" className={s.card} />
             <div className={s.hikes}>
               <Card cardTitle={'Zaplanowane'} className={s.card}>
-                <ul className={s.hikes__list}>
-                  {lastHikes?.plannedHikes?.map((hike) => (
-                    <ListItem
-                      key={hike._id}
-                      date={hike.createdAt}
-                      nameStart={hike.name.start}
-                      nameEnd={hike.name.end}
-                      path={`/hikes/planned/${hike._id}`}
-                    />
-                  ))}
-                </ul>
+                {lastHikes?.plannedHikes?.length > 0 && (
+                  <ul className={s.hikes__list}>
+                    {lastHikes.plannedHikes.map((hike) => (
+                      <ListItem
+                        key={hike._id}
+                        date={hike.createdAt}
+                        nameStart={hike.name.start}
+                        nameEnd={hike.name.end}
+                        path={`/hikes/planned/${hike._id}`}
+                      />
+                    ))}
+                  </ul>
+                )}
               </Card>
               <Card cardTitle={'Przebyte'} className={s.card}>
-                <ul className={s.hikes__list}>
-                  {lastHikes?.completedHikes?.map((hike) => (
-                    <ListItem
-                      key={hike._id}
-                      date={hike.createdAt}
-                      nameStart={hike.name.start}
-                      nameEnd={hike.name.end}
-                      path={`/hikes/completed/${hike._id}`}
-                    />
-                  ))}
-                </ul>
+                {lastHikes?.completedHikes?.length > 0 && (
+                  <ul className={s.hikes__list}>
+                    {lastHikes.completedHikes.map((hike) => (
+                      <ListItem
+                        key={hike._id}
+                        date={hike.createdAt}
+                        nameStart={hike.name.start}
+                        nameEnd={hike.name.end}
+                        path={`/hikes/completed/${hike._id}`}
+                      />
+                    ))}
+                  </ul>
+                )}
               </Card>
             </div>
           </div>
