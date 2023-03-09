@@ -51,7 +51,7 @@ const Stats = () => {
     <>
       <SEO title="Moje statystyki" />
       <div className={s.container}>
-        {user && userData && (
+        {user && userData && userData.user.stats && (
           <div className={s.wrapper}>
             <Card cardTitle="Moje statystyki" className={s.card} />
             <ul className={s.stats__list}>
