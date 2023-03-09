@@ -1,4 +1,4 @@
-import { Spinner } from '@chakra-ui/react';
+import { Spinner, useMediaQuery } from '@chakra-ui/react';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
 import RouteResult from '@components/route/RouteResult';
 import RouteSegments from '@components/route/RouteSegments';
@@ -54,11 +54,12 @@ const MapSidebar = ({
   className,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [isDesktopSidebar] = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {
     if (!ref.current) return;
-    onWidthChange(ref.current.offsetWidth);
-  }, [onWidthChange]);
+    onWidthChange(isDesktopSidebar ? ref.current.offsetWidth : 0);
+  }, [onWidthChange, isDesktopSidebar]);
 
   return (
     <div
