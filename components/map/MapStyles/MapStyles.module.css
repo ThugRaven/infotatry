@@ -1,10 +1,12 @@
 .list {
   position: relative;
   display: flex;
+  width: max-content;
   gap: var(--space-2);
   margin: var(--space-2);
   font-size: var(--fs-sm);
   font-family: var(--ff-primary);
+  z-index: 1;
   transition: transform 250ms ease-in-out;
 }
 
