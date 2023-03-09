@@ -11,10 +11,11 @@ import { IconButton } from '@components/ui';
 import Button from '@components/ui/Button';
 import classNames from 'classnames';
 import { User } from 'context/AuthContext';
+import { useSignOut } from 'hooks/useSignOut';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { MdClose, MdMenu } from 'react-icons/md';
+import { MdClose, MdMenu, MdOutlineLogout } from 'react-icons/md';
 import Logo from '../Logo';
 import ProfileDropdown from '../ProfileDropdown';
 import s from './Header.module.css';
@@ -34,6 +35,7 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleSignOut = useSignOut();
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -55,14 +57,6 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
 
   return (
     <header className={classNames(s.header)}>
-      <IconButton
-        buttonType="action"
-        aria-label="Menu"
-        onClick={onOpen}
-        className={s.menu}
-      >
-        <MdMenu />
-      </IconButton>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -77,7 +71,7 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
 
           <DrawerHeader>Nawigacja</DrawerHeader>
 
-          <DrawerBody>
+          <DrawerBody className={s.drawer__body}>
             <nav className={s.drawer__nav}>
               <ul className={s.nav__routes}>
                 {navRoutes.map((route) => {
@@ -91,6 +85,35 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
                 })}
               </ul>
             </nav>
+
+            {user && isLoggedIn ? (
+              <div className={classNames(s.profile, s['profile--mobile'])}>
+                <Link href={'/dashboard/profile'}>
+                  <a className={s.profile__btn}>
+                    <Avatar name={user.name} src={user.image} />
+                    <span className={s.profile__name}>Moje konto</span>
+                  </a>
+                </Link>
+                <button className={s.logout} onClick={handleSignOut}>
+                  <div className={s.icon}>
+                    <MdOutlineLogout />
+                  </div>
+                  Wyloguj się
+                </button>
+              </div>
+            ) : (
+              <div className={classNames(s.actions, s['actions--mobile'])}>
+                <Button onClick={() => router.push('/login')}>
+                  Zaloguj się
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => router.push('/register')}
+                >
+                  Zarejestruj się
+                </Button>
+              </div>
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
@@ -114,27 +137,37 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
           </ul>
         </nav>
       </div>
-      {user && isLoggedIn ? (
-        <div className={s.profile} ref={ref}>
-          <button
-            className={classNames(s.profile__btn, {
-              [s['profile--active']]: open,
-            })}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className={s.profile__name}>{user.name}</span>
-            <Avatar name={user.name} src={user.image} />
-          </button>
-          {open && <ProfileDropdown onClick={() => setOpen(false)} />}
-        </div>
-      ) : (
-        <div className={s.actions}>
-          <Button onClick={() => router.push('/login')}>Zaloguj się</Button>
-          <Button variant="outline" onClick={() => router.push('/register')}>
-            Zarejestruj się
-          </Button>
-        </div>
-      )}
+      <div className={s.actions__wrapper}>
+        <IconButton
+          buttonType="action"
+          aria-label="Menu"
+          onClick={onOpen}
+          className={s.menu}
+        >
+          <MdMenu />
+        </IconButton>
+        {user && isLoggedIn ? (
+          <div className={s.profile} ref={ref}>
+            <button
+              className={classNames(s.profile__btn, {
+                [s['profile--active']]: open,
+              })}
+              onClick={() => setOpen((value) => !value)}
+            >
+              <span className={s.profile__name}>{user.name}</span>
+              <Avatar name={user.name} src={user.image} />
+            </button>
+            {open && <ProfileDropdown onClick={() => setOpen(false)} />}
+          </div>
+        ) : (
+          <div className={classNames(s.actions, s['actions--pc'])}>
+            <Button onClick={() => router.push('/login')}>Zaloguj się</Button>
+            <Button variant="outline" onClick={() => router.push('/register')}>
+              Zarejestruj się
+            </Button>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
