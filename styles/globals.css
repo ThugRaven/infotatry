@@ -118,3 +118,7 @@ a {
   border-top-color: var(--clr-50);
   border-width: 12px;
 }
+
+[mapboxgl-children] {
+  display: flex;
+}
