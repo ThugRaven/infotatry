@@ -48,7 +48,7 @@ const DashboardLayout = ({
               {
                 icon: <FaHiking />,
                 name: 'Wędrówki',
-                path: '/hikes',
+                path: '/dashboard/hikes',
               },
               {
                 icon: <MdBarChart />,
