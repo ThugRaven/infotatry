@@ -59,8 +59,19 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
           },
         };
       }
-      throw new Error(error.message);
+      if (error.message == '404' || error.message === '400') {
+        return {
+          notFound: true,
+        };
+      }
     }
+
+    return {
+      redirect: {
+        destination: '/500',
+        permanent: false,
+      },
+    };
   }
 
   return {
