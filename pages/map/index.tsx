@@ -28,11 +28,6 @@ interface HikeArgs {
   date: number;
 }
 
-type WeatherSite = {
-  id: number;
-  name: string;
-};
-
 export type Route = {
   name: {
     start: string;
@@ -45,7 +40,7 @@ export type Route = {
   ascent: number;
   descent: number;
   type: 'normal' | 'closed' | 'shortest';
-  weatherSite: WeatherSite | null;
+  weatherSite: string;
 };
 
 export interface PopupState {
@@ -203,8 +198,8 @@ const MapPage = () => {
     error: currentWeatherError,
     data: currentWeatherData,
   } = useQuery<CurrentWeatherResponse, Error>(
-    ['current-weather', data && data[0].weatherSite?.name],
-    () => fetchCurrentWeather(data && data[0].weatherSite?.name),
+    ['current-weather', data && data[0].weatherSite],
+    () => fetchCurrentWeather(data && data[0].weatherSite),
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
@@ -254,8 +249,8 @@ const MapPage = () => {
     error: weatherForecastError,
     data: weatherForecastData,
   } = useQuery<any, Error>(
-    ['weather', data && data[0].weatherSite?.name],
-    () => fetchWeatherForecast(data && data[0].weatherSite?.name),
+    ['weather', data && data[0].weatherSite],
+    () => fetchWeatherForecast(data && data[0].weatherSite),
     {
       enabled: Boolean(isWeatherModalOpen),
       refetchOnWindowFocus: false,
@@ -445,7 +440,7 @@ const MapPage = () => {
           </ModalContent>
         </Modal>
         <WeatherModal
-          location={(data && data[index].weatherSite?.name) ?? ''}
+          location={(data && data[index].weatherSite) ?? ''}
           weatherData={{
             currentWeather: currentWeatherData,
             weatherForecast: weatherForecastData,

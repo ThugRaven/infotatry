@@ -109,7 +109,7 @@ const MapSidebar = ({
                 Zaplanuj wędrówkę
               </Button>
               <CurrentWeather
-                location={data[index].weatherSite?.name}
+                location={data[index].weatherSite}
                 weather={currentWeather}
                 onWeatherModalOpen={onWeatherModalOpen}
               />
