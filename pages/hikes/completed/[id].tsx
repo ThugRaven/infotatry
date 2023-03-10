@@ -1,14 +1,21 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
 import RouteSegments from '@components/route/RouteSegments';
+import Button from '@components/ui/Button';
+import WeatherModal from '@components/weather/WeatherModal';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/CompletedHike.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { ReactElement, useState } from 'react';
+import { useQuery } from 'react-query';
+import {
+  CurrentWeatherResponse,
+  WeatherForecastResponse,
+} from 'types/weather-types';
 
 export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
   context,
@@ -66,6 +73,7 @@ const CompletedHike = ({ hike }: any) => {
   const { id } = router.query;
   const [hoveredNode, setHoveredNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleHover = (id: number, type: 'node' | 'trail') => {
     if (type === 'node') {
@@ -74,6 +82,102 @@ const CompletedHike = ({ hike }: any) => {
       setHoveredTrail(id);
     }
   };
+
+  const fetchCurrentWeather = async (name?: string) => {
+    try {
+      if (!name) {
+        return false;
+      }
+      console.log('fetch');
+
+      const response = await fetch(
+        `http://localhost:8080/weather/current/${name}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isLoadingCurrentWeather,
+    error: currentWeatherError,
+    data: currentWeatherData,
+  } = useQuery<CurrentWeatherResponse, Error>(
+    ['current-weather', hike && hike.weatherSite],
+    () => fetchCurrentWeather(hike && hike.weatherSite),
+    {
+      enabled: Boolean(hike),
+      refetchOnWindowFocus: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess current weather');
+        console.log(data);
+      },
+    },
+  );
+
+  const fetchWeatherForecast = async (name?: string) => {
+    try {
+      if (!name) {
+        return false;
+      }
+      console.log('fetch');
+
+      const response = await fetch(
+        `http://localhost:8080/weather/forecast/${name}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  const {
+    isLoading: isLoadingWeatherForecast,
+    error: weatherForecastError,
+    data: weatherForecastData,
+  } = useQuery<WeatherForecastResponse, Error>(
+    ['weather', hike && hike.weatherSite],
+    () => fetchWeatherForecast(hike && hike.weatherSite),
+    {
+      enabled: Boolean(isOpen),
+      refetchOnWindowFocus: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess weather forecast');
+        console.log(data);
+      },
+    },
+  );
 
   return (
     <>
@@ -128,6 +232,11 @@ const CompletedHike = ({ hike }: any) => {
               </li>
             ))}
           </ul>
+          <div className={s.buttons}>
+            <Button onClick={onOpen} variant="outline" responsive>
+              Informacje pogodowe
+            </Button>
+          </div>
         </section>
         <section className={s.map}>
           <MapContainer
@@ -137,21 +246,15 @@ const CompletedHike = ({ hike }: any) => {
             hoveredTrail={hoveredTrail}
           />
         </section>
-        <section className={s.details}>
-          <Tabs>
-            <TabList>
-              <Tab>Profil wysokości</Tab>
-              <Tab>Pogoda</Tab>
-              <Tab>Informacje</Tab>
-              <Tab>Zapisz</Tab>
-            </TabList>
-
-            <TabPanels>
-              <TabPanel>Pogoda</TabPanel>
-              <TabPanel>Informacje</TabPanel>
-            </TabPanels>
-          </Tabs>
-        </section>
+        <WeatherModal
+          location={hike.weatherSite}
+          weatherData={{
+            currentWeather: currentWeatherData,
+            weatherForecast: weatherForecastData,
+          }}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
       </div>
     </>
   );
