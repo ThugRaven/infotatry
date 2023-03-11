@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   Input,
   Modal,
@@ -14,6 +13,7 @@ import {
 import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
 import { TrailSegment } from '@components/route/RouteSegments/RouteSegments';
+import Button from '@components/ui/Button';
 import WeatherModal from '@components/weather/WeatherModal';
 import s from '@styles/MapPage.module.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -414,7 +414,7 @@ const MapPage = () => {
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent className={s.modal}>
             <ModalHeader>Wybierz datę i godzinę wędrówki</ModalHeader>
             <ModalCloseButton />
             <form onSubmit={handlePlanHike}>
@@ -430,11 +430,11 @@ const MapPage = () => {
                 </FormControl>
               </ModalBody>
 
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3} type="submit">
-                  Zaplanuj wędrówkę
+              <ModalFooter className={s.footer}>
+                <Button>Zaplanuj wędrówkę</Button>
+                <Button onClick={onClose} variant="outline" type="button">
+                  Anuluj
                 </Button>
-                <Button onClick={onClose}>Anuluj</Button>
               </ModalFooter>
             </form>
           </ModalContent>
