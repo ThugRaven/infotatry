@@ -4,7 +4,6 @@ import { Input } from '@components/ui';
 import Button from '@components/ui/Button';
 import s from '@styles/Login.module.css';
 import { useSignIn } from 'hooks/useSignIn';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { ReactElement, useState } from 'react';

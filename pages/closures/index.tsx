@@ -2,7 +2,6 @@ import Closure from '@components/closures/Closure';
 import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import s from '@styles/Closures.module.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
 

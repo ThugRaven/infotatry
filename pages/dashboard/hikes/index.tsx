@@ -7,7 +7,6 @@ import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Hikes.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import {

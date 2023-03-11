@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import AuthProvider from '@components/auth/AuthProvider';
 import { SEO } from '@components/common';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';

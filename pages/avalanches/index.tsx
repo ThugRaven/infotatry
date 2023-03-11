@@ -6,7 +6,6 @@ import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import s from '@styles/Avalanches.module.css';
 import classNames from 'classnames';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement, useId, useState } from 'react';
 import { useQuery } from 'react-query';
 

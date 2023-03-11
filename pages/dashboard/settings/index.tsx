@@ -7,7 +7,6 @@ import Card from '@components/ui/Card';
 import s from '@styles/Settings.module.css';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 

@@ -60,7 +60,6 @@ import s from '@styles/DashboardAdminMap.module.css';
 import distance from '@turf/distance';
 import { saveAs } from 'file-saver';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/router';
 import React, {
   ReactElement,

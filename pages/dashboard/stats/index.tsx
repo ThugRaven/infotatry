@@ -5,7 +5,6 @@ import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Stats.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
 

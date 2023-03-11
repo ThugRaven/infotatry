@@ -9,7 +9,6 @@ import {
 import { DashboardLayout } from '@components/layouts';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAvalanches.module.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 

@@ -10,7 +10,6 @@ import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAnnouncements.module.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 

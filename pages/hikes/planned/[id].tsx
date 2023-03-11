@@ -7,7 +7,6 @@ import Button from '@components/ui/Button';
 import WeatherModal from '@components/weather/WeatherModal';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/PlannedHike.module.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { ReactElement, useState } from 'react';

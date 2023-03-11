@@ -6,7 +6,6 @@ import Card from '@components/ui/Card';
 import s from '@styles/Profile.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';

@@ -4,7 +4,6 @@ import GridLayout from '@components/layouts/GridLayout';
 import { Input } from '@components/ui';
 import Button from '@components/ui/Button';
 import s from '@styles/Register.module.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
