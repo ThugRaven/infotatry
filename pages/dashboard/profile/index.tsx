@@ -1,5 +1,6 @@
 import { Avatar } from '@chakra-ui/react';
 import { SEO } from '@components/common';
+import LoadingOverlay from '@components/common/LoadingOverlay';
 import { DashboardLayout } from '@components/layouts';
 import Card from '@components/ui/Card';
 import s from '@styles/Profile.module.css';
@@ -92,6 +93,7 @@ const Profile = () => {
             </Card>
             <Card cardTitle="Ostatnie wędrówki" className={s.card} />
             <div className={s.hikes}>
+              {isLoadingLastHikes && <LoadingOverlay />}
               <Card cardTitle={'Zaplanowane'} className={s.card}>
                 {lastHikes?.plannedHikes?.length > 0 && (
                   <ul className={s.hikes__list}>

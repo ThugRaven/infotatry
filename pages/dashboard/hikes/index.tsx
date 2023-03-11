@@ -1,5 +1,5 @@
-import { Spinner } from '@chakra-ui/react';
 import { SEO } from '@components/common';
+import LoadingOverlay from '@components/common/LoadingOverlay';
 import { DashboardLayout } from '@components/layouts';
 import Button from '@components/ui/Button';
 import Card from '@components/ui/Card';
@@ -195,19 +195,6 @@ const PaginationButton = ({
   );
 };
 
-const LoadingOverlay = () => {
-  return (
-    <div className={s.overlay}>
-      <Spinner
-        thickness="5px"
-        size="xl"
-        color="#6f6f76"
-        className={s.spinner}
-      />
-    </div>
-  );
-};
-
 const Hikes = () => {
   const { user, status } = useAuth();
   const [hikesType, setHikesType] = useState<'planned' | 'completed'>(
@@ -342,7 +329,6 @@ const Hikes = () => {
             {hikesType === 'planned' && (
               <Card cardTitle={'Zaplanowane'} className={s.card}>
                 {isFetchingPlannedHikes && <LoadingOverlay />}
-                {/* <LoadingOverlay /> */}
                 {plannedHikes && plannedHikes.data.length > 0 && (
                   <>
                     <ul className={s.hikes__list}>

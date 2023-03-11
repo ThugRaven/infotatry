@@ -30,6 +30,7 @@
 }
 
 .hikes {
+  position: relative;
   display: grid;
   grid-auto-flow: row;
   gap: var(--space-2);
