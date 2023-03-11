@@ -33,7 +33,7 @@ export function createLineString(
 export function swapCoordinates(
   coordinates: Array<[number, number]>,
 ): Array<[number, number]> {
-  let swapped: Array<[number, number]> = [];
+  const swapped: Array<[number, number]> = [];
 
   if (coordinates.length > 0) {
     for (let i = 0; i < coordinates.length; i++) {
