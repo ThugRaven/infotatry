@@ -1,12 +1,15 @@
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import Card from '@components/ui/Card';
+import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Stats.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
+
+export const getServerSideProps = getServerSidePropsIsAuthenticated;
 
 const Stats = () => {
   const { user, status } = useAuth();

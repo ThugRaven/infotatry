@@ -3,6 +3,7 @@ import { SEO } from '@components/common';
 import LoadingOverlay from '@components/common/LoadingOverlay';
 import { DashboardLayout } from '@components/layouts';
 import Card from '@components/ui/Card';
+import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import s from '@styles/Profile.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
@@ -42,8 +43,10 @@ const ListItem = ({
   );
 };
 
+export const getServerSideProps = getServerSidePropsIsAuthenticated;
+
 const Profile = () => {
-  const { user, status } = useAuth();
+  const { user } = useAuth();
 
   const fetchLastHikes = async () => {
     try {

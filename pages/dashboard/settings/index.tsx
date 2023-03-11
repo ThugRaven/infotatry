@@ -4,11 +4,14 @@ import { DashboardLayout } from '@components/layouts';
 import { Input } from '@components/ui';
 import Button from '@components/ui/Button';
 import Card from '@components/ui/Card';
+import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import s from '@styles/Settings.module.css';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
 import { ReactElement, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+
+export const getServerSideProps = getServerSidePropsIsAuthenticated;
 
 const Settings = () => {
   const { user, refetch } = useAuth();

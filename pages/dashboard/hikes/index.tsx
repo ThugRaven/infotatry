@@ -3,6 +3,7 @@ import LoadingOverlay from '@components/common/LoadingOverlay';
 import { DashboardLayout } from '@components/layouts';
 import Button from '@components/ui/Button';
 import Card from '@components/ui/Card';
+import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Hikes.module.css';
 import classNames from 'classnames';
@@ -193,6 +194,8 @@ const PaginationButton = ({
     </button>
   );
 };
+
+export const getServerSideProps = getServerSidePropsIsAuthenticated;
 
 const Hikes = () => {
   const { user, status } = useAuth();
