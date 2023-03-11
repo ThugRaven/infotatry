@@ -1,6 +1,6 @@
 import NodeIcon from '@components/icons/NodeIcon';
 import { useDebounce } from 'hooks/useDebounce';
-import { PopupState } from 'pages/map';
+import { PopupState } from 'pages';
 import { useCallback, useEffect, useState } from 'react';
 import { FaHiking } from 'react-icons/fa';
 import { MdAdd, MdLandscape, MdSwapVert } from 'react-icons/md';

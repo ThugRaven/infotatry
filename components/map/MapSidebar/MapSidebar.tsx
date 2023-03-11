@@ -6,7 +6,7 @@ import { SearchRoute } from '@components/search';
 import Button from '@components/ui/Button';
 import CurrentWeather from '@components/weather/CurrentWeather';
 import classNames from 'classnames';
-import { PopupState } from 'pages/map';
+import { PopupState } from 'pages';
 import { useEffect, useRef } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
 import { CurrentWeatherResponse } from 'types/weather-types';

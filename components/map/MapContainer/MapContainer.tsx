@@ -27,8 +27,8 @@ import {
 } from '@lib/geo-utils';
 import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
+import { PopupAction } from 'pages';
 import { Node, Trail } from 'pages/dashboard/admin/map';
-import { PopupAction } from 'pages/map';
 import {
   Dispatch,
   useCallback,

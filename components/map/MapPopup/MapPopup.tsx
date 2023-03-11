@@ -3,7 +3,7 @@ import DistanceIcon from '@components/icons/DistanceIcon';
 import NodeIcon from '@components/icons/NodeIcon';
 import IconButton from '@components/ui/IconButton';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
-import { PopupAction } from 'pages/map';
+import { PopupAction } from 'pages';
 import { Dispatch, ReactNode } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {

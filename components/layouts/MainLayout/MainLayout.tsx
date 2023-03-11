@@ -38,7 +38,7 @@ const MainLayout = ({
         navRoutes={[
           {
             name: 'Mapa',
-            path: '/map',
+            path: '/',
           },
           {
             name: 'Lawiny',
