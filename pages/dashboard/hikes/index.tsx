@@ -212,7 +212,7 @@ const Hikes = () => {
   const fetchPlannedHikes = async (page: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/user/hikes/planned?page=${page}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/hikes/planned?page=${page}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -237,7 +237,7 @@ const Hikes = () => {
   const fetchCompletedHikes = async (page: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/user/hikes/completed?page=${page}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/hikes/completed?page=${page}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },

@@ -20,7 +20,7 @@ const Closures = () => {
   const fetchClosures = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/announcements/closures`,
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/closures`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },

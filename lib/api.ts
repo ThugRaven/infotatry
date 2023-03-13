@@ -25,14 +25,17 @@ export const isAdmin = async (
   let response: ApiResponse | ApiRedirect | undefined;
 
   try {
-    const _response = await fetch(`http://localhost:8080/user/admin`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `connect.sid=${authCookie};`,
+    const _response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/admin`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `connect.sid=${authCookie};`,
+        },
+        credentials: 'include',
       },
-      credentials: 'include',
-    });
+    );
 
     if (!_response.ok) {
       throw new Error(_response.status.toString());
@@ -81,14 +84,17 @@ export const isAuthenticated = async (
   let response: ApiResponse | ApiRedirect | undefined;
 
   try {
-    const _response = await fetch(`http://localhost:8080/user/authenticated`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `connect.sid=${authCookie};`,
+    const _response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/user/authenticated`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `connect.sid=${authCookie};`,
+        },
+        credentials: 'include',
       },
-      credentials: 'include',
-    });
+    );
 
     if (!_response.ok) {
       throw new Error(_response.status.toString());

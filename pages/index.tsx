@@ -125,10 +125,13 @@ const MapPage = () => {
       console.log('fetch');
       console.log(query);
 
-      const response = await fetch(`http://localhost:8080/route/${query}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/route/${query}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -171,7 +174,7 @@ const MapPage = () => {
       console.log(query);
 
       const response = await fetch(
-        `http://localhost:8080/weather/current/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/current/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -222,7 +225,7 @@ const MapPage = () => {
       console.log(query);
 
       const response = await fetch(
-        `http://localhost:8080/weather/forecast/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/forecast/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -269,10 +272,13 @@ const MapPage = () => {
       console.log('fetch');
       console.log(query);
 
-      const response = await fetch(`http://localhost:8080/avalanches/`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -319,15 +325,18 @@ const MapPage = () => {
         return null;
       }
 
-      const response = await fetch('http://localhost:8080/hikes/planned', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          date,
-        }),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/hikes/planned`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query,
+            date,
+          }),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();

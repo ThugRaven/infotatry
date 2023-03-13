@@ -59,7 +59,7 @@ const Users = () => {
     try {
       console.log('fetch users');
 
-      const response = await fetch(`http://localhost:8080/users`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -129,12 +129,15 @@ const Users = () => {
         return null;
       }
 
-      const response = await fetch(`http://localhost:8080/users/ban/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userBanForm),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/ban/${id}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userBanForm),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -159,12 +162,15 @@ const Users = () => {
 
       console.log(userForm);
 
-      const response = await fetch(`http://localhost:8080/users/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userForm),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userForm),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -187,11 +193,14 @@ const Users = () => {
         return null;
       }
 
-      const response = await fetch(`http://localhost:8080/users/${id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();

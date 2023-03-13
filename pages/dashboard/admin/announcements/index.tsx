@@ -49,11 +49,14 @@ const Announcements = () => {
     try {
       console.log('fetch all announcements');
 
-      const response = await fetch(`http://localhost:8080/announcements/all`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/all`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -104,15 +107,18 @@ const Announcements = () => {
         return null;
       }
 
-      const response = await fetch('http://localhost:8080/announcements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...announcement,
-          featuresIds: announcement.featuresIds.toString(),
-        }),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...announcement,
+            featuresIds: announcement.featuresIds.toString(),
+          }),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -135,7 +141,7 @@ const Announcements = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/announcements/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/${id}`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -167,7 +173,7 @@ const Announcements = () => {
       console.log(announcementForm);
 
       const response = await fetch(
-        `http://localhost:8080/announcements/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/${id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -201,7 +207,7 @@ const Announcements = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/announcements/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/${id}`,
         {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },

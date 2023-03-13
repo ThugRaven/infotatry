@@ -15,12 +15,15 @@ export const useSignIn = () => {
 
   const signInFetch = async (signInForm: SignInForm) => {
     try {
-      const response = await fetch(`http://localhost:8080/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signInForm),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(signInForm),
+          credentials: 'include',
+        },
+      );
 
       const data = await response.json();
       if (!response.ok) {

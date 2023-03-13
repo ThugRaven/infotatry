@@ -149,10 +149,13 @@ const Avalanches = () => {
     try {
       console.log('fetch');
 
-      const response = await fetch(`http://localhost:8080/avalanches/week`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/week`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();

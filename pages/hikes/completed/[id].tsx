@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
     console.log(id);
 
     const response = await fetch(
-      `http://localhost:8080/hikes/completed/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/hikes/completed/${id}`,
       {
         method: 'GET',
         headers: {
@@ -101,7 +101,7 @@ const CompletedHike = ({ hike }: any) => {
       console.log('fetch');
 
       const response = await fetch(
-        `http://localhost:8080/weather/current/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/current/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -149,7 +149,7 @@ const CompletedHike = ({ hike }: any) => {
       console.log('fetch');
 
       const response = await fetch(
-        `http://localhost:8080/weather/forecast/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/forecast/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },

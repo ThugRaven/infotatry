@@ -50,11 +50,14 @@ const Profile = () => {
 
   const fetchLastHikes = async () => {
     try {
-      const response = await fetch('http://localhost:8080/user/hikes/last', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/hikes/last`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();

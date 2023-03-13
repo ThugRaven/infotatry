@@ -30,14 +30,17 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
     console.log('fetch');
     console.log(id);
 
-    const response = await fetch(`http://localhost:8080/hikes/planned/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `connect.sid=${authCookie};`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/hikes/planned/${id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: `connect.sid=${authCookie};`,
+        },
+        credentials: 'include',
       },
-      credentials: 'include',
-    });
+    );
 
     if (!response.ok) {
       throw new Error(response.status.toString());
@@ -87,7 +90,7 @@ const PlannedHike = ({ hike }: any) => {
       console.log(id);
 
       const response = await fetch(
-        `http://localhost:8080/hikes/completed/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/hikes/completed/${id}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -146,7 +149,7 @@ const PlannedHike = ({ hike }: any) => {
       console.log('fetch');
 
       const response = await fetch(
-        `http://localhost:8080/weather/current/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/current/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -194,7 +197,7 @@ const PlannedHike = ({ hike }: any) => {
       console.log('fetch');
 
       const response = await fetch(
-        `http://localhost:8080/weather/forecast/${name}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/weather/forecast/${name}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },

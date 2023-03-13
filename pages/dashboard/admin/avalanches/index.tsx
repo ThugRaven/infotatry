@@ -88,11 +88,14 @@ const Avalanches = () => {
     try {
       console.log('fetch all avalanche bulletins');
 
-      const response = await fetch(`http://localhost:8080/avalanches/all`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/all`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -143,31 +146,34 @@ const Avalanches = () => {
         return null;
       }
 
-      const response = await fetch('http://localhost:8080/avalanches', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          danger: bulletin.danger,
-          increase: bulletin.increase,
-          am: {
-            elevation: bulletin.am_elevation,
-            danger: bulletin.am_danger.split(','),
-            increase: bulletin.am_increase,
-            problem: bulletin.am_problem,
-            aspect: bulletin.am_aspect.split(','),
-          },
-          pm: {
-            elevation: bulletin.pm_elevation,
-            danger: bulletin.pm_danger.split(','),
-            increase: bulletin.pm_increase,
-            problem: bulletin.pm_problem,
-            aspect: bulletin.pm_aspect.split(','),
-          },
-          forecast: bulletin.forecast,
-          until: bulletin.until,
-        }),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        '${process.env.NEXT_PUBLIC_API_URL}/avalanches',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            danger: bulletin.danger,
+            increase: bulletin.increase,
+            am: {
+              elevation: bulletin.am_elevation,
+              danger: bulletin.am_danger.split(','),
+              increase: bulletin.am_increase,
+              problem: bulletin.am_problem,
+              aspect: bulletin.am_aspect.split(','),
+            },
+            pm: {
+              elevation: bulletin.pm_elevation,
+              danger: bulletin.pm_danger.split(','),
+              increase: bulletin.pm_increase,
+              problem: bulletin.pm_problem,
+              aspect: bulletin.pm_aspect.split(','),
+            },
+            forecast: bulletin.forecast,
+            until: bulletin.until,
+          }),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -191,31 +197,34 @@ const Avalanches = () => {
 
       console.log(bulletinForm);
 
-      const response = await fetch(`http://localhost:8080/avalanches/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          danger: bulletinForm.danger,
-          increase: bulletinForm.increase,
-          am: {
-            elevation: bulletinForm.am_elevation,
-            danger: bulletinForm.am_danger.split(','),
-            increase: bulletinForm.am_increase,
-            problem: bulletinForm.am_problem,
-            aspect: bulletinForm.am_aspect.split(','),
-          },
-          pm: {
-            elevation: bulletinForm.pm_elevation,
-            danger: bulletinForm.pm_danger.split(','),
-            increase: bulletinForm.pm_increase,
-            problem: bulletinForm.pm_problem,
-            aspect: bulletinForm.pm_aspect.split(','),
-          },
-          forecast: bulletinForm.forecast,
-          until: bulletinForm.until,
-        }),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/${id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            danger: bulletinForm.danger,
+            increase: bulletinForm.increase,
+            am: {
+              elevation: bulletinForm.am_elevation,
+              danger: bulletinForm.am_danger.split(','),
+              increase: bulletinForm.am_increase,
+              problem: bulletinForm.am_problem,
+              aspect: bulletinForm.am_aspect.split(','),
+            },
+            pm: {
+              elevation: bulletinForm.pm_elevation,
+              danger: bulletinForm.pm_danger.split(','),
+              increase: bulletinForm.pm_increase,
+              problem: bulletinForm.pm_problem,
+              aspect: bulletinForm.pm_aspect.split(','),
+            },
+            forecast: bulletinForm.forecast,
+            until: bulletinForm.until,
+          }),
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -238,11 +247,14 @@ const Avalanches = () => {
         return null;
       }
 
-      const response = await fetch(`http://localhost:8080/avalanches/${id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/${id}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();

@@ -8,11 +8,14 @@ export const useSignOut = (callbackUrl?: string) => {
 
   const signOutFetch = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/auth/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         // const data = await response.json();

@@ -27,11 +27,14 @@ const Register = () => {
 
   const register = async (registerForm: RegisterForm) => {
     try {
-      const response = await fetch(`http://localhost:8080/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerForm),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerForm),
+        },
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -108,7 +111,7 @@ const Register = () => {
           <div className={s.divider}>
             <span className={s.divider__text}>lub</span>
           </div>
-          <a href="http://localhost:8080/auth/login/google">
+          <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`}>
             <Button variant="outline" className={s.google}>
               Zaloguj się przez Google
             </Button>

@@ -23,7 +23,7 @@ const Settings = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/user`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -61,12 +61,15 @@ const Settings = () => {
 
   const editUser = async (name: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/edit`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ name }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/edit`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name }),
+        },
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -115,7 +118,7 @@ const Settings = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/user/change_password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/change_password`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
