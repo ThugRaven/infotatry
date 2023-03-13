@@ -3,7 +3,6 @@ import AuthProvider from '@components/auth/AuthProvider';
 import { SEO } from '@components/common';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { NextPage } from 'next';
-import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -39,11 +38,9 @@ export default function MyApp({
       </SEO>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <SessionProvider session={session}>
-            <ChakraProvider>
-              {getLayout(<Component {...pageProps} />)}
-            </ChakraProvider>
-          </SessionProvider>
+          <ChakraProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </ChakraProvider>
         </AuthProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
