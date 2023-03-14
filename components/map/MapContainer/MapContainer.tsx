@@ -395,10 +395,19 @@ const MapContainer = ({
     });
   }, [padding]);
 
+  const handleClosePopup = useCallback(() => {
+    setPopupInfo(null);
+  }, []);
+
   return (
     <Map
       id="map"
       ref={mapInitializeRef}
+      // initialViewState={{
+      //   longitude: 19,
+      //   latitude: 42,
+      //   zoom: 3.5,
+      // }}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       maxPitch={85}
@@ -499,9 +508,7 @@ const MapContainer = ({
         <MapPopup
           lngLat={popupInfo.lngLat}
           features={popupInfo.features}
-          onClose={() => {
-            setPopupInfo(null);
-          }}
+          onClose={handleClosePopup}
           dispatch={popupDispatch}
         />
       )}

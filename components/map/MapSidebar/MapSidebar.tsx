@@ -7,7 +7,7 @@ import Button from '@components/ui/Button';
 import CurrentWeather from '@components/weather/CurrentWeather';
 import classNames from 'classnames';
 import { PopupState } from 'pages';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
 import { CurrentWeatherResponse } from 'types/weather-types';
 import s from './MapSidebar.module.css';
@@ -129,4 +129,4 @@ const MapSidebar = ({
   );
 };
 
-export default MapSidebar;
+export default memo(MapSidebar);

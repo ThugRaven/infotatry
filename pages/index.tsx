@@ -18,7 +18,7 @@ import Button from '@components/ui/Button';
 import WeatherModal from '@components/weather/WeatherModal';
 import s from '@styles/MapPage.module.css';
 import { useRouter } from 'next/router';
-import { ReactElement, useReducer, useState } from 'react';
+import { ReactElement, useCallback, useReducer, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { CurrentWeatherResponse } from 'types/weather-types';
 
@@ -112,13 +112,13 @@ const MapPage = () => {
     new Date(nextDay).toISOString().slice(0, -1),
   );
 
-  const onToggle = () => {
+  const onToggle = useCallback(() => {
     setIsOpen((open) => !open);
-  };
+  }, []);
 
-  const onWidthChange = (width: number) => {
+  const onWidthChange = useCallback((width: number) => {
     setWidth(width);
-  };
+  }, []);
 
   const fetchRoute = async (query: SearchForm | null) => {
     try {
@@ -308,7 +308,7 @@ const MapPage = () => {
     },
   });
 
-  const handleSearch = (searchForm: SearchForm) => {
+  const handleSearch = useCallback((searchForm: SearchForm) => {
     console.log('handleSearch');
     let searchQuery = '';
     for (const key in searchForm) {
@@ -317,7 +317,7 @@ const MapPage = () => {
     }
     searchQuery = searchQuery.slice(0, -1);
     setQuery(searchQuery.trim().toLowerCase());
-  };
+  }, []);
 
   const createHike = async ({ query, date }: HikeArgs) => {
     try {
@@ -375,19 +375,18 @@ const MapPage = () => {
     );
   };
 
-  const handleSelectRoute = (index: number) => {
+  const handleSelectRoute = useCallback((index: number) => {
     console.log(index);
-
     setIndex(index);
-  };
+  }, []);
 
-  const handleHover = (id: number, type: 'node' | 'trail') => {
+  const handleHover = useCallback((id: number, type: 'node' | 'trail') => {
     if (type === 'node') {
       setHoveredNode(id);
     } else {
       setHoveredTrail(id);
     }
-  };
+  }, []);
 
   return (
     <>

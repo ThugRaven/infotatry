@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Dispatch } from 'react';
+import { Dispatch, memo } from 'react';
 import { MdMap, MdOutlineSatellite, MdOutlineViewInAr } from 'react-icons/md';
 import { MapStyleAction, MapStyleState } from '../MapContainer/MapContainer';
 import s from './MapStyles.module.css';
@@ -59,4 +59,4 @@ const MapStyles = ({ padding, style, dispatch }: MapStylesProps) => {
   );
 };
 
-export default MapStyles;
+export default memo(MapStyles);

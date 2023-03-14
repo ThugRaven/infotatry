@@ -68,9 +68,6 @@ const Register = () => {
           router.push('/');
           console.log(data);
           console.log(data && data._id);
-          if (data) {
-            // router.push(`/hikes/completed/${data._id}`);
-          }
         },
       },
     );

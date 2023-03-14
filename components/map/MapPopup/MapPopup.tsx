@@ -4,7 +4,7 @@ import NodeIcon from '@components/icons/NodeIcon';
 import IconButton from '@components/ui/IconButton';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import { PopupAction } from 'pages';
-import { Dispatch, ReactNode } from 'react';
+import { Dispatch, memo, ReactNode } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {
   MdClose,
@@ -207,4 +207,4 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
   );
 };
 
-export default MapPopup;
+export default memo(MapPopup);

@@ -5,7 +5,7 @@ import ShelterIcon from '@components/icons/ShelterIcon';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
 import { TrailColor } from 'pages/dashboard/admin/map';
-import { Fragment } from 'react';
+import { Fragment, memo } from 'react';
 import { MdErrorOutline, MdLandscape } from 'react-icons/md';
 import s from './RouteSegments.module.css';
 
@@ -119,4 +119,4 @@ const RouteSegments = ({ segments, onClick, onHover }: RouteSegmentsProps) => {
   ) : null;
 };
 
-export default RouteSegments;
+export default memo(RouteSegments);

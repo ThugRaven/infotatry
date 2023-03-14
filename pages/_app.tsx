@@ -23,7 +23,7 @@ const queryClient = new QueryClient();
 
 export default function MyApp({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { ...pageProps },
 }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
