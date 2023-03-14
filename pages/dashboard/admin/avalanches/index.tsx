@@ -147,7 +147,7 @@ const Avalanches = () => {
       }
 
       const response = await fetch(
-        '${process.env.NEXT_PUBLIC_API_URL}/avalanches',
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
