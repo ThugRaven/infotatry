@@ -50,7 +50,7 @@ const Login = () => {
             <span className={s.divider__text}>lub</span>
           </div>
           <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`}>
-            <Button variant="outline" className={s.google}>
+            <Button variant="outline" className={s.google} type="button">
               Zaloguj się przez Google
             </Button>
           </a>
