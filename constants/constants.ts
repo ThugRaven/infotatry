@@ -18,3 +18,9 @@ export const TRAIL_OUTLINE_COLORS = {
 } as const;
 
 export const INTERACTIVE_LAYER_IDS = ['trails-data-layer', 'nodes-draw-layer'];
+
+export const INITIAL_VIEW_STATE = {
+  latitude: 49.23,
+  longitude: 19.93,
+  zoom: 11,
+};

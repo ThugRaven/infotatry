@@ -58,6 +58,7 @@ import {
 import Graph from '@lib/Graph';
 import s from '@styles/DashboardAdminMap.module.css';
 import distance from '@turf/distance';
+import { INITIAL_VIEW_STATE } from 'constants/constants';
 import { saveAs } from 'file-saver';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { useRouter } from 'next/router';
@@ -1456,6 +1457,8 @@ const DashboardAdminMap = () => {
     );
   };
 
+  const handleMove = useCallback((evt) => setViewState(evt.viewState), []);
+
   return (
     <>
       <SEO title="Admin Dashboard - Map" />
@@ -1498,8 +1501,9 @@ const DashboardAdminMap = () => {
           />
           <Map
             ref={mapRef}
-            {...viewState}
-            onMove={(evt) => setViewState(evt.viewState)}
+            initialViewState={INITIAL_VIEW_STATE}
+            // {...viewState}
+            // onMove={handleMove}
             maxPitch={60}
             reuseMaps
             // mapStyle="mapbox://styles/mapbox/streets-v9"
