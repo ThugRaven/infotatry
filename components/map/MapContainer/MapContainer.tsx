@@ -61,6 +61,7 @@ type MapContainerProps = {
   popupDispatch?: Dispatch<PopupAction>;
   hoveredNode?: number;
   hoveredTrail?: number;
+  bounds?: [[number, number], [number, number]];
 };
 
 interface PopupInfo {
@@ -129,6 +130,7 @@ const MapContainer = ({
   popupDispatch,
   hoveredNode,
   hoveredTrail,
+  bounds,
 }: MapContainerProps) => {
   const mapRef = useRef<MapRef | null>(null);
   const mapInitializeRef = useCallback((node: MapRef) => {
@@ -183,6 +185,7 @@ const MapContainer = ({
         distance: trail.distance,
         time_start_end: trail.time.start_end,
         time_end_start: trail.time.end_start,
+        bounds: trail.bounds,
       };
       if (trail.color.length === 1) {
         properties = {
@@ -399,6 +402,13 @@ const MapContainer = ({
     setPopupInfo(null);
   }, []);
 
+  useEffect(() => {
+    if (bounds) {
+      const _bounds = new LngLatBounds(bounds);
+      mapRef.current?.fitBounds(_bounds, { padding: 100, maxZoom: 18 });
+    }
+  }, [bounds]);
+
   return (
     <Map
       id="map"
@@ -416,8 +426,8 @@ const MapContainer = ({
       // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
       mapStyle={
         style.type === 'DEFAULT'
-          ? 'mapbox://styles/thugraven/clehrcew3004k01ms03lduzd0'
-          : 'mapbox://styles/thugraven/clehrkw8q004901kgbft6gbhz'
+          ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DEFAULT
+          : process.env.NEXT_PUBLIC_MAPBOX_STYLE_SATELLITE
       }
       terrain={style.terrain ? { source: 'mapbox-dem' } : undefined}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}

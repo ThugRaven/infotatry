@@ -166,7 +166,25 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
       <PopupButton
         icon={<FaCrosshairs />}
         label="Wyśrodkuj kamerę"
-        onClick={() => console.log('target')}
+        onClick={() => {
+          const bounds = feature?.properties?.bounds
+            ? JSON.parse(feature.properties.bounds)
+            : [
+                feature?.properties?.lng,
+                feature?.properties?.lat,
+                feature?.properties?.lng,
+                feature?.properties?.lat,
+              ];
+
+          dispatch({
+            type: 'CAMERA',
+            payload: {
+              feature: type,
+              name: null,
+              bounds,
+            },
+          });
+        }}
       />
     </div>
   ) : null;

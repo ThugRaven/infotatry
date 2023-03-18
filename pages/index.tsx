@@ -43,16 +43,18 @@ export type Route = {
 };
 
 export interface PopupState {
-  type: 'start' | 'mid' | 'end';
+  type: 'start' | 'mid' | 'end' | 'camera';
   feature: 'node' | 'trail' | null;
   name: string | null;
+  bounds?: [[number, number], [number, number]];
 }
 
 export interface PopupAction {
-  type: 'START_NODE' | 'MIDDLE_NODE' | 'END_NODE';
+  type: 'START_NODE' | 'MIDDLE_NODE' | 'END_NODE' | 'CAMERA';
   payload: {
     feature: 'node' | 'trail' | null;
     name: string | null;
+    bounds?: [[number, number], [number, number]];
   };
 }
 
@@ -77,6 +79,14 @@ const popupReducer = (state: PopupState, action: PopupAction): PopupState => {
         type: 'end',
         feature: action.payload.feature,
         name: action.payload.name,
+      };
+    }
+    case 'CAMERA': {
+      return {
+        type: 'camera',
+        feature: action.payload.feature,
+        name: null,
+        bounds: action.payload.bounds,
       };
     }
     default:
@@ -398,6 +408,7 @@ const MapPage = () => {
             popupDispatch={dispatch}
             hoveredNode={hoveredNode}
             hoveredTrail={hoveredTrail}
+            bounds={state.bounds}
           />
         </div>
         <MapSidebar
