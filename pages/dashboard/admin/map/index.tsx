@@ -100,6 +100,8 @@ export type Trail = {
   };
   elevation_profile: number[];
   direction: string;
+  // bounds: [[number, number], [number, number]];
+  bounds: number[][];
 };
 
 export type Node = {
@@ -163,6 +165,10 @@ const initialTrailValues = {
   node_end: -1,
   elevation_profile: '',
   direction: 'two-way',
+  bounds: [
+    [0, 0],
+    [0, 0],
+  ],
 };
 
 const interactiveLayerIds = [
@@ -296,7 +302,7 @@ const DashboardAdminMap = () => {
       const trail = trails.find((trail) => trail.id === selectedTrail.id);
 
       if (trail) {
-        let decoded = decode(trail.encoded);
+        const decoded = decode(trail.encoded);
 
         decoded.forEach((node, index) => {
           const point = createPoint(
@@ -335,7 +341,7 @@ const DashboardAdminMap = () => {
   const trailNodesSelectedData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
 
-    let startIndex = startNodeIndex;
+    const startIndex = startNodeIndex;
     let endIndex = endNodeIndex;
 
     if (startIndex != null && endIndex == null) {
@@ -376,7 +382,7 @@ const DashboardAdminMap = () => {
       let decoded = decode(trail.encoded);
       decoded = swapCoordinates(decoded);
 
-      let properties: GeoJSON.GeoJsonProperties = {
+      const properties: GeoJSON.GeoJsonProperties = {
         id: trail.id,
         name: `${trail.name.start} - ${trail.name.end}`,
       };
@@ -459,7 +465,7 @@ const DashboardAdminMap = () => {
     console.log(trailForm);
     setTrailForm(initialTrailValues);
 
-    let colors = [trailForm.color_1];
+    const colors = [trailForm.color_1];
     if (trailForm.color_2) {
       colors.push(trailForm.color_2);
     }
@@ -489,6 +495,10 @@ const DashboardAdminMap = () => {
       },
       elevation_profile: [],
       direction: 'two-way',
+      bounds: [
+        [0, 0],
+        [0, 0],
+      ],
     };
 
     setTrails((state) => [...state, newTrail]);
@@ -643,7 +653,7 @@ const DashboardAdminMap = () => {
     const trail = trails.find((trail) => trail.id === id) ?? null;
 
     if (trail) {
-      let decoded = decode(trail.encoded);
+      const decoded = decode(trail.encoded);
       const bounds = new LngLatBounds(
         new LngLat(decoded[0][1], decoded[0][0]),
         new LngLat(decoded[0][1], decoded[0][0]),
@@ -731,6 +741,10 @@ const DashboardAdminMap = () => {
         elevation_profile:
           JSON.stringify(trail.elevation_profile, null, 2) ?? '',
         direction: trail.direction ?? '',
+        bounds: trail.bounds ?? [
+          [0, 0],
+          [0, 0],
+        ],
       });
     } else {
       setTrailEditForm(initialTrailValues);
@@ -764,7 +778,7 @@ const DashboardAdminMap = () => {
     }
     const index = trails.findIndex((trail) => trail.id === selectedTrail.id);
 
-    let colors = [trailEditForm.color_1];
+    const colors = [trailEditForm.color_1];
     if (trailEditForm.color_2) {
       colors.push(trailEditForm.color_2);
     }
@@ -793,6 +807,7 @@ const DashboardAdminMap = () => {
       },
       elevation_profile: JSON.parse(trailEditForm.elevation_profile),
       direction: trailEditForm.direction,
+      bounds: trailEditForm.bounds,
     };
 
     const updatedTrails = [...trails];
@@ -869,7 +884,7 @@ const DashboardAdminMap = () => {
     }
 
     const trail = selectedTrail;
-    let decoded = decode(trail.encoded);
+    const decoded = decode(trail.encoded);
 
     const firstNode = nodes.find(
       (node) => node.lat === decoded[0][0] && node.lng === decoded[0][1],
@@ -943,7 +958,7 @@ const DashboardAdminMap = () => {
 
     const elevationProfile: number[] = [];
 
-    let decoded = decode(selectedTrail.encoded);
+    const decoded = decode(selectedTrail.encoded);
     decoded.forEach((node) => {
       const elevation = mapRef.current?.queryTerrainElevation(
         [node[1], node[0]],
@@ -1387,7 +1402,7 @@ const DashboardAdminMap = () => {
       const dist = distance([node[0], node[1]], [nextNode[0], nextNode[1]], {
         units: 'meters',
       });
-      let speedToblers =
+      const speedToblers =
         6 * Math.exp(-3.5 * Math.abs(elevationDelta / dist + 0.05));
       timeToblers += (dist / (1000 * speedToblers)) * 60;
     }
@@ -1432,7 +1447,7 @@ const DashboardAdminMap = () => {
         units: 'meters',
       });
 
-      let speedToblers =
+      const speedToblers =
         6 * Math.exp(-3.5 * Math.abs(elevationDelta / dist + 0.05));
       timeToblers += (dist / (1000 * speedToblers)) * 60;
     }
@@ -1457,7 +1472,31 @@ const DashboardAdminMap = () => {
     );
   };
 
-  const handleMove = useCallback((evt) => setViewState(evt.viewState), []);
+  // const handleMove = useCallback((evt) => setViewState(evt.viewState), []);
+
+  const handleComputeTrailBounds = () => {
+    if (!selectedTrail) {
+      return;
+    }
+
+    const decoded = decode(selectedTrail.encoded);
+
+    const bounds = new LngLatBounds(
+      new LngLat(decoded[0][1], decoded[0][0]),
+      new LngLat(decoded[0][1], decoded[0][0]),
+    );
+
+    decoded.forEach((node) => {
+      bounds.extend([node[1], node[0]]);
+    });
+
+    console.log(bounds);
+    console.log(bounds.toArray());
+    setTrailEditForm({
+      ...trailEditForm,
+      bounds: bounds.toArray(),
+    });
+  };
 
   return (
     <>
@@ -1555,7 +1594,7 @@ const DashboardAdminMap = () => {
                 setSelectedNode(node);
               }
 
-              let trailInfo = {
+              const trailInfo = {
                 lngLat: e.lngLat,
                 features: features,
                 trail: trail,
@@ -1870,6 +1909,10 @@ const DashboardAdminMap = () => {
         <aside className={s.sidebar}>
           {selectedTrail ? (
             <form onSubmit={handleEditTrail}>
+              <Button colorScheme="blue" mr={3} type="submit">
+                Save
+              </Button>
+              <Button onClick={handleCancelEdit}>Cancel</Button>
               <FormLabel>ID</FormLabel>
               <Input type="text" mb={2} value={selectedTrail.id} disabled />
               <FormControl isRequired>
@@ -1907,6 +1950,25 @@ const DashboardAdminMap = () => {
               <Button colorScheme="blue" mr={3} onClick={handleReversePath}>
                 Reverse path
               </Button>
+              <FormControl isRequired>
+                <FormLabel>Bounds</FormLabel>
+                <Input
+                  type="text"
+                  name="bounds"
+                  value={trailEditForm.bounds.toString()}
+                  mb={2}
+                  onChange={handleChangeEditTrail}
+                  disabled
+                />
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  mb={2}
+                  onClick={handleComputeTrailBounds}
+                >
+                  Compute bounds
+                </Button>
+              </FormControl>
               <FormControl isRequired>
                 <FormLabel>Color</FormLabel>
                 <Select
