@@ -60,6 +60,7 @@ import s from '@styles/DashboardAdminMap.module.css';
 import distance from '@turf/distance';
 import { INITIAL_VIEW_STATE } from 'constants/constants';
 import { saveAs } from 'file-saver';
+import { useKeyboard } from 'hooks/useKeyboard';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { useRouter } from 'next/router';
 import React, {
@@ -771,8 +772,9 @@ const DashboardAdminMap = () => {
     mapRef.current?.resize();
   }, [selectedNode]);
 
-  const handleEditTrail = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleEditTrail = (e?: React.FormEvent<HTMLFormElement>) => {
+    e && e.preventDefault();
+
     if (!selectedTrail) {
       return;
     }
@@ -818,8 +820,9 @@ const DashboardAdminMap = () => {
     setPopupInfo(null);
   };
 
-  const handleEditNode = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleEditNode = (e?: React.FormEvent<HTMLFormElement>) => {
+    e && e.preventDefault();
+
     if (!selectedNode) {
       return;
     }
@@ -1497,6 +1500,30 @@ const DashboardAdminMap = () => {
       bounds: bounds.toArray(),
     });
   };
+
+  useKeyboard(
+    'S',
+    () => {
+      selectedTrail
+        ? handleEditTrail()
+        : selectedNode
+        ? handleEditNode()
+        : null;
+      console.log('onSave');
+    },
+    true,
+    true,
+  );
+
+  useKeyboard(
+    'Escape',
+    () => {
+      handleCancelEdit();
+      setPopupInfo(null);
+      console.log('onEsc');
+    },
+    true,
+  );
 
   return (
     <>
