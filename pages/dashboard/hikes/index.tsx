@@ -9,6 +9,7 @@ import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Hikes.module.css';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
+import { usePagination } from 'hooks/usePagination';
 import Link from 'next/link';
 import { ReactElement, useEffect, useState } from 'react';
 import { MdTrendingDown, MdTrendingUp } from 'react-icons/md';
@@ -99,12 +100,12 @@ const Hikes = () => {
   const [hikesType, setHikesType] = useState<'planned' | 'completed'>(
     'planned',
   );
-  const [page, setPage] = useState(1);
+  const { page, handlePageClick } = usePagination();
   useEffect(() => {
     console.log('type');
 
-    setPage(1);
-  }, [hikesType]);
+    handlePageClick(1);
+  }, [hikesType, handlePageClick]);
 
   const fetchPlannedHikes = async (page: number) => {
     try {
@@ -154,11 +155,6 @@ const Hikes = () => {
         throw new Error(error.message);
       }
     }
-  };
-
-  const handlePageClick = (page: number) => {
-    console.log(page);
-    setPage(page);
   };
 
   const {
