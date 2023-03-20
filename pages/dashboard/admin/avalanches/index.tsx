@@ -57,10 +57,12 @@ type AvalancheBulletinForm = {
 const initialAvalancheBulletinValues: AvalancheBulletinForm = {
   danger: 0,
   increase: false,
+  am_elevation: '',
   am_danger: '',
   am_increase: [false, false],
   am_problem: [],
   am_aspect: '',
+  pm_elevation: '',
   pm_danger: '',
   pm_increase: [false, false],
   pm_problem: [],
