@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export const useKeyboard = (
-  targetKey: string,
+  targetKeys: string[],
   element: HTMLElement | Window | null = window,
-  callback?: (event: KeyboardEvent) => void,
+  callback?: ((event: KeyboardEvent) => void)[],
   callOnce = false,
   withControl = false,
   caseSensitive = false,
 ) => {
-  const [keyPresssed, setKeyPressed] = useState(false);
+  const [keyPressed, setKeyPressed] = useState(false);
   const [called, setCalled] = useState(false);
 
   const handleKeyDown = useCallback(
@@ -17,42 +17,49 @@ export const useKeyboard = (
       console.log(event);
       console.log(key);
 
-      const isKeySame = caseSensitive
-        ? key === targetKey
-        : key.toLowerCase() === targetKey.toLowerCase();
+      targetKeys.forEach((targetKey, index) => {
+        const isKeySame = caseSensitive
+          ? key === targetKey
+          : key.toLowerCase() === targetKey.toLowerCase();
 
-      if (isKeySame && ((withControl && ctrlKey) || !withControl)) {
-        event.preventDefault();
-        event.stopPropagation();
+        if (isKeySame && ((withControl && ctrlKey) || !withControl)) {
+          event.preventDefault();
+          event.stopPropagation();
 
-        if (callOnce && called) {
-          return;
+          if (callOnce && called) {
+            return;
+          }
+
+          setKeyPressed(true);
+          setCalled((called) => (called ? called : !called));
+          callback &&
+            callback[index] &&
+            callback[index](event as KeyboardEvent);
         }
-
-        setKeyPressed(true);
-        setCalled((called) => (called ? called : !called));
-        callback && callback(event as KeyboardEvent);
-      }
+      });
     },
-    [targetKey, withControl, caseSensitive, callback, callOnce, called],
+    [targetKeys, withControl, caseSensitive, callback, callOnce, called],
   );
 
   const handleKeyUp = useCallback(
     (event: Event) => {
       const { key, ctrlKey } = event as KeyboardEvent;
-      const isKeySame = caseSensitive
-        ? key === targetKey
-        : key.toLowerCase() === targetKey.toLowerCase();
 
-      if (isKeySame && ((withControl && ctrlKey) || !withControl)) {
-        event.preventDefault();
-        event.stopPropagation();
+      targetKeys.forEach((targetKey) => {
+        const isKeySame = caseSensitive
+          ? key === targetKey
+          : key.toLowerCase() === targetKey.toLowerCase();
 
-        setKeyPressed(false);
-        setCalled((called) => (called ? !called : called));
-      }
+        if (isKeySame && ((withControl && ctrlKey) || !withControl)) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          setKeyPressed(false);
+          setCalled((called) => (called ? !called : called));
+        }
+      });
     },
-    [targetKey, withControl, caseSensitive],
+    [targetKeys, withControl, caseSensitive],
   );
 
   useEffect(() => {
@@ -69,5 +76,5 @@ export const useKeyboard = (
     };
   }, [element, handleKeyDown, handleKeyUp]);
 
-  return keyPresssed;
+  return keyPressed;
 };
