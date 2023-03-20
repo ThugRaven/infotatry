@@ -307,6 +307,12 @@ const Avalanches = () => {
     console.log('bulletin', bulletin);
     const { danger, increase, am, pm, forecast, until } = bulletin;
 
+    if (selectedBulletinId === bulletin._id) {
+      setSelectedBulletinId('');
+      setBulletinForm(initialAvalancheBulletinValues);
+      return;
+    }
+
     setSelectedBulletinId(bulletin._id);
     setBulletinForm({
       danger,
