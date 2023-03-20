@@ -3,8 +3,9 @@ import DistanceIcon from '@components/icons/DistanceIcon';
 import NodeIcon from '@components/icons/NodeIcon';
 import IconButton from '@components/ui/IconButton';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
+import { useKeyboard } from 'hooks/useKeyboard';
 import { PopupAction } from 'pages';
-import { Dispatch, memo, ReactNode } from 'react';
+import { Dispatch, forwardRef, memo, ReactNode } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {
   MdClose,
@@ -52,130 +53,210 @@ const PopupButton = ({
   );
 };
 
-const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
-  const feature =
-    features.length > 0 && features[0] && features[0].properties
-      ? features[0]
+const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
+  function MapPopup({ lngLat, features, onClose, dispatch }, ref) {
+    const divRef =
+      ref && typeof ref !== 'function' && ref.current ? ref.current : null;
+
+    const feature =
+      features.length > 0 && features[0] && features[0].properties
+        ? features[0]
+        : null;
+
+    const properties =
+      feature && feature.properties ? feature.properties : null;
+
+    const type = !feature
+      ? null
+      : feature.layer.id === 'nodes-draw-layer'
+      ? 'node'
+      : feature.layer.id === 'trails-data-layer'
+      ? 'trail'
       : null;
 
-  const properties = feature && feature.properties ? feature.properties : null;
-
-  const type = !feature
-    ? null
-    : feature.layer.id === 'nodes-draw-layer'
-    ? 'node'
-    : feature.layer.id === 'trails-data-layer'
-    ? 'trail'
-    : null;
-
-  const trailInfo = type === 'trail' && properties && (
-    <>
-      <ul className={s.info__list}>
-        <InfoItem
-          icon={<MdSchedule />}
-          text={`${formatMinutesToHours(
-            properties.time_start_end,
-            true,
-          )} / ${formatMinutesToHours(properties.time_end_start, true)}`}
-        />
-        <InfoItem
-          icon={<DistanceIcon />}
-          text={
-            properties.distance > 100
-              ? formatMetersToKm(properties.distance, true)
-              : `${properties.distance} m`
-          }
-        />
-        {properties.color_left && (
+    const trailInfo = type === 'trail' && properties && (
+      <>
+        <ul className={s.info__list}>
           <InfoItem
-            icon={<TrailMarking color={properties.color_left} size="sm" />}
+            icon={<MdSchedule />}
+            text={`${formatMinutesToHours(
+              properties.time_start_end,
+              true,
+            )} / ${formatMinutesToHours(properties.time_end_start, true)}`}
           />
-        )}
-        {properties.color && (
           <InfoItem
-            icon={<TrailMarking color={properties.color} size="sm" />}
+            icon={<DistanceIcon />}
+            text={
+              properties.distance > 100
+                ? formatMetersToKm(properties.distance, true)
+                : `${properties.distance} m`
+            }
           />
-        )}
-        {properties.color_right && (
+          {properties.color_left && (
+            <InfoItem
+              icon={<TrailMarking color={properties.color_left} size="sm" />}
+            />
+          )}
+          {properties.color && (
+            <InfoItem
+              icon={<TrailMarking color={properties.color} size="sm" />}
+            />
+          )}
+          {properties.color_right && (
+            <InfoItem
+              icon={<TrailMarking color={properties.color_right} size="sm" />}
+            />
+          )}
+        </ul>
+      </>
+    );
+
+    const nodeInfo = type === 'node' && properties && (
+      <>
+        <ul className={s.info__list}>
           <InfoItem
-            icon={<TrailMarking color={properties.color_right} size="sm" />}
+            icon={<MdOutlinePlace />}
+            text={`${properties.lat}, ${properties.lng}`}
           />
-        )}
-      </ul>
-    </>
-  );
+          <InfoItem
+            icon={<MdLandscape />}
+            text={`${properties.elevation} m n.p.m.`}
+          />
+        </ul>
+      </>
+    );
 
-  const nodeInfo = type === 'node' && properties && (
-    <>
-      <ul className={s.info__list}>
-        <InfoItem
-          icon={<MdOutlinePlace />}
-          text={`${properties.lat}, ${properties.lng}`}
-        />
-        <InfoItem
-          icon={<MdLandscape />}
-          text={`${properties.elevation} m n.p.m.`}
-        />
-      </ul>
-    </>
-  );
-
-  const buttons = dispatch ? (
-    <div className={s.buttons}>
-      <div className={s.buttons__route}>
+    const buttons = dispatch ? (
+      <div className={s.buttons}>
+        <div className={s.buttons__route}>
+          <PopupButton
+            icon={<FaHiking />}
+            label="Dodaj punkt początkowy"
+            onClick={() =>
+              dispatch({
+                type: 'START_NODE',
+                payload: {
+                  feature: type,
+                  name: feature?.properties?.name ?? null,
+                },
+              })
+            }
+          />
+          <PopupButton
+            icon={<NodeIcon />}
+            label="Dodaj punkt pośredni"
+            onClick={() =>
+              dispatch({
+                type: 'MIDDLE_NODE',
+                payload: {
+                  feature: type,
+                  name: feature?.properties?.name ?? null,
+                },
+              })
+            }
+          />
+          <PopupButton
+            icon={<MdLandscape />}
+            label="Dodaj punkt końcowy"
+            onClick={() =>
+              dispatch({
+                type: 'END_NODE',
+                payload: {
+                  feature: type,
+                  name: feature?.properties?.name ?? null,
+                },
+              })
+            }
+          />
+        </div>
         <PopupButton
-          icon={<FaHiking />}
-          label="Dodaj punkt początkowy"
-          onClick={() =>
+          icon={<FaCrosshairs />}
+          label="Wyśrodkuj kamerę"
+          onClick={() => {
+            const bounds = feature?.properties?.bounds
+              ? JSON.parse(feature.properties.bounds)
+              : [
+                  feature?.properties?.lng,
+                  feature?.properties?.lat,
+                  feature?.properties?.lng,
+                  feature?.properties?.lat,
+                ];
+
             dispatch({
-              type: 'START_NODE',
+              type: 'CAMERA',
               payload: {
                 feature: type,
-                name: feature?.properties?.name ?? null,
+                name: null,
+                bounds,
               },
-            })
-          }
-        />
-        <PopupButton
-          icon={<NodeIcon />}
-          label="Dodaj punkt pośredni"
-          onClick={() =>
-            dispatch({
-              type: 'MIDDLE_NODE',
-              payload: {
-                feature: type,
-                name: feature?.properties?.name ?? null,
-              },
-            })
-          }
-        />
-        <PopupButton
-          icon={<MdLandscape />}
-          label="Dodaj punkt końcowy"
-          onClick={() =>
-            dispatch({
-              type: 'END_NODE',
-              payload: {
-                feature: type,
-                name: feature?.properties?.name ?? null,
-              },
-            })
-          }
+            });
+          }}
         />
       </div>
-      <PopupButton
-        icon={<FaCrosshairs />}
-        label="Wyśrodkuj kamerę"
-        onClick={() => {
-          const bounds = feature?.properties?.bounds
-            ? JSON.parse(feature.properties.bounds)
-            : [
-                feature?.properties?.lng,
-                feature?.properties?.lat,
-                feature?.properties?.lng,
-                feature?.properties?.lat,
-              ];
+    ) : null;
 
+    useKeyboard(
+      '1',
+      divRef,
+      () => {
+        dispatch &&
+          dispatch({
+            type: 'START_NODE',
+            payload: {
+              feature: type,
+              name: feature?.properties?.name ?? null,
+            },
+          });
+      },
+      true,
+    );
+
+    useKeyboard(
+      '2',
+      divRef,
+      () => {
+        dispatch &&
+          dispatch({
+            type: 'MIDDLE_NODE',
+            payload: {
+              feature: type,
+              name: feature?.properties?.name ?? null,
+            },
+          });
+      },
+      true,
+    );
+
+    useKeyboard(
+      '3',
+      divRef,
+      () => {
+        dispatch &&
+          dispatch({
+            type: 'END_NODE',
+            payload: {
+              feature: type,
+              name: feature?.properties?.name ?? null,
+            },
+          });
+      },
+      true,
+    );
+
+    useKeyboard(
+      'C',
+      divRef,
+      () => {
+        const bounds = feature?.properties?.bounds
+          ? JSON.parse(feature.properties.bounds)
+          : [
+              feature?.properties?.lng,
+              feature?.properties?.lat,
+              feature?.properties?.lng,
+              feature?.properties?.lat,
+            ];
+
+        dispatch &&
           dispatch({
             type: 'CAMERA',
             payload: {
@@ -184,45 +265,45 @@ const MapPopup = ({ lngLat, features, onClose, dispatch }: MapPopupProps) => {
               bounds,
             },
           });
-        }}
-      />
-    </div>
-  ) : null;
+      },
+      true,
+    );
 
-  return (
-    <Popup
-      className={s.mapbox__popup}
-      latitude={lngLat.lat}
-      longitude={lngLat.lng}
-      anchor="bottom"
-      onClose={onClose}
-      closeOnClick={false}
-      closeButton={false}
-      maxWidth="300px"
-    >
-      {feature && feature.properties && type ? (
-        <div className={s.popup}>
-          <h3 className={s.feature__name}>{feature.properties.name}</h3>
-          {type === 'trail' ? trailInfo : nodeInfo}
-          {buttons}
-        </div>
-      ) : null}
-
-      <IconButton
-        buttonType="action"
-        aria-label="Close"
-        onClick={onClose}
-        className={s.popup__close}
+    return (
+      <Popup
+        className={s.mapbox__popup}
+        latitude={lngLat.lat}
+        longitude={lngLat.lng}
+        anchor="bottom"
+        onClose={onClose}
+        closeOnClick={false}
+        closeButton={false}
+        maxWidth="300px"
       >
-        <MdClose />
-      </IconButton>
-      {/* {features.length > 0 && features[0].properties ? (
+        {feature && feature.properties && type ? (
+          <div className={s.popup}>
+            <h3 className={s.feature__name}>{feature.properties.name}</h3>
+            {type === 'trail' ? trailInfo : nodeInfo}
+            {buttons}
+          </div>
+        ) : null}
+
+        <IconButton
+          buttonType="action"
+          aria-label="Close"
+          onClick={onClose}
+          className={s.popup__close}
+        >
+          <MdClose />
+        </IconButton>
+        {/* {features.length > 0 && features[0].properties ? (
         <div className={s.container}>{features[0].properties.name}</div>
       ) : (
         <div>Brak informacji</div>
       )} */}
-    </Popup>
-  );
-};
+      </Popup>
+    );
+  },
+);
 
 export default memo(MapPopup);

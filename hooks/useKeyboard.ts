@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export const useKeyboard = (
   targetKey: string,
+  element: HTMLElement | Window | null = window,
   callback?: (event: KeyboardEvent) => void,
   callOnce = false,
   withControl = false,
@@ -11,8 +12,8 @@ export const useKeyboard = (
   const [called, setCalled] = useState(false);
 
   const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      const { key, ctrlKey } = event;
+    (event: Event) => {
+      const { key, ctrlKey } = event as KeyboardEvent;
       console.log(event);
       console.log(key);
 
@@ -30,15 +31,15 @@ export const useKeyboard = (
 
         setKeyPressed(true);
         setCalled((called) => (called ? called : !called));
-        callback && callback(event);
+        callback && callback(event as KeyboardEvent);
       }
     },
     [targetKey, withControl, caseSensitive, callback, callOnce, called],
   );
 
   const handleKeyUp = useCallback(
-    (event: KeyboardEvent) => {
-      const { key, ctrlKey } = event;
+    (event: Event) => {
+      const { key, ctrlKey } = event as KeyboardEvent;
       const isKeySame = caseSensitive
         ? key === targetKey
         : key.toLowerCase() === targetKey.toLowerCase();
@@ -55,14 +56,18 @@ export const useKeyboard = (
   );
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    if (!element) {
+      return;
+    }
+
+    element.addEventListener('keydown', handleKeyDown);
+    element.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      element.removeEventListener('keydown', handleKeyDown);
+      element.removeEventListener('keyup', handleKeyUp);
     };
-  }, [handleKeyDown, handleKeyUp]);
+  }, [element, handleKeyDown, handleKeyUp]);
 
   return keyPresssed;
 };

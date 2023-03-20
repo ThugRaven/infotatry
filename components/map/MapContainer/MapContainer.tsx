@@ -132,6 +132,7 @@ const MapContainer = ({
   hoveredTrail,
   bounds,
 }: MapContainerProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapRef | null>(null);
   const mapInitializeRef = useCallback((node: MapRef) => {
     console.log('mapInitializeRef');
@@ -411,166 +412,169 @@ const MapContainer = ({
   }, [bounds]);
 
   return (
-    <Map
-      id="map"
-      ref={mapInitializeRef}
-      // initialViewState={{
-      //   longitude: 19,
-      //   latitude: 42,
-      //   zoom: 3.5,
-      // }}
-      {...viewState}
-      onMove={(evt) => setViewState(evt.viewState)}
-      maxPitch={85}
-      reuseMaps
-      // mapStyle="mapbox://styles/mapbox/streets-v9"
-      // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
-      mapStyle={
-        style.type === 'DEFAULT'
-          ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DEFAULT
-          : process.env.NEXT_PUBLIC_MAPBOX_STYLE_SATELLITE
-      }
-      terrain={style.terrain ? { source: 'mapbox-dem' } : undefined}
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-      interactiveLayerIds={isMapLoaded ? INTERACTIVE_LAYER_IDS : undefined}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onLoad={() => {
-        mapRef.current?.resize();
-        setIsMapLoaded(true);
-      }}
-      cursor={cursor}
-      onClick={(e) => {
-        // console.log(mapRef.current?.getStyle().layers);
-        const features = e.features;
-        // console.log(features);
-
-        if (
-          !mapRef.current ||
-          !features ||
-          features.length === 0 ||
-          !INTERACTIVE_LAYER_IDS.some((id) => id === features[0].layer.id)
-        ) {
-          setPopupInfo(null);
-          return;
+    <div ref={ref} className={s.container}>
+      <Map
+        id="map"
+        ref={mapInitializeRef}
+        // initialViewState={{
+        //   longitude: 19,
+        //   latitude: 42,
+        //   zoom: 3.5,
+        // }}
+        {...viewState}
+        onMove={(evt) => setViewState(evt.viewState)}
+        maxPitch={85}
+        reuseMaps
+        // mapStyle="mapbox://styles/mapbox/streets-v9"
+        // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
+        mapStyle={
+          style.type === 'DEFAULT'
+            ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DEFAULT
+            : process.env.NEXT_PUBLIC_MAPBOX_STYLE_SATELLITE
         }
+        terrain={style.terrain ? { source: 'mapbox-dem' } : undefined}
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+        interactiveLayerIds={isMapLoaded ? INTERACTIVE_LAYER_IDS : undefined}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onLoad={() => {
+          mapRef.current?.resize();
+          setIsMapLoaded(true);
+        }}
+        cursor={cursor}
+        onClick={(e) => {
+          // console.log(mapRef.current?.getStyle().layers);
+          const features = e.features;
+          // console.log(features);
 
-        let trail = selectedTrail;
-        let lngLat = e.lngLat;
+          if (
+            !mapRef.current ||
+            !features ||
+            features.length === 0 ||
+            !INTERACTIVE_LAYER_IDS.some((id) => id === features[0].layer.id)
+          ) {
+            setPopupInfo(null);
+            return;
+          }
 
-        if (
-          features[0].properties &&
-          features[0].layer.id !== 'nodes-draw-layer'
-        ) {
-          const id = features[0].properties.id;
-          trail = trails.find((trail) => trail.id === id) ?? null;
+          let trail = selectedTrail;
+          let lngLat = e.lngLat;
 
-          setSelectedTrail(trail);
-          setSelectedNode(null);
-        } else if (
-          features[0].properties &&
-          features[0].layer.id === 'nodes-draw-layer'
-        ) {
-          const id = features[0].properties.id;
-          const node = nodes.find((node) => node.id === id) ?? null;
-          lngLat = new LngLat(
-            features[0].properties.lng,
-            features[0].properties.lat,
-          );
+          if (
+            features[0].properties &&
+            features[0].layer.id !== 'nodes-draw-layer'
+          ) {
+            const id = features[0].properties.id;
+            trail = trails.find((trail) => trail.id === id) ?? null;
 
-          setSelectedTrail(null);
-          setSelectedNode(node);
-        }
+            setSelectedTrail(trail);
+            setSelectedNode(null);
+          } else if (
+            features[0].properties &&
+            features[0].layer.id === 'nodes-draw-layer'
+          ) {
+            const id = features[0].properties.id;
+            const node = nodes.find((node) => node.id === id) ?? null;
+            lngLat = new LngLat(
+              features[0].properties.lng,
+              features[0].properties.lat,
+            );
 
-        const trailInfo = {
-          lngLat,
-          features,
-          trail,
-        };
+            setSelectedTrail(null);
+            setSelectedNode(node);
+          }
 
-        console.log(trailInfo);
+          const trailInfo = {
+            lngLat,
+            features,
+            trail,
+          };
 
-        // Return when the coordinates are the same to skip unnecessary render
-        if (
-          popupInfo &&
-          trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
-          trailInfo.lngLat.lat === popupInfo.lngLat.lat
-        )
-          return;
+          console.log(trailInfo);
 
-        setPopupInfo(trailInfo);
+          // Return when the coordinates are the same to skip unnecessary render
+          if (
+            popupInfo &&
+            trailInfo.lngLat.lng === popupInfo.lngLat.lng &&
+            trailInfo.lngLat.lat === popupInfo.lngLat.lat
+          )
+            return;
 
-        // mapRef.current.flyTo({
-        //   center: e.lngLat,
-        //   zoom: 12,
-        //   duration: 500,
-        // });
-      }}
-      onZoom={(e) => {
-        // console.log(e.viewState);
-      }}
-    >
-      {(isLoading || !isMapRefLoaded) && (
-        <Spinner
-          thickness="5px"
-          size="xl"
-          color="black"
-          className={s.spinner}
+          setPopupInfo(trailInfo);
+
+          // mapRef.current.flyTo({
+          //   center: e.lngLat,
+          //   zoom: 12,
+          //   duration: 500,
+          // });
+        }}
+        onZoom={(e) => {
+          // console.log(e.viewState);
+        }}
+      >
+        {(isLoading || !isMapRefLoaded) && (
+          <Spinner
+            thickness="5px"
+            size="xl"
+            color="black"
+            className={s.spinner}
+          />
+        )}
+        {children}
+        {popupInfo && popup && ref.current && (
+          <MapPopup
+            lngLat={popupInfo.lngLat}
+            features={popupInfo.features}
+            onClose={handleClosePopup}
+            dispatch={popupDispatch}
+            ref={ref}
+          />
+        )}
+        <MapStyles padding={padding} style={style} dispatch={styleDispatch} />
+        <Source
+          id="mapbox-dem"
+          type="raster-dem"
+          url="mapbox://mapbox.mapbox-terrain-dem-v1"
+          tileSize={512}
+          maxzoom={14}
         />
-      )}
-      {children}
-      {popupInfo && popup && (
-        <MapPopup
-          lngLat={popupInfo.lngLat}
-          features={popupInfo.features}
-          onClose={handleClosePopup}
-          dispatch={popupDispatch}
-        />
-      )}
-      <MapStyles padding={padding} style={style} dispatch={styleDispatch} />
-      <Source
-        id="mapbox-dem"
-        type="raster-dem"
-        url="mapbox://mapbox.mapbox-terrain-dem-v1"
-        tileSize={512}
-        maxzoom={14}
-      />
-      <Source type="geojson" data={trailsData}>
-        <Layer {...trailsDataLayer} />
-        <Layer {...trailsDrawOutlineLayer} />
-        <Layer {...trailsDrawOffset1in2OutlineLayer} />
-        <Layer {...trailsDrawOffset2in2OutlineLayer} />
-        <Layer {...trailsDrawOffset1in3OutlineLayer} />
-        <Layer {...trailsDrawOffset3in3OutlineLayer} />
-        <Layer {...trailsDrawLayer} />
-        <Layer {...trailsDrawOffset1in2Layer} />
-        <Layer {...trailsDrawOffset2in2Layer} />
-        <Layer {...trailsDrawOffset1in3Layer} />
-        <Layer {...trailsDrawOffset3in3Layer} />
-        <Layer {...trailsDirectionStartEndLayer} />
-        <Layer {...trailsDirectionEndStartLayer} />
-        <Layer
-          {...trailHighlightLayer}
-          filter={['==', hoveredTrail ?? null, ['get', 'id']]}
-        />
-      </Source>
-      <Source type="geojson" data={routeData} lineMetrics={true}>
-        <Layer {...routeLayer} />
-      </Source>
-      <Source type="geojson" data={nodesData}>
-        <Layer {...nodesDrawLayer} />
-        <Layer
-          {...nodeHighlightLayer}
-          filter={['==', hoveredNode ?? null, ['get', 'id']]}
-        />
-      </Source>
-      <Source type="geojson" data={closedTrailsData}>
-        <Layer {...trailsClosedLayer} />
-      </Source>
-      <NavigationControl />
-    </Map>
+        <Source type="geojson" data={trailsData}>
+          <Layer {...trailsDataLayer} />
+          <Layer {...trailsDrawOutlineLayer} />
+          <Layer {...trailsDrawOffset1in2OutlineLayer} />
+          <Layer {...trailsDrawOffset2in2OutlineLayer} />
+          <Layer {...trailsDrawOffset1in3OutlineLayer} />
+          <Layer {...trailsDrawOffset3in3OutlineLayer} />
+          <Layer {...trailsDrawLayer} />
+          <Layer {...trailsDrawOffset1in2Layer} />
+          <Layer {...trailsDrawOffset2in2Layer} />
+          <Layer {...trailsDrawOffset1in3Layer} />
+          <Layer {...trailsDrawOffset3in3Layer} />
+          <Layer {...trailsDirectionStartEndLayer} />
+          <Layer {...trailsDirectionEndStartLayer} />
+          <Layer
+            {...trailHighlightLayer}
+            filter={['==', hoveredTrail ?? null, ['get', 'id']]}
+          />
+        </Source>
+        <Source type="geojson" data={routeData} lineMetrics={true}>
+          <Layer {...routeLayer} />
+        </Source>
+        <Source type="geojson" data={nodesData}>
+          <Layer {...nodesDrawLayer} />
+          <Layer
+            {...nodeHighlightLayer}
+            filter={['==', hoveredNode ?? null, ['get', 'id']]}
+          />
+        </Source>
+        <Source type="geojson" data={closedTrailsData}>
+          <Layer {...trailsClosedLayer} />
+        </Source>
+        <NavigationControl />
+      </Map>
+    </div>
   );
 };
 
