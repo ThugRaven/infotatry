@@ -25,6 +25,7 @@ const Pagination = ({
   ) {
     buttons.push(
       <PaginationButton
+        key={i}
         onClick={() => {
           onPageClick(i);
         }}
@@ -44,6 +45,7 @@ const Pagination = ({
       </span>
       <div className={s.pagination__buttons}>
         <PaginationButton
+          key={'first'}
           onClick={() => {
             onPageClick(1);
           }}
@@ -51,6 +53,7 @@ const Pagination = ({
           {1}
         </PaginationButton>
         <PaginationButton
+          key={'previous'}
           onClick={() => {
             onPageClick(Math.max(page - 1, 1));
           }}
@@ -61,6 +64,7 @@ const Pagination = ({
         </PaginationButton>
         {buttons}
         <PaginationButton
+          key={'next'}
           onClick={() => {
             onPageClick(Math.min(page + 1, Math.ceil(count / pageSize)));
           }}
@@ -70,6 +74,7 @@ const Pagination = ({
           <MdKeyboardArrowRight />
         </PaginationButton>
         <PaginationButton
+          key={'last'}
           onClick={() => {
             onPageClick(Math.ceil(count / pageSize));
           }}
