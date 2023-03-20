@@ -458,6 +458,7 @@ const MapContainer = ({
         }
 
         let trail = selectedTrail;
+        let lngLat = e.lngLat;
 
         if (
           features[0].properties &&
@@ -474,15 +475,19 @@ const MapContainer = ({
         ) {
           const id = features[0].properties.id;
           const node = nodes.find((node) => node.id === id) ?? null;
+          lngLat = new LngLat(
+            features[0].properties.lng,
+            features[0].properties.lat,
+          );
 
           setSelectedTrail(null);
           setSelectedNode(node);
         }
 
         const trailInfo = {
-          lngLat: e.lngLat,
-          features: features,
-          trail: trail,
+          lngLat,
+          features,
+          trail,
         };
 
         console.log(trailInfo);
