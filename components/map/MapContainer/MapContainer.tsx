@@ -139,7 +139,7 @@ const MapContainer = ({
 
     if (node !== null) {
       console.log('mapInitializeRef node', node);
-      setIsLoaded(true);
+      setIsMapRefLoaded(true);
     }
   }, []);
   const [viewState, setViewState] = useState({
@@ -159,7 +159,8 @@ const MapContainer = ({
   const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isMapRefLoaded, setIsMapRefLoaded] = useState(false);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   const [style, styleDispatch] = useReducer(mapStyleReducer, {
     type: 'DEFAULT',
@@ -300,7 +301,7 @@ const MapContainer = ({
       type: 'FeatureCollection',
       features,
     };
-  }, [trailIds, hike, isLoaded]);
+  }, [trailIds, hike, isMapRefLoaded]);
 
   const fetchAnnouncements = async () => {
     try {
@@ -431,13 +432,14 @@ const MapContainer = ({
       }
       terrain={style.terrain ? { source: 'mapbox-dem' } : undefined}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-      interactiveLayerIds={INTERACTIVE_LAYER_IDS}
+      interactiveLayerIds={isMapLoaded ? INTERACTIVE_LAYER_IDS : undefined}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onLoad={() => {
         mapRef.current?.resize();
+        setIsMapLoaded(true);
       }}
       cursor={cursor}
       onClick={(e) => {
@@ -505,7 +507,7 @@ const MapContainer = ({
         // console.log(e.viewState);
       }}
     >
-      {(isLoading || !isLoaded) && (
+      {(isLoading || !isMapRefLoaded) && (
         <Spinner
           thickness="5px"
           size="xl"
