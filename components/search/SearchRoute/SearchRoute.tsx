@@ -3,7 +3,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import { PopupState } from 'pages';
 import { useCallback, useEffect, useState } from 'react';
 import { FaHiking } from 'react-icons/fa';
-import { MdAdd, MdLandscape, MdSwapVert } from 'react-icons/md';
+import { MdAdd, MdClose, MdLandscape, MdSwapVert } from 'react-icons/md';
 import SearchInputTest from '../SearchInputTest';
 import s from './SearchRoute.module.css';
 
@@ -120,6 +120,10 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
     setSearchForm(newSearchForm);
   };
 
+  const handleClearRoute = () => {
+    setSearchForm(['', '']);
+  };
+
   return (
     <>
       <div className={s.search}>
@@ -192,7 +196,7 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
       <div className={s.search__actions}>
         <button
           className={s.search__action}
-          aria-label="Odwróć trasę"
+          aria-label="Dodaj punkt"
           type="button"
           onClick={handleAddDestination}
           disabled={!searchForm.every((value) => value != '')}
@@ -202,13 +206,24 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
         </button>
         <button
           className={s.search__action}
-          aria-label="Dodaj punkt"
+          aria-label="Odwróć trasę"
           type="button"
           onClick={handleReverseRoute}
         >
           <MdSwapVert className={s.search__icon} />
           <span>Odwróć trasę</span>
         </button>
+        {searchForm.some((value) => value !== '') && (
+          <button
+            className={s.search__action}
+            aria-label="Wyczyść"
+            type="button"
+            onClick={handleClearRoute}
+          >
+            <MdClose className={s.search__icon} />
+            <span>Wyczyść</span>
+          </button>
+        )}
       </div>
     </>
   );
