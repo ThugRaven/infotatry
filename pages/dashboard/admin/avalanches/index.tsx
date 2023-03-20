@@ -6,9 +6,12 @@ import {
   Input,
   Select,
 } from '@chakra-ui/react';
+import Pagination from '@components/common/Pagination';
+import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAvalanches.module.css';
+import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -83,13 +86,14 @@ const Avalanches = () => {
   );
   console.log(bulletinForm.until);
   const [selectedBulletinId, setSelectedBulletinId] = useState('');
+  const { page, handlePageClick } = usePagination();
 
-  const fetchAllAvalancheBulletins = async () => {
+  const fetchAllAvalancheBulletins = async (page: number) => {
     try {
       console.log('fetch all avalanche bulletins');
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/all`,
+        `${process.env.NEXT_PUBLIC_API_URL}/avalanches/all?page=${page}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -111,19 +115,19 @@ const Avalanches = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery<AvalancheBulletin[], Error>(
-    ['avalanche-bulletins-all'],
-    fetchAllAvalancheBulletins,
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-      cacheTime: 15 * 60 * 1000, // 15 minutes
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      onSuccess: (data) => {
-        console.log(data);
-      },
+  const { isLoading, error, data, isFetching } = useQuery<
+    AvalancheBulletin[],
+    Error
+  >(['avalanche-bulletins', page], () => fetchAllAvalancheBulletins(page), {
+    refetchOnWindowFocus: false,
+    retry: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    keepPreviousData: true,
+    onSuccess: (data) => {
+      console.log(data);
     },
-  );
+  });
 
   const handleChangeForm = (
     e:
@@ -366,7 +370,142 @@ const Avalanches = () => {
 
   return (
     <div className={s.container}>
+      {/* <div>
+        <TableContainer>
+          <TableChakra variant="striped" colorScheme="orange">
+            <TableCaption placement="top">Komunikaty lawinowe</TableCaption>
+            <Thead>
+              <TrChakra>
+                <ThChakra isNumeric>Danger level</ThChakra>
+                <ThChakra>Until</ThChakra>
+                <ThChakra>Action</ThChakra>
+              </TrChakra>
+            </Thead>
+            <Tbody>
+              {data &&
+                data.data &&
+                data.data.map((bulletin) => (
+                  <TrChakra
+                    key={bulletin._id}
+                    onClick={() => handleSelectBulletin(bulletin)}
+                  >
+                    <TdChakra
+                      isNumeric
+                      backgroundColor={
+                        selectedBulletinId === bulletin._id
+                          ? 'orange.300 !important'
+                          : undefined
+                      }
+                    >
+                      {bulletin.danger}
+                    </TdChakra>
+                    <TdChakra
+                      backgroundColor={
+                        selectedBulletinId === bulletin._id
+                          ? 'orange.300 !important'
+                          : undefined
+                      }
+                    >
+                      {bulletin.until
+                        ? new Date(bulletin.until).toLocaleString()
+                        : 'N/A'}
+                    </TdChakra>
+                    <TdChakra
+                      backgroundColor={
+                        selectedBulletinId === bulletin._id
+                          ? 'orange.300 !important'
+                          : undefined
+                      }
+                    >
+                      <Button
+                        ml={1}
+                        size="sm"
+                        colorScheme={'red'}
+                        onClick={() => handleDeleteBulletin(bulletin._id)}
+                      >
+                        Delete
+                      </Button>
+                    </TdChakra>
+                  </TrChakra>
+                ))}
+            </Tbody>
+            <Tfoot>
+              <TrChakra>
+                <ThChakra colSpan={3}>
+                  {data && (
+                    <Pagination
+                      page={page}
+                      pageSize={data.pageSize}
+                      count={data.count}
+                      onPageClick={handlePageClick}
+                    />
+                  )}
+                </ThChakra>
+              </TrChakra>
+            </Tfoot>
+          </TableChakra>
+        </TableContainer>
+      </div> */}
+
       <div>
+        <Table isLoading={isFetching}>
+          <thead>
+            <Tr>
+              <Th center>#</Th>
+              <Th center>Danger level</Th>
+              <Th isNumeric>Until</Th>
+              <Th>Action</Th>
+            </Tr>
+          </thead>
+          <tbody>
+            {data &&
+              data.data &&
+              data.data.map((bulletin, index) => (
+                <Tr
+                  key={bulletin._id}
+                  onClick={() => handleSelectBulletin(bulletin)}
+                  active={selectedBulletinId === bulletin._id}
+                >
+                  <Td center>
+                    {data.page * data.pageSize - data.pageSize + 1 + index}
+                  </Td>
+                  <Td center>{bulletin.danger}</Td>
+                  <Td isNumeric>
+                    {bulletin.until
+                      ? new Date(bulletin.until).toLocaleString()
+                      : 'N/A'}
+                  </Td>
+                  <Td>
+                    <Button
+                      ml={1}
+                      size="sm"
+                      colorScheme={'red'}
+                      onClick={() => handleDeleteBulletin(bulletin._id)}
+                    >
+                      Delete
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+          </tbody>
+          <tfoot>
+            <Tr>
+              <Th colSpan={4}>
+                {data && (
+                  <Pagination
+                    page={page}
+                    pageSize={data.pageSize}
+                    count={data.count}
+                    onPageClick={handlePageClick}
+                  />
+                )}
+              </Th>
+            </Tr>
+          </tfoot>
+        </Table>
+      </div>
+
+      {/* <div>
         {data && (
           <ul>
             {data.map((bulletin) => (
@@ -392,8 +531,8 @@ const Avalanches = () => {
             ))}
           </ul>
         )}
-      </div>
-      <form onSubmit={handleAddBulletin}>
+      </div> */}
+      <form onSubmit={handleAddBulletin} className={s.form}>
         <FormControl isRequired>
           <FormLabel>Danger level</FormLabel>
           <Select
@@ -479,7 +618,7 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="am_problem"
-            value={bulletinForm.am_problem[0]}
+            value={bulletinForm.am_problem[0] ?? ''}
             mb={2}
             onChange={(e) =>
               setBulletinForm({
@@ -500,7 +639,7 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="am_problem"
-            value={bulletinForm.am_problem[1]}
+            value={bulletinForm.am_problem[1] ?? ''}
             mb={2}
             onChange={(e) =>
               setBulletinForm({
@@ -580,7 +719,7 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="pm_problem"
-            value={bulletinForm.pm_problem[0]}
+            value={bulletinForm.pm_problem[0] ?? ''}
             mb={2}
             onChange={(e) =>
               setBulletinForm({
@@ -601,7 +740,7 @@ const Avalanches = () => {
           <FormLabel>Avalanche problem</FormLabel>
           <Select
             name="pm_problem"
-            value={bulletinForm.pm_problem[1]}
+            value={bulletinForm.pm_problem[1] ?? ''}
             mb={2}
             onChange={(e) =>
               setBulletinForm({

@@ -1,0 +1,52 @@
+.container {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table {
+  font-variant-numeric: lining-nums tabular-nums;
+  width: 100%;
+}
+
+.table thead .th {
+  border-bottom: 1px solid var(--clr-accent);
+}
+
+.th {
+  text-align: start;
+}
+
+.table td,
+.table th {
+  padding: var(--space-4) var(--space-6);
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: var(--clr-accent-50);
+}
+
+.table tbody .tr:hover {
+  background-color: var(--clr-accent-100);
+}
+
+.table tbody .tr.tr--active {
+  background-color: var(--clr-accent-200);
+}
+
+.table tbody .tr--active:hover {
+  background-color: var(--clr-accent-light);
+}
+
+.td--numeric,
+.th--numeric {
+  text-align: end;
+}
+
+.td--center,
+.th--center {
+  text-align: center;
+}

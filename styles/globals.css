@@ -10,9 +10,12 @@
   --clr-800: #252527;
   --clr-900: #19191a;
 
-  --clr-accent-light: #f9a743;
-  --clr-accent: #f89012;
-  --clr-accent-dark: #d07506;
+  --clr-accent-50: hsl(33, 94%, 92%);
+  --clr-accent-100: hsl(33, 94%, 82%);
+  --clr-accent-200: hsl(33, 94%, 72%);
+  --clr-accent-light: hsl(33, 94%, 62%);
+  --clr-accent: hsl(33, 94%, 52%);
+  --clr-accent-dark: hsl(33, 94%, 42%);
 
   --clr-red-light: #d76b70;
   --clr-red: #cc444b;
