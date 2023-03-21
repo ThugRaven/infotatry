@@ -175,12 +175,14 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
           onClick={() => {
             const bounds = feature?.properties?.bounds
               ? JSON.parse(feature.properties.bounds)
-              : [
+              : feature?.properties?.lng
+              ? [
                   feature?.properties?.lng,
                   feature?.properties?.lat,
                   feature?.properties?.lng,
                   feature?.properties?.lat,
-                ];
+                ]
+              : null;
 
             dispatch({
               type: 'CAMERA',
@@ -196,76 +198,62 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
     ) : null;
 
     useKeyboard(
-      '1',
+      ['1', '2', '3', 'C'],
       divRef,
-      () => {
-        dispatch &&
-          dispatch({
-            type: 'START_NODE',
-            payload: {
-              feature: type,
-              name: feature?.properties?.name ?? null,
-            },
-          });
-      },
-      true,
-    );
+      [
+        () => {
+          dispatch &&
+            dispatch({
+              type: 'START_NODE',
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
+            });
+        },
+        () => {
+          dispatch &&
+            dispatch({
+              type: 'MIDDLE_NODE',
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
+            });
+        },
+        () => {
+          dispatch &&
+            dispatch({
+              type: 'END_NODE',
+              payload: {
+                feature: type,
+                name: feature?.properties?.name ?? null,
+              },
+            });
+        },
+        () => {
+          const bounds = feature?.properties?.bounds
+            ? JSON.parse(feature.properties.bounds)
+            : feature?.properties?.lng
+            ? [
+                feature?.properties?.lng,
+                feature?.properties?.lat,
+                feature?.properties?.lng,
+                feature?.properties?.lat,
+              ]
+            : null;
 
-    useKeyboard(
-      '2',
-      divRef,
-      () => {
-        dispatch &&
-          dispatch({
-            type: 'MIDDLE_NODE',
-            payload: {
-              feature: type,
-              name: feature?.properties?.name ?? null,
-            },
-          });
-      },
-      true,
-    );
-
-    useKeyboard(
-      '3',
-      divRef,
-      () => {
-        dispatch &&
-          dispatch({
-            type: 'END_NODE',
-            payload: {
-              feature: type,
-              name: feature?.properties?.name ?? null,
-            },
-          });
-      },
-      true,
-    );
-
-    useKeyboard(
-      'C',
-      divRef,
-      () => {
-        const bounds = feature?.properties?.bounds
-          ? JSON.parse(feature.properties.bounds)
-          : [
-              feature?.properties?.lng,
-              feature?.properties?.lat,
-              feature?.properties?.lng,
-              feature?.properties?.lat,
-            ];
-
-        dispatch &&
-          dispatch({
-            type: 'CAMERA',
-            payload: {
-              feature: type,
-              name: null,
-              bounds,
-            },
-          });
-      },
+          dispatch &&
+            dispatch({
+              type: 'CAMERA',
+              payload: {
+                feature: type,
+                name: null,
+                bounds,
+              },
+            });
+        },
+      ],
       true,
     );
 
