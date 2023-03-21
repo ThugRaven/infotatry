@@ -26,6 +26,7 @@ import {
   swapCoordinates,
 } from '@lib/geo-utils';
 import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
+import { useKeyboard } from 'hooks/useKeyboard';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { PopupAction } from 'pages';
 import { Node, Trail } from 'pages/dashboard/admin/map';
@@ -411,15 +412,24 @@ const MapContainer = ({
     }
   }, [bounds]);
 
+  useKeyboard(['Z', 'X'], ref.current, [
+    () => {
+      mapRef.current?.zoomIn({ duration: 150 });
+    },
+    () => {
+      mapRef.current?.zoomOut({ duration: 150 });
+    },
+  ]);
+
   return (
     <div ref={ref} className={s.container}>
       <Map
         id="map"
         ref={mapInitializeRef}
         // initialViewState={{
-        //   longitude: 19,
-        //   latitude: 42,
-        //   zoom: 3.5,
+        //   longitude: 19.93,
+        //   latitude: 49.23,
+        //   zoom: 11,
         // }}
         {...viewState}
         onMove={(evt) => setViewState(evt.viewState)}
