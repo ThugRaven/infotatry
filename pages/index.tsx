@@ -145,6 +145,9 @@ const MapPage = () => {
 
       if (!response.ok) {
         const data = await response.json();
+        if (data && data.status && data.message && data.status === 404) {
+          throw new Error(data.message);
+        }
         throw new Error(data.message);
       }
 
@@ -165,6 +168,12 @@ const MapPage = () => {
       refetchOnWindowFocus: false,
       cacheTime: 15 * 60 * 1000, // 15 minutes
       staleTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error) => {
+        if (failureCount === 3 || error.message === 'Route not found') {
+          return false;
+        }
+        return true;
+      },
       onSuccess: (data) => {
         console.log('onSuccess Route');
         console.log(data);

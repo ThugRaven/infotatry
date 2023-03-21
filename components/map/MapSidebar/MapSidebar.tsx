@@ -1,5 +1,6 @@
 import { Spinner, useMediaQuery } from '@chakra-ui/react';
 import AvalancheInfo from '@components/avalanche/AvalancheInfo';
+import ErrorText from '@components/common/ErrorText';
 import RouteResult from '@components/route/RouteResult';
 import RouteSegments from '@components/route/RouteSegments';
 import { SearchRoute } from '@components/search';
@@ -85,8 +86,10 @@ const MapSidebar = ({
             <div className={s.spinner}>
               <Spinner thickness="5px" size="xl" color="black" />
             </div>
+          ) : error && error.message === 'Route not found' ? (
+            <ErrorText>Nie znaleziono trasy</ErrorText>
           ) : error ? (
-            'An error has occured: ' + error.message
+            <ErrorText>Wystąpił błąd</ErrorText>
           ) : data && data.length > 0 ? (
             <>
               <ul>
