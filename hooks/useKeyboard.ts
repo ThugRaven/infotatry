@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export const useKeyboard = (
   targetKeys: string[],
-  element: HTMLElement | Window | null = window,
+  element: HTMLElement | 'window' | null,
   callback?: ((event: KeyboardEvent) => void)[],
   callOnce = false,
   withControl = false,
@@ -67,12 +67,22 @@ export const useKeyboard = (
       return;
     }
 
-    element.addEventListener('keydown', handleKeyDown);
-    element.addEventListener('keyup', handleKeyUp);
+    if (element === 'window') {
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
+    } else {
+      element.addEventListener('keydown', handleKeyDown);
+      element.addEventListener('keyup', handleKeyUp);
+    }
 
     return () => {
-      element.removeEventListener('keydown', handleKeyDown);
-      element.removeEventListener('keyup', handleKeyUp);
+      if (element === 'window') {
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
+      } else {
+        element.removeEventListener('keydown', handleKeyDown);
+        element.removeEventListener('keyup', handleKeyUp);
+      }
     };
   }, [element, handleKeyDown, handleKeyUp]);
 

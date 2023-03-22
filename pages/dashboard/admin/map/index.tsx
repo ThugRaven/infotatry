@@ -1502,26 +1502,32 @@ const DashboardAdminMap = () => {
   };
 
   useKeyboard(
-    'S',
-    () => {
-      selectedTrail
-        ? handleEditTrail()
-        : selectedNode
-        ? handleEditNode()
-        : null;
-      console.log('onSave');
-    },
+    ['S'],
+    'window',
+    [
+      () => {
+        selectedTrail
+          ? handleEditTrail()
+          : selectedNode
+          ? handleEditNode()
+          : null;
+        console.log('onSave');
+      },
+    ],
     true,
     true,
   );
 
   useKeyboard(
-    'Escape',
-    () => {
-      handleCancelEdit();
-      setPopupInfo(null);
-      console.log('onEsc');
-    },
+    ['Escape'],
+    'window',
+    [
+      () => {
+        handleCancelEdit();
+        setPopupInfo(null);
+        console.log('onEsc');
+      },
+    ],
     true,
   );
 
