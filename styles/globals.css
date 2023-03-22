@@ -82,12 +82,17 @@
 
 html,
 body {
+  height: 100%;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-family: var(--ff-primary) !important;
   background-color: var(--clr-50) !important;
+}
+
+#__next {
+  height: 100%;
 }
 
 a {
