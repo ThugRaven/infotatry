@@ -12,6 +12,7 @@ interface TdProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
   children: ReactNode;
   isNumeric?: boolean;
   center?: boolean;
+  wrap?: boolean;
 }
 
 interface ThProps extends React.ComponentPropsWithoutRef<'th'> {
@@ -38,12 +39,19 @@ export const Tr = ({ children, active, ...props }: TrProps) => {
   );
 };
 
-export const Td = ({ children, isNumeric, center, ...props }: TdProps) => {
+export const Td = ({
+  children,
+  isNumeric,
+  center,
+  wrap,
+  ...props
+}: TdProps) => {
   return (
     <td
       className={classNames(s.td, {
         [s['td--numeric']]: isNumeric,
         [s['td--center']]: center,
+        [s['td--wrap']]: wrap,
       })}
       {...props}
     >

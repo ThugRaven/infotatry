@@ -17,12 +17,9 @@ const Pagination = ({
   onPageClick,
 }: PaginationProps) => {
   const buttons = [];
+  const lastPage = Math.ceil(count / pageSize);
 
-  for (
-    let i = Math.max(page - 1, 1);
-    i <= Math.min(page + 1, Math.ceil(count / pageSize));
-    i++
-  ) {
+  for (let i = Math.max(page - 1, 1); i <= Math.min(page + 1, lastPage); i++) {
     buttons.push(
       <PaginationButton
         key={i}
@@ -44,14 +41,16 @@ const Pagination = ({
         {page * pageSize > count ? count : page * pageSize} z {count}
       </span>
       <div className={s.pagination__buttons}>
-        <PaginationButton
-          key={'first'}
-          onClick={() => {
-            onPageClick(1);
-          }}
-        >
-          {1}
-        </PaginationButton>
+        {page !== 1 && (
+          <PaginationButton
+            key={'first'}
+            onClick={() => {
+              onPageClick(1);
+            }}
+          >
+            {1}
+          </PaginationButton>
+        )}
         <PaginationButton
           key={'previous'}
           onClick={() => {
@@ -66,21 +65,23 @@ const Pagination = ({
         <PaginationButton
           key={'next'}
           onClick={() => {
-            onPageClick(Math.min(page + 1, Math.ceil(count / pageSize)));
+            onPageClick(Math.min(page + 1, lastPage));
           }}
-          disabled={page === Math.ceil(count / pageSize)}
+          disabled={page === lastPage}
           required
         >
           <MdKeyboardArrowRight />
         </PaginationButton>
-        <PaginationButton
-          key={'last'}
-          onClick={() => {
-            onPageClick(Math.ceil(count / pageSize));
-          }}
-        >
-          {Math.ceil(count / pageSize)}
-        </PaginationButton>
+        {page !== lastPage && (
+          <PaginationButton
+            key={'last'}
+            onClick={() => {
+              onPageClick(lastPage);
+            }}
+          >
+            {lastPage}
+          </PaginationButton>
+        )}
       </div>
     </div>
   );

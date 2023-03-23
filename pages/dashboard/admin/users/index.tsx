@@ -12,9 +12,12 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
+import Pagination from '@components/common/Pagination';
+import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminUsers.module.css';
+import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -54,16 +57,20 @@ const Users = () => {
   });
   const [selectedUserId, setSelectedUserId] = useState('');
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
+  const { page, handlePageClick } = usePagination();
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (page: number) => {
     try {
       console.log('fetch users');
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users?page=${page}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -79,14 +86,15 @@ const Users = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery<UserFull[], Error>(
-    ['users'],
-    fetchUsers,
+  const { isLoading, error, data, isFetching } = useQuery<UserFull[], Error>(
+    ['users', page],
+    () => fetchUsers(page),
     {
       refetchOnWindowFocus: false,
       retry: false,
       cacheTime: 15 * 60 * 1000, // 15 minutes
       staleTime: 10 * 60 * 1000, // 10 minutes
+      keepPreviousData: true,
       onSuccess: (data) => {
         console.log(data);
       },
@@ -260,6 +268,12 @@ const Users = () => {
     console.log('user', user);
     const { name, email, image } = user;
 
+    if (selectedUserId === user._id) {
+      setSelectedUserId('');
+      setUserForm(initialUserValues);
+      return;
+    }
+
     setSelectedUserId(user._id);
     setUserForm({
       name,
@@ -318,41 +332,81 @@ const Users = () => {
   return (
     <div className={s.container}>
       <div>
-        {data && (
-          <ul>
-            {data.map((user) => (
-              <li key={user._id} onClick={() => handleSelectUser(user)}>
-                {`${user._id} ${user.name} ${user.email} ${
-                  user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
-                    : 'N/A'
-                } - ${
-                  user.updatedAt
-                    ? new Date(user.updatedAt).toLocaleDateString()
-                    : 'N/A'
-                }`}
-                <Button
-                  ml={1}
-                  size="sm"
-                  onClick={() => handleOpenModal(user._id)}
+        <Table isLoading={isFetching}>
+          <thead>
+            <Tr>
+              <Th center>#</Th>
+              <Th>Name</Th>
+              <Th>Email</Th>
+              <Th isNumeric>Created At</Th>
+              <Th isNumeric>Updated At</Th>
+              <Th center>Banned</Th>
+              <Th center>Actions</Th>
+            </Tr>
+          </thead>
+          <tbody>
+            {data &&
+              data.data &&
+              data.data.map((user, index) => (
+                <Tr
+                  key={user._id}
+                  onClick={() => handleSelectUser(user)}
+                  active={selectedUserId === user._id}
                 >
-                  Ban user
-                </Button>
+                  <Td center>
+                    {data.page * data.pageSize - data.pageSize + 1 + index}
+                  </Td>
+                  <Td wrap>{user.name}</Td>
+                  <Td wrap>{user.email}</Td>
+                  <Td isNumeric>
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : 'N/A'}
+                  </Td>
+                  <Td isNumeric>
+                    {user.updatedAt
+                      ? new Date(user.updatedAt).toLocaleDateString()
+                      : 'N/A'}
+                  </Td>
+                  <Td center>{user.ban.duration > 0 ? 'Yes' : 'No'}</Td>
+                  <Td center>
+                    <Button
+                      ml={1}
+                      size="sm"
+                      onClick={() => handleOpenModal(user._id)}
+                    >
+                      Ban user
+                    </Button>
 
-                <Button
-                  ml={1}
-                  size="sm"
-                  colorScheme={'red'}
-                  onClick={() => handleDeleteUser(user._id)}
-                >
-                  Delete user
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
+                    <Button
+                      ml={1}
+                      size="sm"
+                      colorScheme={'red'}
+                      onClick={() => handleDeleteUser(user._id)}
+                    >
+                      Delete user
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+          </tbody>
+          <tfoot>
+            <Tr>
+              <Th colSpan={4}>
+                {data && (
+                  <Pagination
+                    page={page}
+                    pageSize={data.pageSize}
+                    count={data.count}
+                    onPageClick={handlePageClick}
+                  />
+                )}
+              </Th>
+            </Tr>
+          </tfoot>
+        </Table>
       </div>
-      <form onSubmit={handleUpdateUser}>
+      <form onSubmit={handleUpdateUser} className={s.form}>
         <FormControl isRequired>
           <FormLabel>Name</FormLabel>
           <Input

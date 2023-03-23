@@ -6,10 +6,13 @@ import {
   Select,
   Textarea,
 } from '@chakra-ui/react';
+import Pagination from '@components/common/Pagination';
+import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAnnouncements.module.css';
+import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -44,13 +47,14 @@ const Announcements = () => {
     initialAnnouncementValues,
   );
   const [selectedAnnouncementId, setSelectedAnnouncementId] = useState('');
+  const { page, handlePageClick } = usePagination();
 
   const fetchAllAnnouncements = async () => {
     try {
       console.log('fetch all announcements');
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/announcements/all`,
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/all?page=${page}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -72,19 +76,19 @@ const Announcements = () => {
     }
   };
 
-  const { isLoading, error, data } = useQuery<Announcement[], Error>(
-    ['announcements-all'],
-    fetchAllAnnouncements,
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-      cacheTime: 15 * 60 * 1000, // 15 minutes
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      onSuccess: (data) => {
-        console.log(data);
-      },
+  const { isLoading, error, data, isFetching } = useQuery<
+    Announcement[],
+    Error
+  >(['announcements-all', page], () => fetchAllAnnouncements(page), {
+    refetchOnWindowFocus: false,
+    retry: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    keepPreviousData: true,
+    onSuccess: (data) => {
+      console.log(data);
     },
-  );
+  });
 
   const handleChangeForm = (
     e:
@@ -299,6 +303,12 @@ const Announcements = () => {
       description,
     } = announcement;
 
+    if (selectedAnnouncementId === announcement._id) {
+      setSelectedAnnouncementId('');
+      setAnnouncementForm(initialAnnouncementValues);
+      return;
+    }
+
     setSelectedAnnouncementId(announcement._id);
     setAnnouncementForm({
       type,
@@ -362,44 +372,80 @@ const Announcements = () => {
   return (
     <div className={s.container}>
       <div>
-        {data && (
-          <ul>
-            {data.map((announcement) => (
-              <li
-                key={announcement._id}
-                onClick={() => handleSelectAnnouncement(announcement)}
-              >
-                {`${announcement._id} ${announcement.title} ${
-                  announcement.since
-                    ? new Date(announcement.since).toLocaleDateString()
-                    : 'N/A'
-                } - ${
-                  announcement.until
-                    ? new Date(announcement.until).toLocaleDateString()
-                    : 'N/A'
-                } ${announcement.isClosed}`}
-                <Button
-                  ml={1}
-                  size="sm"
-                  onClick={() => handleCloseAnnouncement(announcement._id)}
+        <Table isLoading={isFetching}>
+          <thead>
+            <Tr>
+              <Th center>#</Th>
+              <Th center>Title</Th>
+              <Th isNumeric>Since</Th>
+              <Th isNumeric>Until</Th>
+              <Th center>Closed</Th>
+              <Th center>Actions</Th>
+            </Tr>
+          </thead>
+          <tbody>
+            {data &&
+              data.data &&
+              data.data.map((announcement, index) => (
+                <Tr
+                  key={announcement._id}
+                  onClick={() => handleSelectAnnouncement(announcement)}
+                  active={selectedAnnouncementId === announcement._id}
                 >
-                  Toggle closure
-                </Button>
-
-                <Button
-                  ml={1}
-                  size="sm"
-                  colorScheme={'red'}
-                  onClick={() => handleDeleteAnnouncement(announcement._id)}
-                >
-                  Delete
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
+                  <Td center>
+                    {data.page * data.pageSize - data.pageSize + 1 + index}
+                  </Td>
+                  <Td center wrap>
+                    {announcement.title}
+                  </Td>
+                  <Td isNumeric>
+                    {announcement.since
+                      ? new Date(announcement.since).toLocaleDateString()
+                      : 'N/A'}
+                  </Td>
+                  <Td isNumeric>
+                    {announcement.until
+                      ? new Date(announcement.until).toLocaleDateString()
+                      : 'N/A'}
+                  </Td>
+                  <Td center>{announcement.isClosed ? 'Yes' : 'No'}</Td>
+                  <Td>
+                    <Button
+                      ml={1}
+                      size="sm"
+                      onClick={() => handleCloseAnnouncement(announcement._id)}
+                    >
+                      Toggle closure
+                    </Button>
+                    <Button
+                      ml={1}
+                      size="sm"
+                      colorScheme={'red'}
+                      onClick={() => handleDeleteAnnouncement(announcement._id)}
+                    >
+                      Delete
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+          </tbody>
+          <tfoot>
+            <Tr>
+              <Th colSpan={4}>
+                {data && (
+                  <Pagination
+                    page={page}
+                    pageSize={data.pageSize}
+                    count={data.count}
+                    onPageClick={handlePageClick}
+                  />
+                )}
+              </Th>
+            </Tr>
+          </tfoot>
+        </Table>
       </div>
-      <form onSubmit={handleAddAnnouncement}>
+      <form onSubmit={handleAddAnnouncement} className={s.form}>
         <FormControl isRequired>
           <FormLabel>Type</FormLabel>
           <Select

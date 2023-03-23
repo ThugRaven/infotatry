@@ -462,7 +462,7 @@ const Avalanches = () => {
               <Th center>#</Th>
               <Th center>Danger level</Th>
               <Th isNumeric>Until</Th>
-              <Th>Action</Th>
+              <Th center>Action</Th>
             </Tr>
           </thead>
           <tbody>
@@ -483,7 +483,7 @@ const Avalanches = () => {
                       ? new Date(bulletin.until).toLocaleString()
                       : 'N/A'}
                   </Td>
-                  <Td>
+                  <Td center>
                     <Button
                       ml={1}
                       size="sm"
