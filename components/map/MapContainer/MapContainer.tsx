@@ -25,13 +25,14 @@ import {
   decode,
   swapCoordinates,
 } from '@lib/geo-utils';
-import { INTERACTIVE_LAYER_IDS } from 'constants/constants';
+import { INITIAL_VIEW_STATE, INTERACTIVE_LAYER_IDS } from 'constants/constants';
 import { useKeyboard } from 'hooks/useKeyboard';
 import mapboxgl, { LngLat, LngLatBounds } from 'mapbox-gl';
 import { PopupAction } from 'pages';
 import { Node, Trail } from 'pages/dashboard/admin/map';
 import {
   Dispatch,
+  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -144,11 +145,7 @@ const MapContainer = ({
       setIsMapRefLoaded(true);
     }
   }, []);
-  const [viewState, setViewState] = useState({
-    latitude: 49.23,
-    longitude: 19.93,
-    zoom: 11,
-  });
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [cursor, setCursor] = useState('grab');
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
@@ -406,9 +403,13 @@ const MapContainer = ({
   }, []);
 
   useEffect(() => {
-    if (bounds) {
+    if (bounds && mapRef.current) {
       const _bounds = new LngLatBounds(bounds);
-      mapRef.current?.fitBounds(_bounds, { padding: 100, maxZoom: 18 });
+      mapRef.current.fitBounds(_bounds, {
+        padding: 100,
+        maxZoom: 18,
+        bearing: mapRef.current.getTerrain() ? mapRef.current.getBearing() : 0,
+      });
     }
   }, [bounds]);
 
@@ -426,13 +427,9 @@ const MapContainer = ({
       <Map
         id="map"
         ref={mapInitializeRef}
-        // initialViewState={{
-        //   longitude: 19.93,
-        //   latitude: 49.23,
-        //   zoom: 11,
-        // }}
-        {...viewState}
-        onMove={(evt) => setViewState(evt.viewState)}
+        initialViewState={INITIAL_VIEW_STATE}
+        // {...viewState}
+        // onMove={(evt) => setViewState(evt.viewState)}
         maxPitch={85}
         reuseMaps
         // mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -588,4 +585,4 @@ const MapContainer = ({
   );
 };
 
-export default MapContainer;
+export default memo(MapContainer);

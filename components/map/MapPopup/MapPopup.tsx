@@ -177,10 +177,8 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
               ? JSON.parse(feature.properties.bounds)
               : feature?.properties?.lng
               ? [
-                  feature?.properties?.lng,
-                  feature?.properties?.lat,
-                  feature?.properties?.lng,
-                  feature?.properties?.lat,
+                  [feature?.properties?.lng, feature?.properties?.lat],
+                  [feature?.properties?.lng, feature?.properties?.lat],
                 ]
               : null;
 
@@ -236,10 +234,8 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
             ? JSON.parse(feature.properties.bounds)
             : feature?.properties?.lng
             ? [
-                feature?.properties?.lng,
-                feature?.properties?.lat,
-                feature?.properties?.lng,
-                feature?.properties?.lat,
+                [feature?.properties?.lng, feature?.properties?.lat],
+                [feature?.properties?.lng, feature?.properties?.lat],
               ]
             : null;
 
