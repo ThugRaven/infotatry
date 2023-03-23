@@ -15,7 +15,7 @@ import {
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
-import { getServerSidePropsIsAdmin } from '@lib/api';
+import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
 import s from '@styles/DashboardAdminUsers.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -42,10 +42,27 @@ type UserFull = {
   _id: string;
   name: string;
   email: string;
+  password?: string;
   image?: string;
+  roles: string[];
+  ban: Ban;
+  stats: UserStats;
   createdAt: Date;
   updatedAt: Date;
 };
+
+type Ban = {
+  duration: number | null;
+  bannedAt: Date | null;
+  reason?: string;
+};
+
+interface UserStats {
+  time: number;
+  distance: number;
+  ascent: number;
+  descent: number;
+}
 
 export const getServerSideProps = getServerSidePropsIsAdmin;
 
@@ -86,20 +103,19 @@ const Users = () => {
     }
   };
 
-  const { isLoading, error, data, isFetching } = useQuery<UserFull[], Error>(
-    ['users', page],
-    () => fetchUsers(page),
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-      cacheTime: 15 * 60 * 1000, // 15 minutes
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      keepPreviousData: true,
-      onSuccess: (data) => {
-        console.log(data);
-      },
+  const { isLoading, error, data, isFetching } = useQuery<
+    PaginationResponse<UserFull[]>,
+    Error
+  >(['users', page], () => fetchUsers(page), {
+    refetchOnWindowFocus: false,
+    retry: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    keepPreviousData: true,
+    onSuccess: (data) => {
+      console.log(data);
     },
-  );
+  });
 
   const handleChangeForm = (
     e:
@@ -368,7 +384,14 @@ const Users = () => {
                       ? new Date(user.updatedAt).toLocaleDateString()
                       : 'N/A'}
                   </Td>
-                  <Td center>{user.ban.duration > 0 ? 'Yes' : 'No'}</Td>
+                  <Td center>
+                    {user.ban.duration &&
+                    user.ban.bannedAt &&
+                    new Date(user.ban.bannedAt).getTime() + user.ban.duration >
+                      Date.now()
+                      ? 'Yes'
+                      : 'No'}
+                  </Td>
                   <Td center>
                     <Button
                       ml={1}

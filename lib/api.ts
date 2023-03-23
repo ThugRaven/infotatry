@@ -16,6 +16,13 @@ export type ApiRedirect = {
   };
 };
 
+export type PaginationResponse<T> = {
+  page: number;
+  pageSize: number;
+  count: number;
+  data: T;
+};
+
 export const isAdmin = async (
   context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
 ) => {

@@ -10,7 +10,7 @@ import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
-import { getServerSidePropsIsAdmin } from '@lib/api';
+import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
 import s from '@styles/DashboardAdminAnnouncements.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -49,7 +49,7 @@ const Announcements = () => {
   const [selectedAnnouncementId, setSelectedAnnouncementId] = useState('');
   const { page, handlePageClick } = usePagination();
 
-  const fetchAllAnnouncements = async () => {
+  const fetchAllAnnouncements = async (page: number) => {
     try {
       console.log('fetch all announcements');
 
@@ -77,7 +77,7 @@ const Announcements = () => {
   };
 
   const { isLoading, error, data, isFetching } = useQuery<
-    Announcement[],
+    PaginationResponse<Announcement[]>,
     Error
   >(['announcements-all', page], () => fetchAllAnnouncements(page), {
     refetchOnWindowFocus: false,

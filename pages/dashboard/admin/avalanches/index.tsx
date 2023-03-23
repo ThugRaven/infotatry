@@ -9,7 +9,7 @@ import {
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
-import { getServerSidePropsIsAdmin } from '@lib/api';
+import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
 import s from '@styles/DashboardAdminAvalanches.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -118,7 +118,7 @@ const Avalanches = () => {
   };
 
   const { isLoading, error, data, isFetching } = useQuery<
-    AvalancheBulletin[],
+    PaginationResponse<AvalancheBulletin[]>,
     Error
   >(['avalanche-bulletins', page], () => fetchAllAvalancheBulletins(page), {
     refetchOnWindowFocus: false,
