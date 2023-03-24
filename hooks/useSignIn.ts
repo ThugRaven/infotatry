@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
+import { z } from 'zod';
 import { useAuth } from './useAuth';
 
 interface SignInForm {
@@ -49,22 +50,37 @@ export const useSignIn = () => {
   const signInMutation = useMutation(signInFetch);
 
   const handleSignIn = ({ email, password }: SignInForm) => {
-    signInMutation.mutate(
-      { email, password },
-      {
-        onSuccess: (data) => {
-          console.log(data);
-          console.log(data && data._id);
+    try {
+      const emailSchema = z
+        .string()
+        .email({ message: 'Niepoprawny adres email!' });
+      const passwordSchema = z
+        .string()
+        .min(3, { message: 'Hasło musi mieć co najmniej 3 znaki!' });
+      const _email = emailSchema.parse(email);
+      const _password = passwordSchema.parse(password);
 
-          if (auth.refetch) {
-            auth.refetch();
-            toast.closeAll();
-            return router.push('/');
-          }
-          return router.push('/login');
+      signInMutation.mutate(
+        { email: _email, password: _password },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+            console.log(data && data._id);
+
+            if (auth.refetch) {
+              auth.refetch();
+              toast.closeAll();
+              return router.push('/');
+            }
+            return router.push('/login');
+          },
         },
-      },
-    );
+      );
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return error.issues[0].message;
+      }
+    }
   };
 
   return handleSignIn;

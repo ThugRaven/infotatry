@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import Logo from '@components/common/Logo';
 import GridLayout from '@components/layouts/GridLayout';
 import { Input } from '@components/ui';
@@ -13,12 +14,23 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const signIn = useSignIn();
+  const toast = useToast();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ email, password });
 
-    signIn({ email, password });
+    const errorMessage = signIn({ email, password });
+
+    if (errorMessage) {
+      toast({
+        title: 'Wystąpił błąd!',
+        description: errorMessage,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (

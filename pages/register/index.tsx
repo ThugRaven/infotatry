@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useState } from 'react';
 import { useMutation } from 'react-query';
+import { z } from 'zod';
 import image_2 from '../../public/image_2.jpg';
 
 interface RegisterForm {
@@ -60,17 +61,45 @@ const Register = () => {
   const registerMutation = useMutation(register);
 
   const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    registerMutation.mutate(
-      { name, email, password },
-      {
-        onSuccess: (data) => {
-          router.push('/');
-          console.log(data);
-          console.log(data && data._id);
+    try {
+      e.preventDefault();
+
+      const nameSchema = z
+        .string()
+        .min(3, {
+          message: 'Nazwa użytkownika musi mieć co najmniej 3 znaki!',
+        });
+      const emailSchema = z
+        .string()
+        .email({ message: 'Niepoprawny adres email!' });
+      const passwordSchema = z
+        .string()
+        .min(3, { message: 'Hasło musi mieć co najmniej 3 znaki!' });
+      const _name = nameSchema.parse(name);
+      const _email = emailSchema.parse(email);
+      const _password = passwordSchema.parse(password);
+
+      registerMutation.mutate(
+        { name: _name, email: _email, password: _password },
+        {
+          onSuccess: (data) => {
+            router.push('/');
+            console.log(data);
+            console.log(data && data._id);
+          },
         },
-      },
-    );
+      );
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: 'Wystąpił błąd!',
+          description: error.issues[0].message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
   };
 
   return (
