@@ -29,19 +29,17 @@
   border-radius: var(--br-base);
 }
 
-.list__item:hover {
-  background-color: var(--clr-100);
-}
-
+.list__item:hover,
 .list__item:focus-visible {
-  background-color: var(--clr-200);
+  background-color: var(--clr-100);
 }
 
 .list__item--active {
   background-color: var(--clr-accent-light);
 }
 
-.list__item--active:hover {
+.list__item--active:hover,
+.list__item--active:focus-visible {
   background-color: var(--clr-accent);
 }
 
@@ -100,7 +98,8 @@
   z-index: 100;
 }
 
-.list__item:hover .item__tooltip {
+.list__item:hover .item__tooltip,
+.list__item:focus-visible .item__tooltip {
   opacity: 1;
   visibility: visible;
 }
