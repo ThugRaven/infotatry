@@ -127,3 +127,32 @@
 .details__btn:active {
   background-color: var(--clr-400);
 }
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-2) 0 0;
+  color: var(--clr-600);
+  font-size: var(--fs-xs);
+}
+
+.link {
+  word-break: break-all;
+}
+
+.link:hover,
+.link:focus-visible {
+  text-decoration: underline;
+}
+
+.image {
+  width: 100px;
+}
+
+@media screen and (min-width: 768px) {
+  .image {
+    width: 150px;
+  }
+}
