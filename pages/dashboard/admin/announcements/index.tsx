@@ -409,7 +409,7 @@ const Announcements = () => {
                       : 'N/A'}
                   </Td>
                   <Td center>{announcement.isClosed ? 'Yes' : 'No'}</Td>
-                  <Td>
+                  <Td center>
                     <Button
                       ml={1}
                       size="sm"
@@ -431,7 +431,7 @@ const Announcements = () => {
           </tbody>
           <tfoot>
             <Tr>
-              <Th colSpan={4}>
+              <Th colSpan={6}>
                 {data && (
                   <Pagination
                     page={page}

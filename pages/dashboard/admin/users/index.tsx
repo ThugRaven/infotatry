@@ -178,6 +178,36 @@ const Users = () => {
     }
   };
 
+  const unbanUser = async (id: string) => {
+    try {
+      if (!id) {
+        return null;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/unban/${id}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error(error as string);
+    }
+  };
+
   const updateUser = async (id: string) => {
     try {
       if (!id) {
@@ -211,41 +241,43 @@ const Users = () => {
     }
   };
 
-  const deleteUser = async (id: string) => {
-    try {
-      if (!id) {
-        return null;
-      }
+  // const deleteUser = async (id: string) => {
+  //   try {
+  //     if (!id) {
+  //       return null;
+  //     }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
-        {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-        },
-      );
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+  //       {
+  //         method: 'DELETE',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         credentials: 'include',
+  //       },
+  //     );
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message);
-      }
+  //     if (!response.ok) {
+  //       const data = await response.json();
+  //       throw new Error(data.message);
+  //     }
 
-      return response.json();
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error(error as string);
-    }
-  };
+  //     return response.json();
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error instanceof Error) {
+  //       throw new Error(error.message);
+  //     }
+  //     throw new Error(error as string);
+  //   }
+  // };
 
   const userBanMutation = useMutation((id: string) => banUser(id));
 
+  const userUnbanMutation = useMutation((id: string) => unbanUser(id));
+
   const userUpdateMutation = useMutation((id: string) => updateUser(id));
 
-  const userDeleteMutation = useMutation((id: string) => deleteUser(id));
+  // const userDeleteMutation = useMutation((id: string) => deleteUser(id));
 
   const queryClient = useQueryClient();
 
@@ -275,6 +307,14 @@ const Users = () => {
         //   },
         //   data,
         // );
+        console.log(data);
+      },
+    });
+  };
+
+  const handleUnbanUser = () => {
+    userUnbanMutation.mutate(selectedUserId, {
+      onSuccess: (data) => {
         console.log(data);
       },
     });
@@ -325,25 +365,25 @@ const Users = () => {
     });
   };
 
-  const handleDeleteUser = (id: string) => {
-    userDeleteMutation.mutate(id, {
-      onSuccess: (data) => {
-        // queryClient.setQueryData<UserFull[]>(
-        //   'announcements-all',
-        //   (announcements) => {
-        //     if (announcements) {
-        //       return announcements.filter(
-        //         (announcement) => announcement._id !== id,
-        //       );
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
-        console.log(data);
-      },
-    });
-  };
+  // const handleDeleteUser = (id: string) => {
+  //   userDeleteMutation.mutate(id, {
+  //     onSuccess: (data) => {
+  //       // queryClient.setQueryData<UserFull[]>(
+  //       //   'announcements-all',
+  //       //   (announcements) => {
+  //       //     if (announcements) {
+  //       //       return announcements.filter(
+  //       //         (announcement) => announcement._id !== id,
+  //       //       );
+  //       //     }
+  //       //     return [];
+  //       //   },
+  //       //   data,
+  //       // );
+  //       console.log(data);
+  //     },
+  //   });
+  // };
 
   return (
     <div className={s.container}>
@@ -393,29 +433,38 @@ const Users = () => {
                       : 'No'}
                   </Td>
                   <Td center>
-                    <Button
-                      ml={1}
-                      size="sm"
-                      onClick={() => handleOpenModal(user._id)}
-                    >
-                      Ban user
-                    </Button>
+                    {user.ban.duration &&
+                    user.ban.bannedAt &&
+                    new Date(user.ban.bannedAt).getTime() + user.ban.duration >
+                      Date.now() ? (
+                      <Button ml={1} size="sm" onClick={handleUnbanUser}>
+                        Unban user
+                      </Button>
+                    ) : (
+                      <Button
+                        ml={1}
+                        size="sm"
+                        onClick={() => handleOpenModal(user._id)}
+                      >
+                        Ban user
+                      </Button>
+                    )}
 
-                    <Button
+                    {/* <Button
                       ml={1}
                       size="sm"
                       colorScheme={'red'}
                       onClick={() => handleDeleteUser(user._id)}
                     >
                       Delete user
-                    </Button>
+                    </Button> */}
                   </Td>
                 </Tr>
               ))}
           </tbody>
           <tfoot>
             <Tr>
-              <Th colSpan={4}>
+              <Th colSpan={7}>
                 {data && (
                   <Pagination
                     page={page}
