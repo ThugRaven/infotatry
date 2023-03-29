@@ -119,38 +119,40 @@ const RouteTrails = ({ segments }: { segments?: Segment[] }) => {
     };
   }, [handleMouseMove]);
 
-  console.log(totalDistance, totalCumulativeDistance, trailSegments);
+  // console.log(totalDistance, totalCumulativeDistance, trailSegments);
 
   return (
     <>
-      <div
-        ref={ref}
-        className={s.trails}
-        onMouseOver={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
+      {segments && segments.length > 1 && (
         <div
-          ref={tooltipRef}
-          className={classNames(s.tooltip, { [s['tooltip--active']]: hover })}
-          style={{ left: x }}
+          ref={ref}
+          className={s.trails}
+          onMouseOver={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         >
-          {`${value}%`}
-        </div>
-
-        {Object.entries(trailSegments).map((segment) => (
           <div
-            key={segment[0]}
-            className={classNames(s.trail, s[`trail--${segment[0]}`])}
-            style={{
-              width: `${(segment[1] / totalCumulativeDistance) * 100}%`,
-            }}
-            data-part={((segment[1] / totalDistance) * 100).toFixed(2)}
-            onMouseOver={() =>
-              setValue(((segment[1] / totalDistance) * 100).toFixed(2))
-            }
-          ></div>
-        ))}
-      </div>
+            ref={tooltipRef}
+            className={classNames(s.tooltip, { [s['tooltip--active']]: hover })}
+            style={{ left: x }}
+          >
+            {`${value}%`}
+          </div>
+
+          {Object.entries(trailSegments).map((segment) => (
+            <div
+              key={segment[0]}
+              className={classNames(s.trail, s[`trail--${segment[0]}`])}
+              style={{
+                width: `${(segment[1] / totalCumulativeDistance) * 100}%`,
+              }}
+              data-part={((segment[1] / totalDistance) * 100).toFixed(2)}
+              onMouseOver={() =>
+                setValue(((segment[1] / totalDistance) * 100).toFixed(2))
+              }
+            ></div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
