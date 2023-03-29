@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
@@ -75,6 +76,7 @@ const Users = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
   const { page, handlePageClick } = usePagination();
+  const toast = useToast();
 
   const fetchUsers = async (page: number) => {
     try {
@@ -307,7 +309,25 @@ const Users = () => {
         //   },
         //   data,
         // );
+        toast({
+          title: 'Zablokowano użytkownika!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('users');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -316,6 +336,24 @@ const Users = () => {
     userUnbanMutation.mutate(selectedUserId, {
       onSuccess: (data) => {
         console.log(data);
+        toast({
+          title: 'Odblokowano użytkownika!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('users');
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -361,6 +399,24 @@ const Users = () => {
         //   data,
         // );
         console.log(data);
+        toast({
+          title: 'Zaktualizowano użytkownika!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('users');
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };

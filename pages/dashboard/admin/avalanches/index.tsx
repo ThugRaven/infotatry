@@ -5,6 +5,7 @@ import {
   FormLabel,
   Input,
   Select,
+  useToast,
 } from '@chakra-ui/react';
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
@@ -89,6 +90,7 @@ const Avalanches = () => {
   console.log(bulletinForm.until);
   const [selectedBulletinId, setSelectedBulletinId] = useState('');
   const { page, handlePageClick } = usePagination();
+  const toast = useToast();
 
   const fetchAllAvalancheBulletins = async (page: number) => {
     try {
@@ -297,6 +299,24 @@ const Avalanches = () => {
       onSuccess: (data) => {
         console.log(data);
         console.log(data && data._id);
+        toast({
+          title: 'Dodano komunikat lawinowy!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries(['avalanche-bulletins', 1]);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -334,127 +354,88 @@ const Avalanches = () => {
 
   const handleUpdateBulletin = () => {
     bulletinUpdateMutation.mutate(selectedBulletinId, {
-      onSuccess: (data) => {
-        queryClient.setQueryData<AvalancheBulletin[]>(
-          'avalanche-bulletins-all',
-          (bulletins) => {
-            if (bulletins) {
-              const bulletin = bulletins.find(
-                (bulletin) => bulletin._id === data._id,
-              );
-              if (bulletin) {
-                Object.assign(bulletin, data);
-              }
-              return bulletins;
-            }
-            return [];
-          },
-          data,
-        );
-        // queryClient.invalidateQueries('announcements');
+      onSuccess: (data, variables) => {
+        console.log(variables);
+        // queryClient.setQueryData<AvalancheBulletin[]>(
+        //   ['avalanche-bulletins', page],
+        //   (bulletins) => {
+        //     console.log(bulletins);
+
+        //     if (bulletins && bulletins.data) {
+        //       const bulletin = bulletins.data.find(
+        //         (bulletin) => bulletin._id === data._id,
+        //       );
+        //       if (bulletin) {
+        //         Object.assign(bulletin, data);
+        //       }
+        //       return bulletins;
+        //     }
+        //     return [];
+        //   },
+        //   data,
+        // );
+        toast({
+          title: 'Zaktualizowano komunikat lawinowy!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('avalanche-bulletins');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
 
   const handleDeleteBulletin = (id: string) => {
     bulletinDeleteMutation.mutate(id, {
-      onSuccess: (data) => {
-        queryClient.setQueryData<AvalancheBulletin[]>(
-          'avalanche-bulletins-all',
-          (bulletins) => {
-            if (bulletins) {
-              return bulletins.filter((bulletin) => bulletin._id !== id);
-            }
-            return [];
-          },
-          data,
-        );
-        // queryClient.invalidateQueries('announcements');
+      onSuccess: (data, variables) => {
+        console.log(variables);
+        // queryClient.setQueryData<AvalancheBulletin[]>(
+        //   ['avalanche-bulletins', variables],
+        //   (bulletins) => {
+        //     if (bulletins) {
+        //       return bulletins.filter((bulletin) => bulletin._id !== id);
+        //     }
+        //     return [];
+        //   },
+        //   data,
+        // );
+        toast({
+          title: 'Usunięto komunikat lawinowy!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('avalanche-bulletins');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
 
   return (
     <div className={s.container}>
-      {/* <div>
-        <TableContainer>
-          <TableChakra variant="striped" colorScheme="orange">
-            <TableCaption placement="top">Komunikaty lawinowe</TableCaption>
-            <Thead>
-              <TrChakra>
-                <ThChakra isNumeric>Danger level</ThChakra>
-                <ThChakra>Until</ThChakra>
-                <ThChakra>Action</ThChakra>
-              </TrChakra>
-            </Thead>
-            <Tbody>
-              {data &&
-                data.data &&
-                data.data.map((bulletin) => (
-                  <TrChakra
-                    key={bulletin._id}
-                    onClick={() => handleSelectBulletin(bulletin)}
-                  >
-                    <TdChakra
-                      isNumeric
-                      backgroundColor={
-                        selectedBulletinId === bulletin._id
-                          ? 'orange.300 !important'
-                          : undefined
-                      }
-                    >
-                      {bulletin.danger}
-                    </TdChakra>
-                    <TdChakra
-                      backgroundColor={
-                        selectedBulletinId === bulletin._id
-                          ? 'orange.300 !important'
-                          : undefined
-                      }
-                    >
-                      {bulletin.until
-                        ? new Date(bulletin.until).toLocaleString()
-                        : 'N/A'}
-                    </TdChakra>
-                    <TdChakra
-                      backgroundColor={
-                        selectedBulletinId === bulletin._id
-                          ? 'orange.300 !important'
-                          : undefined
-                      }
-                    >
-                      <Button
-                        ml={1}
-                        size="sm"
-                        colorScheme={'red'}
-                        onClick={() => handleDeleteBulletin(bulletin._id)}
-                      >
-                        Delete
-                      </Button>
-                    </TdChakra>
-                  </TrChakra>
-                ))}
-            </Tbody>
-            <Tfoot>
-              <TrChakra>
-                <ThChakra colSpan={3}>
-                  {data && (
-                    <Pagination
-                      page={page}
-                      pageSize={data.pageSize}
-                      count={data.count}
-                      onPageClick={handlePageClick}
-                    />
-                  )}
-                </ThChakra>
-              </TrChakra>
-            </Tfoot>
-          </TableChakra>
-        </TableContainer>
-      </div> */}
-
       <div>
         <Table isLoading={isFetching}>
           <thead>
@@ -513,33 +494,6 @@ const Avalanches = () => {
         </Table>
       </div>
 
-      {/* <div>
-        {data && (
-          <ul>
-            {data.map((bulletin) => (
-              <li
-                key={bulletin._id}
-                onClick={() => handleSelectBulletin(bulletin)}
-              >
-                {`${bulletin._id} ${bulletin.danger} ${
-                  bulletin.until
-                    ? new Date(bulletin.until).toLocaleString()
-                    : 'N/A'
-                }`}
-
-                <Button
-                  ml={1}
-                  size="sm"
-                  colorScheme={'red'}
-                  onClick={() => handleDeleteBulletin(bulletin._id)}
-                >
-                  Delete
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div> */}
       <form onSubmit={handleAddBulletin} className={s.form}>
         <FormControl isRequired>
           <FormLabel>Danger level</FormLabel>

@@ -5,6 +5,7 @@ import {
   Input,
   Select,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
@@ -48,6 +49,7 @@ const Announcements = () => {
   );
   const [selectedAnnouncementId, setSelectedAnnouncementId] = useState('');
   const { page, handlePageClick } = usePagination();
+  const toast = useToast();
 
   const fetchAllAnnouncements = async (page: number) => {
     try {
@@ -258,6 +260,24 @@ const Announcements = () => {
       onSuccess: (data) => {
         console.log(data);
         console.log(data && data._id);
+        toast({
+          title: 'Dodano ogłoszenie!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries(['announcements-all', 1]);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -267,24 +287,41 @@ const Announcements = () => {
   const handleCloseAnnouncement = (id: string) => {
     announcementCloseMutation.mutate(id, {
       onSuccess: (data) => {
-        queryClient.setQueryData<Announcement[]>(
-          'announcements-all',
-          (announcements) => {
-            if (announcements) {
-              const announcement = announcements.find(
-                (announcement) => announcement._id === data._id,
-              );
-              if (announcement) {
-                announcement.isClosed = data.isClosed;
-              }
-              return announcements;
-            }
-            return [];
-          },
-          data,
-        );
-        queryClient.invalidateQueries('announcements');
+        // queryClient.setQueryData<Announcement[]>(
+        //   'announcements-all',
+        //   (announcements) => {
+        //     if (announcements) {
+        //       const announcement = announcements.find(
+        //         (announcement) => announcement._id === data._id,
+        //       );
+        //       if (announcement) {
+        //         announcement.isClosed = data.isClosed;
+        //       }
+        //       return announcements;
+        //     }
+        //     return [];
+        //   },
+        //   data,
+        // );
+        toast({
+          title: 'Zaktualizowano ogłoszenie!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('announcements-all');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -326,24 +363,41 @@ const Announcements = () => {
   const handleUpdateAnnouncement = () => {
     announcementUpdateMutation.mutate(selectedAnnouncementId, {
       onSuccess: (data) => {
-        queryClient.setQueryData<Announcement[]>(
-          'announcements-all',
-          (announcements) => {
-            if (announcements) {
-              const announcement = announcements.find(
-                (announcement) => announcement._id === data._id,
-              );
-              if (announcement) {
-                Object.assign(announcement, data);
-              }
-              return announcements;
-            }
-            return [];
-          },
-          data,
-        );
-        queryClient.invalidateQueries('announcements');
+        // queryClient.setQueryData<Announcement[]>(
+        //   'announcements-all',
+        //   (announcements) => {
+        //     if (announcements) {
+        //       const announcement = announcements.find(
+        //         (announcement) => announcement._id === data._id,
+        //       );
+        //       if (announcement) {
+        //         Object.assign(announcement, data);
+        //       }
+        //       return announcements;
+        //     }
+        //     return [];
+        //   },
+        //   data,
+        // );
+        toast({
+          title: 'Zaktualizowano ogłoszenie!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('announcements-all');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -351,20 +405,37 @@ const Announcements = () => {
   const handleDeleteAnnouncement = (id: string) => {
     announcementDeleteMutation.mutate(id, {
       onSuccess: (data) => {
-        queryClient.setQueryData<Announcement[]>(
-          'announcements-all',
-          (announcements) => {
-            if (announcements) {
-              return announcements.filter(
-                (announcement) => announcement._id !== id,
-              );
-            }
-            return [];
-          },
-          data,
-        );
-        queryClient.invalidateQueries('announcements');
+        // queryClient.setQueryData<Announcement[]>(
+        //   'announcements-all',
+        //   (announcements) => {
+        //     if (announcements) {
+        //       return announcements.filter(
+        //         (announcement) => announcement._id !== id,
+        //       );
+        //     }
+        //     return [];
+        //   },
+        //   data,
+        // );
+        toast({
+          title: 'Usunięto ogłoszenie!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('announcements-all');
         console.log(data);
+      },
+      onError: (error) => {
+        if (error instanceof Error) {
+          toast({
+            title: 'Wystąpił błąd!',
+            description: error.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
