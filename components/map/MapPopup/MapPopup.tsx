@@ -131,7 +131,7 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
         <div className={s.buttons__route}>
           <PopupButton
             icon={<FaHiking />}
-            label="Dodaj punkt początkowy"
+            label="Dodaj punkt początkowy (1)"
             onClick={() =>
               dispatch({
                 type: 'START_NODE',
@@ -144,7 +144,7 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
           />
           <PopupButton
             icon={<NodeIcon />}
-            label="Dodaj punkt pośredni"
+            label="Dodaj punkt pośredni (2)"
             onClick={() =>
               dispatch({
                 type: 'MIDDLE_NODE',
@@ -157,7 +157,7 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
           />
           <PopupButton
             icon={<MdLandscape />}
-            label="Dodaj punkt końcowy"
+            label="Dodaj punkt końcowy (3)"
             onClick={() =>
               dispatch({
                 type: 'END_NODE',
@@ -171,7 +171,7 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
         </div>
         <PopupButton
           icon={<FaCrosshairs />}
-          label="Wyśrodkuj kamerę"
+          label="Wyśrodkuj kamerę (C)"
           onClick={() => {
             const bounds = feature?.properties?.bounds
               ? JSON.parse(feature.properties.bounds)
