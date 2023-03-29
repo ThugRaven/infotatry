@@ -134,6 +134,9 @@ const MapPage = () => {
     try {
       console.log('fetch');
       console.log(query);
+      if (!query) {
+        return null;
+      }
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/route/${query}`,
@@ -327,8 +330,12 @@ const MapPage = () => {
     },
   });
 
-  const handleSearch = useCallback((searchForm: SearchForm) => {
+  const handleSearch = useCallback((searchForm: SearchForm | null) => {
     console.log('handleSearch');
+    if (!searchForm) {
+      return setQuery(null);
+    }
+
     let searchQuery = '';
     for (const key in searchForm) {
       const element = searchForm[key];

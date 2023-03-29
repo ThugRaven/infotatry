@@ -20,7 +20,7 @@ interface MapSidebarProps {
   isLoading: boolean;
   error: Error | null;
   data: any;
-  onSearch: (searchForm: SearchForm) => void;
+  onSearch: (searchForm: SearchForm | null) => void;
   onPlanHike: () => void;
   index: number;
   onSelectRoute: (index: number) => void;
@@ -62,6 +62,10 @@ const MapSidebar = ({
     onWidthChange(isDesktopSidebar ? ref.current.offsetWidth : 0);
   }, [onWidthChange, isDesktopSidebar]);
 
+  const handleClear = () => {
+    onSearch(null);
+  };
+
   return (
     <div
       className={classNames(
@@ -81,7 +85,11 @@ const MapSidebar = ({
         </button>
 
         <div className={s.content}>
-          <SearchRoute onSearch={onSearch} popupState={popupState} />
+          <SearchRoute
+            onSearch={onSearch}
+            onClear={handleClear}
+            popupState={popupState}
+          />
           {isLoading ? (
             <div className={s.spinner}>
               <Spinner thickness="5px" size="xl" color="black" />

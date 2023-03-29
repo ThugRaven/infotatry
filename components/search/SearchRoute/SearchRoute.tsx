@@ -1,4 +1,5 @@
 import NodeIcon from '@components/icons/NodeIcon';
+import { SearchForm } from '@components/map/MapSidebar/MapSidebar';
 import { useDebounce } from 'hooks/useDebounce';
 import { PopupState } from 'pages';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,12 +10,11 @@ import s from './SearchRoute.module.css';
 
 interface SearchRouteProps {
   onSearch: (searchForm: SearchForm) => void;
+  onClear: () => void;
   popupState: PopupState;
 }
 
-export type SearchForm = { [key: number]: string };
-
-const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
+const SearchRoute = ({ onSearch, onClear, popupState }: SearchRouteProps) => {
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
   const debouncedSearchForm = useDebounce<string[]>(searchForm, 1000);
 
@@ -122,6 +122,7 @@ const SearchRoute = ({ onSearch, popupState }: SearchRouteProps) => {
 
   const handleClearRoute = () => {
     setSearchForm(['', '']);
+    onClear();
   };
 
   return (
