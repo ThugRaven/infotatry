@@ -222,8 +222,8 @@ const MapPage = () => {
     error: currentWeatherError,
     data: currentWeatherData,
   } = useQuery<CurrentWeatherResponse, Error>(
-    ['current-weather', data && data[0].weatherSite],
-    () => fetchCurrentWeather(data && data[0].weatherSite),
+    ['current-weather', data && data[index].weatherSite],
+    () => fetchCurrentWeather(data && data[index].weatherSite),
     {
       enabled: Boolean(data),
       refetchOnWindowFocus: false,
@@ -273,8 +273,8 @@ const MapPage = () => {
     error: weatherForecastError,
     data: weatherForecastData,
   } = useQuery<any, Error>(
-    ['weather', data && data[0].weatherSite],
-    () => fetchWeatherForecast(data && data[0].weatherSite),
+    ['weather', data && data[index].weatherSite],
+    () => fetchWeatherForecast(data && data[index].weatherSite),
     {
       enabled: Boolean(isWeatherModalOpen),
       refetchOnWindowFocus: false,
