@@ -1,4 +1,6 @@
+import { useToast } from '@chakra-ui/react';
 import { AuthContext, AuthValue, User } from 'context/AuthContext';
+import { useRouter } from 'next/router';
 import { ReactNode, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -8,6 +10,9 @@ interface AuthProviderProps {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const toast = useToast();
+  const id = 'banned-toast';
 
   const fetchUser = async () => {
     try {
@@ -42,14 +47,42 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       onSuccess: (data) => {
         console.log('setUser');
         console.log(data);
+
         if (data.user) {
-          setUser({
-            id: data.user._id,
-            name: data.user.name,
-            email: data.user.email,
-            image: data.user.image,
-            roles: data.user.roles,
-          });
+          if (
+            data.user.ban.duration &&
+            data.user.ban.bannedAt &&
+            (new Date(data.user.ban.bannedAt).getTime() +
+              data.user.ban.duration >
+              Date.now() ||
+              data.user.ban.duration === -1)
+          ) {
+            setUser((state) => {
+              if (state !== null) {
+                if (!toast.isActive(id)) {
+                  toast({
+                    id,
+                    title: 'Wystąpił błąd!',
+                    description: 'Zostałeś zablokowany!',
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
+                router.push('/login');
+              }
+              return null;
+            });
+          } else {
+            setUser({
+              id: data.user._id,
+              name: data.user.name,
+              email: data.user.email,
+              image: data.user.image,
+              roles: data.user.roles,
+              ban: data.user.ban,
+            });
+          }
         } else {
           setUser(null);
         }

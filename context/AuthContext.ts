@@ -6,6 +6,13 @@ export type User = {
   email: string;
   image?: string;
   roles: string[];
+  ban: Ban;
+};
+
+export type Ban = {
+  duration: number | null;
+  bannedAt: Date | null;
+  reason?: string;
 };
 
 export type AuthValue = {

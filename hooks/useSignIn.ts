@@ -28,6 +28,17 @@ export const useSignIn = () => {
 
       const data = await response.json();
       if (!response.ok) {
+        if (data.message === 'User banned' && data.until) {
+          const until =
+            data.until === -1
+              ? 'permanentnie'
+              : `do dnia ${new Date(data.until).toLocaleString()}`;
+          throw new Error(
+            `Użytkownik zablokowany ${until}${
+              data.reason && `\nPowód: ${data.reason}`
+            }`,
+          );
+        }
         throw new Error(data.message || response.status.toString());
       }
 
@@ -37,7 +48,14 @@ export const useSignIn = () => {
       if (error instanceof Error) {
         toast({
           title: 'Wystąpił błąd!',
-          description: error.message,
+          description:
+            error.message === 'User not found'
+              ? 'Użytkownik nie znaleziony'
+              : error.message === 'Provider'
+              ? 'Użytkownik utworzony przy pomocy zewnętrznego dostawcy'
+              : error.message === 'Incorrect password'
+              ? 'Niepoprawne hasło'
+              : error.message,
           status: 'error',
           duration: 5000,
           isClosable: true,
