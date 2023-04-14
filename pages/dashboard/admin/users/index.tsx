@@ -1,5 +1,6 @@
 import {
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -16,7 +17,7 @@ import {
 import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
-import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
+import { PaginationResponse, getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminUsers.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -285,6 +286,10 @@ const Users = () => {
 
   const handleOpenModal = (id: string) => {
     setSelectedUserId(id);
+    setUserBanForm({
+      duration: 0,
+      reason: '',
+    });
     onOpen();
   };
 
@@ -483,16 +488,18 @@ const Users = () => {
                   <Td center>
                     {user.ban.duration &&
                     user.ban.bannedAt &&
-                    new Date(user.ban.bannedAt).getTime() + user.ban.duration >
-                      Date.now()
+                    (new Date(user.ban.bannedAt).getTime() + user.ban.duration >
+                      Date.now() ||
+                      user.ban.duration === -1)
                       ? 'Yes'
                       : 'No'}
                   </Td>
                   <Td center>
                     {user.ban.duration &&
                     user.ban.bannedAt &&
-                    new Date(user.ban.bannedAt).getTime() + user.ban.duration >
-                      Date.now() ? (
+                    (new Date(user.ban.bannedAt).getTime() + user.ban.duration >
+                      Date.now() ||
+                      user.ban.duration === -1) ? (
                       <Button ml={1} size="sm" onClick={handleUnbanUser}>
                         Unban user
                       </Button>
@@ -597,10 +604,111 @@ const Users = () => {
                   onChange={handleChangeBanForm}
                 />
               </FormControl>
+              <Flex gap={1} wrap={'wrap'}>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60,
+                    }));
+                  }}
+                >
+                  1 min
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 5,
+                    }));
+                  }}
+                >
+                  5 min
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 15,
+                    }));
+                  }}
+                >
+                  15 min
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 60,
+                    }));
+                  }}
+                >
+                  1 h
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 60 * 24,
+                    }));
+                  }}
+                >
+                  24 h
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 60 * 24 * 7,
+                    }));
+                  }}
+                >
+                  7 d
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 60 * 24 * 31,
+                    }));
+                  }}
+                >
+                  1 mo
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: 1000 * 1 * 60 * 60 * 24 * 365,
+                    }));
+                  }}
+                >
+                  1 yr
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setUserBanForm((state) => ({
+                      ...state,
+                      duration: -1,
+                    }));
+                  }}
+                >
+                  Perm
+                </Button>
+              </Flex>
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} type="submit">
+              <Button colorScheme="red" mr={3} type="submit">
                 Ban user
               </Button>
               <Button onClick={onClose}>Cancel</Button>
