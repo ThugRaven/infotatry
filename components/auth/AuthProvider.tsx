@@ -1,6 +1,6 @@
 import { useToast } from '@chakra-ui/react';
 import { AuthContext, AuthValue, User } from 'context/AuthContext';
-import { useRouter } from 'next/router';
+import { useSignOut } from 'hooks/useSignOut';
 import { ReactNode, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
@@ -10,9 +10,9 @@ interface AuthProviderProps {
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
   const toast = useToast();
   const id = 'banned-toast';
+  const handleSignOut = useSignOut('/login');
 
   const fetchUser = async () => {
     try {
@@ -58,18 +58,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               data.user.ban.duration === -1)
           ) {
             setUser((state) => {
-              if (state !== null) {
-                if (!toast.isActive(id)) {
-                  toast({
-                    id,
-                    title: 'Wystąpił błąd!',
-                    description: 'Zostałeś zablokowany!',
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true,
-                  });
-                }
-                router.push('/login');
+              if (state !== null && !toast.isActive(id)) {
+                toast({
+                  id,
+                  title: 'Wystąpił błąd!',
+                  description: 'Zostałeś zablokowany!',
+                  status: 'error',
+                  duration: 5000,
+                  isClosable: true,
+                });
+                handleSignOut();
               }
               return null;
             });
