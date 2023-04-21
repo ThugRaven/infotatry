@@ -66,7 +66,6 @@ const trailDrawWidthArray = TRAIL_DRAW_WIDTH_ARRAY.reduce((acc, value) =>
 export const trailsDrawLayer: LineLayer = {
   id: 'trails-draw-layer',
   type: 'line',
-  source: 'composite',
   filter: ['in', '1-1', ['get', 'offset']],
   paint: {
     'line-color': getColors('color'),
@@ -193,7 +192,6 @@ export const trailsDrawOffsetRightLocalLayer: LineLayer = {
 export const trailsClosedLayer: SymbolLayer = {
   id: 'trails-closed-layer',
   type: 'symbol',
-  source: 'composite',
   layout: {
     'icon-image': 'closed',
     'symbol-placement': 'line',
@@ -206,7 +204,6 @@ export const trailsClosedLayer: SymbolLayer = {
 export const trailsDirectionStartEndLayer: SymbolLayer = {
   id: 'trails-direction-start-end-layer',
   type: 'symbol',
-  source: 'composite',
   filter: ['in', 'start-end', ['get', 'direction']],
   minzoom: 12,
   layout: {
@@ -230,7 +227,6 @@ export const trailsDirectionEndStartLayer: SymbolLayer = {
 export const trailsDataLayer: LineLayer = {
   id: 'trails-data-layer',
   type: 'line',
-  source: 'composite',
   paint: {
     'line-width': ['interpolate', ['linear'], ['zoom'], 0, 2, 10, 10, 22, 15],
     'line-opacity': 0,
@@ -245,7 +241,6 @@ export const trailsDataLocalLayer: LineLayer = {
 export const nodesDrawLayer: SymbolLayer = {
   id: 'nodes-draw-layer',
   type: 'symbol',
-  source: 'composite',
   minzoom: 11,
   layout: {
     'icon-image': 'node',
@@ -296,7 +291,6 @@ export const nodesDrawLocalLayer: SymbolLayer = {
 export const trailNodesLayer: CircleLayer = {
   id: 'trail-nodes-layer',
   type: 'circle',
-  source: 'composite',
   paint: {
     'circle-radius': [
       'interpolate',
@@ -338,7 +332,6 @@ export const trailNodesSelectedLayer: CircleLayer = {
 export const routeLayer: LineLayer = {
   id: 'route-layer',
   type: 'line',
-  source: 'composite',
   layout: { 'line-cap': 'round' },
   paint: {
     'line-width': ['interpolate', ['linear'], ['zoom'], ...routeWidthArray],
@@ -352,7 +345,6 @@ export const routeLayer: LineLayer = {
 export const trailHighlightLayer: LineLayer = {
   id: 'trail-highlight-layer',
   type: 'line',
-  source: 'composite',
   layout: { 'line-cap': 'round' },
   paint: {
     'line-width': [
@@ -369,7 +361,6 @@ export const trailHighlightLayer: LineLayer = {
 export const nodeHighlightLayer: CircleLayer = {
   id: 'node-highlight-layer',
   type: 'circle',
-  source: 'composite',
   paint: {
     'circle-radius': [
       'interpolate',
