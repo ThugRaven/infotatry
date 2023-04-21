@@ -37,25 +37,24 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const { isLoading, refetch } = useQuery<any, Error>(
+  const { isLoading, refetch } = useQuery<User, Error>(
     ['user', user?.id],
     fetchUser,
     {
       refetchOnWindowFocus: false,
       retry: false,
       staleTime: 15 * 1000, // 15 seconds
-      onSuccess: (data) => {
+      onSuccess: (user) => {
         console.log('setUser');
-        console.log(data);
+        console.log(user);
 
-        if (data.user) {
+        if (user) {
           if (
-            data.user.ban.duration &&
-            data.user.ban.bannedAt &&
-            (new Date(data.user.ban.bannedAt).getTime() +
-              data.user.ban.duration >
+            user.ban.duration &&
+            user.ban.bannedAt &&
+            (new Date(user.ban.bannedAt).getTime() + user.ban.duration >
               Date.now() ||
-              data.user.ban.duration === -1)
+              user.ban.duration === -1)
           ) {
             setUser((state) => {
               if (state !== null && !toast.isActive(id)) {
@@ -73,12 +72,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             });
           } else {
             setUser({
-              id: data.user._id,
-              name: data.user.name,
-              email: data.user.email,
-              image: data.user.image,
-              roles: data.user.roles,
-              ban: data.user.ban,
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              roles: user.roles,
+              ban: user.ban,
+              stats: user.stats,
             });
           }
         } else {
@@ -89,7 +89,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   const authValue = useMemo<AuthValue>(() => {
-    console.log('useMemo update');
+    console.log('authValue update');
     return {
       user,
       status: isLoading
@@ -99,7 +99,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         : 'unauthenticated',
       refetch,
     };
-  }, [user, isLoading]);
+  }, [user, isLoading, refetch]);
 
   return (
     <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>

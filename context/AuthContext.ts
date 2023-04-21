@@ -7,12 +7,20 @@ export type User = {
   image?: string;
   roles: string[];
   ban: Ban;
+  stats: UserStats;
 };
 
 export type Ban = {
   duration: number | null;
   bannedAt: Date | null;
   reason?: string;
+};
+
+export type UserStats = {
+  time: number;
+  distance: number;
+  ascent: number;
+  descent: number;
 };
 
 export type AuthValue = {
