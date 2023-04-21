@@ -11,7 +11,7 @@ import Pagination from '@components/common/Pagination';
 import { Table, Td, Th, Tr } from '@components/common/Table';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
-import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
+import { PaginationResponse, getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAnnouncements.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -267,6 +267,7 @@ const Announcements = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries(['announcements-all', 1]);
+        queryClient.invalidateQueries('announcements');
       },
       onError: (error) => {
         if (error instanceof Error) {
@@ -310,6 +311,7 @@ const Announcements = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries('announcements-all');
+        queryClient.invalidateQueries('announcements');
         console.log(data);
       },
       onError: (error) => {
@@ -386,6 +388,7 @@ const Announcements = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries('announcements-all');
+        queryClient.invalidateQueries('announcements');
         console.log(data);
       },
       onError: (error) => {
@@ -424,6 +427,7 @@ const Announcements = () => {
           isClosable: true,
         });
         queryClient.invalidateQueries('announcements-all');
+        queryClient.invalidateQueries('announcements');
         console.log(data);
       },
       onError: (error) => {
