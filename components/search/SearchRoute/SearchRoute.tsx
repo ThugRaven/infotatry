@@ -12,9 +12,15 @@ interface SearchRouteProps {
   onSearch: (searchForm: SearchForm) => void;
   onClear: () => void;
   popupState: PopupState;
+  hasRoute: boolean;
 }
 
-const SearchRoute = ({ onSearch, onClear, popupState }: SearchRouteProps) => {
+const SearchRoute = ({
+  onSearch,
+  onClear,
+  popupState,
+  hasRoute,
+}: SearchRouteProps) => {
   const [searchForm, setSearchForm] = useState<string[]>(['', '']);
   const debouncedSearchForm = useDebounce<string[]>(searchForm, 1000);
 
@@ -214,7 +220,7 @@ const SearchRoute = ({ onSearch, onClear, popupState }: SearchRouteProps) => {
           <MdSwapVert className={s.search__icon} />
           <span>Odwróć trasę</span>
         </button>
-        {searchForm.some((value) => value !== '') && (
+        {(hasRoute || searchForm.some((value) => value !== '')) && (
           <button
             className={s.search__action}
             aria-label="Wyczyść"

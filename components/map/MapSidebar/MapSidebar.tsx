@@ -89,6 +89,7 @@ const MapSidebar = ({
             onSearch={onSearch}
             onClear={handleClear}
             popupState={popupState}
+            hasRoute={data && data.length > 0}
           />
           {isLoading ? (
             <div className={s.spinner}>
