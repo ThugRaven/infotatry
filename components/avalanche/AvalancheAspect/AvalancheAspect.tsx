@@ -45,7 +45,7 @@ const AvalancheAspect = ({ aspect }: AvalancheAspectProps) => {
         fill={'var(--clr-100)'}
         activeFill={'var(--clr-400)'}
         className={s.aspect}
-        aria-label={`Wystawy niekorzystne - ${aspect}`}
+        aria-label={`Wystawy niekorzystne - ${aspect ? aspect : 'Brak'}`}
       />
     </div>
   );
