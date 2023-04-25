@@ -6,6 +6,7 @@ import AvalancheWet1 from '@components/icons/AvalancheWet1';
 import AvalancheWet2 from '@components/icons/AvalancheWet2';
 import AvalancheWet3 from '@components/icons/AvalancheWet3';
 import AvalancheWet4_5 from '@components/icons/AvalancheWet4_5';
+import { getAvalancheLevelName } from '@lib/utils';
 import classNames from 'classnames';
 import s from './AvalancheIcon.module.css';
 
@@ -25,11 +26,20 @@ const AvalancheIcon = ({
   ...props
 }: AvalancheIconProps & React.HTMLAttributes<HTMLDivElement>) => {
   const _level = level && level >= 0 && level <= 5 ? level : null;
+  const levelText = getAvalancheLevelName(level);
+  const increaseText = increase ? '(wraz ze wzrostem temperatury)' : null;
+  const titleText =
+    _level && levelText
+      ? `${_level} - ${levelText} ${increaseText ?? ''}`.trim()
+      : '';
 
   return (
     <div className={classNames(s.avalanche, className)} {...props}>
       <span className={classNames(s.level, levelClassName)}>{_level}</span>
-      <div className={classNames(s.level__icon, levelIconClassName)}>
+      <div
+        title={titleText}
+        className={classNames(s.level__icon, levelIconClassName)}
+      >
         {_level === 1 ? (
           !increase ? (
             <AvalancheDry1 />
