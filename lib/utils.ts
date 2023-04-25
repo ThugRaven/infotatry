@@ -34,3 +34,19 @@ export const cardinalDirectionToBooleanArray = (direction: string) => {
       return [false, false, false, false, false, false, false, false];
   }
 };
+
+export const getAvalancheLevelName = (level: number | null) => {
+  const _level = level && level >= 0 && level <= 5 ? level : null;
+
+  return _level === 1
+    ? 'Niskie'
+    : _level === 2
+    ? 'Umiarkowane'
+    : _level === 3
+    ? 'Znaczne'
+    : _level === 4
+    ? 'Wysokie'
+    : _level === 5
+    ? 'Bardzo wysokie'
+    : null;
+};
