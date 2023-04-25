@@ -37,19 +37,21 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const { isLoading, refetch } = useQuery<User, Error>(
+  const { isLoading, refetch } = useQuery<{ user: User }, Error>(
     ['user', user?.id],
     fetchUser,
     {
       refetchOnWindowFocus: false,
       retry: false,
       staleTime: 15 * 1000, // 15 seconds
-      onSuccess: (user) => {
+      onSuccess: (data) => {
         console.log('setUser');
-        console.log(user);
+        console.log(data);
+        const user = data.user;
 
         if (user) {
           if (
+            user.ban &&
             user.ban.duration &&
             user.ban.bannedAt &&
             (new Date(user.ban.bannedAt).getTime() + user.ban.duration >
