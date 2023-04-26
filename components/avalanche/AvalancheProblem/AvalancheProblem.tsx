@@ -13,15 +13,25 @@ const AvalancheProblem = ({ problem }: AvalancheProblemProps) => {
   return (
     <>
       {problem === 'new' ? (
-        <AvalancheProblemNewSnow className={s.icon} />
+        <div title="Świeży śnieg">
+          <AvalancheProblemNewSnow className={s.icon} />
+        </div>
       ) : problem === 'wind' ? (
-        <AvalancheProblemWindSlab className={s.icon} />
+        <div title="Śnieg przewiany">
+          <AvalancheProblemWindSlab className={s.icon} />
+        </div>
       ) : problem === 'weak' ? (
-        <AvalancheProblemPersistentWeakLayer className={s.icon} />
+        <div title="Śnieg stary (słabe warstwy w starej pokrywie)">
+          <AvalancheProblemPersistentWeakLayer className={s.icon} />
+        </div>
       ) : problem === 'gliding' ? (
-        <AvalancheProblemGlidingSnow className={s.icon} />
+        <div title="Śnieg ślizgający się">
+          <AvalancheProblemGlidingSnow className={s.icon} />
+        </div>
       ) : problem === 'wet' ? (
-        <AvalancheProblemWetSnow className={s.icon} />
+        <div title="Śnieg mokry">
+          <AvalancheProblemWetSnow className={s.icon} />
+        </div>
       ) : null}
     </>
   );
