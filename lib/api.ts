@@ -5,11 +5,11 @@ import {
 } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 
-export type ApiResponse = {
+export type APIUserResponse = {
   message: string;
 };
 
-export type ApiRedirect = {
+export type APIRedirect = {
   redirect: {
     destination: string;
     permanent: boolean;
@@ -29,7 +29,7 @@ export const isAdmin = async (
   console.log(context.req.cookies);
 
   const authCookie = context.req.cookies['connect.sid'];
-  let response: ApiResponse | ApiRedirect | undefined;
+  let response: APIUserResponse | APIRedirect | undefined;
 
   try {
     const _response = await fetch(
@@ -88,7 +88,7 @@ export const isAuthenticated = async (
   console.log(context.req.cookies);
 
   const authCookie = context.req.cookies['connect.sid'];
-  let response: ApiResponse | ApiRedirect | undefined;
+  let response: APIUserResponse | APIRedirect | undefined;
 
   try {
     const _response = await fetch(
@@ -142,7 +142,7 @@ export const isAuthenticated = async (
 };
 
 export const getServerSidePropsIsAdmin: GetServerSideProps<
-  ApiResponse
+  APIUserResponse
 > = async (context) => {
   const response = await isAdmin(context);
 
@@ -156,7 +156,7 @@ export const getServerSidePropsIsAdmin: GetServerSideProps<
 };
 
 export const getServerSidePropsIsAuthenticated: GetServerSideProps<
-  ApiResponse
+  APIUserResponse
 > = async (context) => {
   const response = await isAuthenticated(context);
 
