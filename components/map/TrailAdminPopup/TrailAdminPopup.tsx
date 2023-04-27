@@ -1,6 +1,5 @@
 import { Search2Icon } from '@chakra-ui/icons';
 import { Button, ButtonGroup, IconButton } from '@chakra-ui/react';
-import { Trail } from 'pages/dashboard/admin/map';
 import { useMemo, useState } from 'react';
 import { Popup, PopupEvent } from 'react-map-gl';
 import s from './TrailAdminPopup.module.css';
@@ -8,7 +7,6 @@ import s from './TrailAdminPopup.module.css';
 interface TrailAdminPopupProps {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
-  trail: Trail;
   onClose: (e: PopupEvent) => void;
   onRemove: (id: number) => void;
   onChange: (id: number) => void;
@@ -18,7 +16,6 @@ interface TrailAdminPopupProps {
 const TrailAdminPopup = ({
   lngLat,
   features,
-  trail,
   onClose,
   onRemove,
   onChange,

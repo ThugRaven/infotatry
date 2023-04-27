@@ -17,12 +17,12 @@ export const useSignOut = (callbackUrl?: string) => {
         },
       );
 
+      const data = await response.json();
       if (!response.ok) {
-        // const data = await response.json();
         throw new Error(response.status.toString());
       }
 
-      return response.json();
+      return data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {

@@ -7,8 +7,7 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
-import Pagination from '@components/common/Pagination';
-import { Table, Td, Th, Tr } from '@components/common/Table';
+import { Pagination, Table, Td, Th, Tr } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { Announcement } from '@components/map/MapContainer/MapContainer';
 import { PaginationResponse, getServerSidePropsIsAdmin } from '@lib/api';
@@ -78,7 +77,7 @@ const Announcements = () => {
     }
   };
 
-  const { isLoading, error, data, isFetching } = useQuery<
+  const { data, isFetching } = useQuery<
     PaginationResponse<Announcement[]>,
     Error
   >(['announcements-all', page], () => fetchAllAnnouncements(page), {
@@ -288,22 +287,6 @@ const Announcements = () => {
   const handleCloseAnnouncement = (id: string) => {
     announcementCloseMutation.mutate(id, {
       onSuccess: (data) => {
-        // queryClient.setQueryData<Announcement[]>(
-        //   'announcements-all',
-        //   (announcements) => {
-        //     if (announcements) {
-        //       const announcement = announcements.find(
-        //         (announcement) => announcement._id === data._id,
-        //       );
-        //       if (announcement) {
-        //         announcement.isClosed = data.isClosed;
-        //       }
-        //       return announcements;
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
         toast({
           title: 'Zaktualizowano ogłoszenie!',
           status: 'success',
@@ -365,22 +348,6 @@ const Announcements = () => {
   const handleUpdateAnnouncement = () => {
     announcementUpdateMutation.mutate(selectedAnnouncementId, {
       onSuccess: (data) => {
-        // queryClient.setQueryData<Announcement[]>(
-        //   'announcements-all',
-        //   (announcements) => {
-        //     if (announcements) {
-        //       const announcement = announcements.find(
-        //         (announcement) => announcement._id === data._id,
-        //       );
-        //       if (announcement) {
-        //         Object.assign(announcement, data);
-        //       }
-        //       return announcements;
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
         toast({
           title: 'Zaktualizowano ogłoszenie!',
           status: 'success',
@@ -408,18 +375,6 @@ const Announcements = () => {
   const handleDeleteAnnouncement = (id: string) => {
     announcementDeleteMutation.mutate(id, {
       onSuccess: (data) => {
-        // queryClient.setQueryData<Announcement[]>(
-        //   'announcements-all',
-        //   (announcements) => {
-        //     if (announcements) {
-        //       return announcements.filter(
-        //         (announcement) => announcement._id !== id,
-        //       );
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
         toast({
           title: 'Usunięto ogłoszenie!',
           status: 'success',

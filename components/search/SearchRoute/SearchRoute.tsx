@@ -136,33 +136,19 @@ const SearchRoute = ({
       <div className={s.search}>
         <SearchInputTest
           icon={<FaHiking />}
-          searchResults={{ nodes: [], trails: [] }}
           placeholder="Punkt początkowy..."
           name="0"
           value={searchForm[0]}
           onChange={handleSearchChange}
-          onSearch={() => {
-            console.log('search');
-          }}
-          onClick={() => {
-            console.log('click');
-          }}
           onRemove={() => handleRemoveDestination(0)}
         />
 
         <SearchInputTest
           icon={searchForm.length <= 2 ? <MdLandscape /> : <NodeIcon />}
-          searchResults={{ nodes: [], trails: [] }}
           placeholder="Punkt docelowy..."
           name="1"
           value={searchForm[1]}
           onChange={handleSearchChange}
-          onSearch={() => {
-            console.log('search');
-          }}
-          onClick={() => {
-            console.log('click');
-          }}
           onRemove={() => handleRemoveDestination(1)}
         />
 
@@ -180,17 +166,10 @@ const SearchRoute = ({
                         <MdLandscape />
                       )
                     }
-                    searchResults={{ nodes: [], trails: [] }}
                     placeholder="Punkt docelowy..."
                     name={index.toString()}
                     value={searchForm[index]}
                     onChange={handleSearchChange}
-                    onSearch={() => {
-                      console.log('search');
-                    }}
-                    onClick={() => {
-                      console.log('click');
-                    }}
                     onRemove={() => handleRemoveDestination(index)}
                   />
                 );

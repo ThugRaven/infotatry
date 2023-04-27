@@ -27,7 +27,7 @@ const DashboardLayout = ({
   children,
 }: DashboardLayoutProps) => {
   const router = useRouter();
-  const { user, status: authStatus } = useAuth();
+  const { user } = useAuth();
 
   return (
     <MainLayout maxHeight={maxHeight}>

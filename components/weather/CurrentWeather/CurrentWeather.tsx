@@ -35,7 +35,6 @@ const CurrentWeather = ({
     <section className={s.container}>
       {!full && (
         <div className={s.location}>
-          {/* <MdOutlinePlace /> */}
           <span className={s.location__name}>{location}</span>
         </div>
       )}

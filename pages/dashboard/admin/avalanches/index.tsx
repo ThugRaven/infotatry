@@ -7,10 +7,9 @@ import {
   Select,
   useToast,
 } from '@chakra-ui/react';
-import Pagination from '@components/common/Pagination';
-import { Table, Td, Th, Tr } from '@components/common/Table';
+import { Pagination, Table, Td, Th, Tr } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import { getServerSidePropsIsAdmin, PaginationResponse } from '@lib/api';
+import { PaginationResponse, getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminAvalanches.module.css';
 import { usePagination } from 'hooks/usePagination';
 import React, { ReactElement, useState } from 'react';
@@ -119,7 +118,7 @@ const Avalanches = () => {
     }
   };
 
-  const { isLoading, error, data, isFetching } = useQuery<
+  const { data, isFetching } = useQuery<
     PaginationResponse<AvalancheBulletin[]>,
     Error
   >(['avalanche-bulletins', page], () => fetchAllAvalancheBulletins(page), {
@@ -354,26 +353,7 @@ const Avalanches = () => {
 
   const handleUpdateBulletin = () => {
     bulletinUpdateMutation.mutate(selectedBulletinId, {
-      onSuccess: (data, variables) => {
-        console.log(variables);
-        // queryClient.setQueryData<AvalancheBulletin[]>(
-        //   ['avalanche-bulletins', page],
-        //   (bulletins) => {
-        //     console.log(bulletins);
-
-        //     if (bulletins && bulletins.data) {
-        //       const bulletin = bulletins.data.find(
-        //         (bulletin) => bulletin._id === data._id,
-        //       );
-        //       if (bulletin) {
-        //         Object.assign(bulletin, data);
-        //       }
-        //       return bulletins;
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
+      onSuccess: (data) => {
         toast({
           title: 'Zaktualizowano komunikat lawinowy!',
           status: 'success',
@@ -399,18 +379,7 @@ const Avalanches = () => {
 
   const handleDeleteBulletin = (id: string) => {
     bulletinDeleteMutation.mutate(id, {
-      onSuccess: (data, variables) => {
-        console.log(variables);
-        // queryClient.setQueryData<AvalancheBulletin[]>(
-        //   ['avalanche-bulletins', variables],
-        //   (bulletins) => {
-        //     if (bulletins) {
-        //       return bulletins.filter((bulletin) => bulletin._id !== id);
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
+      onSuccess: (data) => {
         toast({
           title: 'Usunięto komunikat lawinowy!',
           status: 'success',

@@ -1,11 +1,11 @@
 import { TrailMarking } from '@components/common';
 import DistanceIcon from '@components/icons/DistanceIcon';
 import NodeIcon from '@components/icons/NodeIcon';
-import IconButton from '@components/ui/IconButton';
+import { IconButton } from '@components/ui';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import { useKeyboard } from 'hooks/useKeyboard';
 import { PopupAction } from 'pages';
-import { Dispatch, forwardRef, memo, ReactNode } from 'react';
+import { Dispatch, ReactNode, forwardRef, memo } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {
   MdClose,
@@ -280,11 +280,6 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
         >
           <MdClose />
         </IconButton>
-        {/* {features.length > 0 && features[0].properties ? (
-        <div className={s.container}>{features[0].properties.name}</div>
-      ) : (
-        <div>Brak informacji</div>
-      )} */}
       </Popup>
     );
   },

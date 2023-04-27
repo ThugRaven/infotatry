@@ -14,8 +14,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import Pagination from '@components/common/Pagination';
-import { Table, Td, Th, Tr } from '@components/common/Table';
+import { Pagination, Table, Td, Th, Tr } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
 import { PaginationResponse, getServerSidePropsIsAdmin } from '@lib/api';
 import s from '@styles/DashboardAdminUsers.module.css';
@@ -106,19 +105,20 @@ const Users = () => {
     }
   };
 
-  const { isLoading, error, data, isFetching } = useQuery<
-    PaginationResponse<UserFull[]>,
-    Error
-  >(['users', page], () => fetchUsers(page), {
-    refetchOnWindowFocus: false,
-    retry: false,
-    cacheTime: 15 * 60 * 1000, // 15 minutes
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    keepPreviousData: true,
-    onSuccess: (data) => {
-      console.log(data);
+  const { data, isFetching } = useQuery<PaginationResponse<UserFull[]>, Error>(
+    ['users', page],
+    () => fetchUsers(page),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      keepPreviousData: true,
+      onSuccess: (data) => {
+        console.log(data);
+      },
     },
-  });
+  );
 
   const handleChangeForm = (
     e:
@@ -244,43 +244,11 @@ const Users = () => {
     }
   };
 
-  // const deleteUser = async (id: string) => {
-  //   try {
-  //     if (!id) {
-  //       return null;
-  //     }
-
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
-  //       {
-  //         method: 'DELETE',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         credentials: 'include',
-  //       },
-  //     );
-
-  //     if (!response.ok) {
-  //       const data = await response.json();
-  //       throw new Error(data.message);
-  //     }
-
-  //     return response.json();
-  //   } catch (error) {
-  //     console.log(error);
-  //     if (error instanceof Error) {
-  //       throw new Error(error.message);
-  //     }
-  //     throw new Error(error as string);
-  //   }
-  // };
-
   const userBanMutation = useMutation((id: string) => banUser(id));
 
   const userUnbanMutation = useMutation((id: string) => unbanUser(id));
 
   const userUpdateMutation = useMutation((id: string) => updateUser(id));
-
-  // const userDeleteMutation = useMutation((id: string) => deleteUser(id));
 
   const queryClient = useQueryClient();
 
@@ -298,22 +266,6 @@ const Users = () => {
     userBanMutation.mutate(selectedUserId, {
       onSuccess: (data) => {
         onClose();
-        // queryClient.setQueryData<UserFull[]>(
-        //   'users',
-        //   (users) => {
-        //     if (users) {
-        //       const user = users.find(
-        //         (user) => user._id === data._id,
-        //       );
-        //       if (user) {
-        //         user.isClosed = data.isClosed;
-        //       }
-        //       return users;
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
         toast({
           title: 'Zablokowano użytkownika!',
           status: 'success',
@@ -387,22 +339,6 @@ const Users = () => {
 
     userUpdateMutation.mutate(selectedUserId, {
       onSuccess: (data) => {
-        // queryClient.setQueryData<UserFull[]>(
-        //   'announcements-all',
-        //   (announcements) => {
-        //     if (announcements) {
-        //       let announcement = announcements.find(
-        //         (announcement) => announcement._id === data._id,
-        //       );
-        //       if (announcement) {
-        //         Object.assign(announcement, data);
-        //       }
-        //       return announcements;
-        //     }
-        //     return [];
-        //   },
-        //   data,
-        // );
         console.log(data);
         toast({
           title: 'Zaktualizowano użytkownika!',
@@ -425,26 +361,6 @@ const Users = () => {
       },
     });
   };
-
-  // const handleDeleteUser = (id: string) => {
-  //   userDeleteMutation.mutate(id, {
-  //     onSuccess: (data) => {
-  //       // queryClient.setQueryData<UserFull[]>(
-  //       //   'announcements-all',
-  //       //   (announcements) => {
-  //       //     if (announcements) {
-  //       //       return announcements.filter(
-  //       //         (announcement) => announcement._id !== id,
-  //       //       );
-  //       //     }
-  //       //     return [];
-  //       //   },
-  //       //   data,
-  //       // );
-  //       console.log(data);
-  //     },
-  //   });
-  // };
 
   return (
     <div className={s.container}>
@@ -512,15 +428,6 @@ const Users = () => {
                         Ban user
                       </Button>
                     )}
-
-                    {/* <Button
-                      ml={1}
-                      size="sm"
-                      colorScheme={'red'}
-                      onClick={() => handleDeleteUser(user._id)}
-                    >
-                      Delete user
-                    </Button> */}
                   </Td>
                 </Tr>
               ))}
