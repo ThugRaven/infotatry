@@ -39,7 +39,7 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
 
   const handleClick = (type: 'node' | 'trail', id: number) => {
     if (type === 'node') {
-      let node = results.nodes.find((node) => node.id === id);
+      const node = results.nodes.find((node) => node.id === id);
 
       if (node) {
         onClick({
@@ -49,10 +49,10 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
         setIsOpen(false);
       }
     } else if (type === 'trail') {
-      let trail = results.trails.find((trail) => trail.id === id);
+      const trail = results.trails.find((trail) => trail.id === id);
 
       if (trail) {
-        let decoded = decode(trail.encoded);
+        const decoded = decode(trail.encoded);
         const bounds = new LngLat(decoded[0][1], decoded[0][0]).toBounds(0);
 
         decoded.forEach((node) => {
@@ -91,7 +91,9 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
   return (
     <div className={s.search__wrapper} ref={searchRef}>
       <InputGroup>
-        <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
+        <InputLeftElement pointerEvents="none">
+          <SearchIcon />
+        </InputLeftElement>
         <Input
           type="text"
           placeholder="Szukaj..."
@@ -105,6 +107,7 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
           {results.nodes.length > 0 &&
             results.nodes.map((node) => (
               <SearchResult
+                key={`node - ${node.id}`}
                 id={node.id}
                 name={node.name}
                 type="node"
@@ -115,11 +118,12 @@ const SearchInput = ({ results, onSearch, onClick }: SearchInputProps) => {
           {results.trails.length > 0 &&
             results.trails.map((trail) => {
               const markings = trail.color.map((color) => (
-                <TrailMarking color={color} size={'md'} />
+                <TrailMarking key={color} color={color} size={'md'} />
               ));
 
               return (
                 <SearchResult
+                  key={`trail - ${trail.id}`}
                   id={trail.id}
                   name={`${trail.name.start} - ${trail.name.end}`}
                   type="trail"
