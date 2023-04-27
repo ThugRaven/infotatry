@@ -1,4 +1,5 @@
-import { TrailColor } from 'pages/dashboard/admin/map';
+import classNames from 'classnames';
+import { TrailColor } from 'types/route-types';
 import s from './TrailMarking.module.css';
 
 interface TrailMarkingProps {
@@ -9,9 +10,11 @@ interface TrailMarkingProps {
 const TrailMarking = ({ color, size }: TrailMarkingProps) => {
   return (
     <div
-      className={`${s.marking} ${s[`marking--${color}`]} ${
-        s[`marking--${size}`]
-      }`}
+      className={classNames(
+        s.marking,
+        s[`marking--${color}`],
+        s[`marking--${size}`],
+      )}
     ></div>
   );
 };
