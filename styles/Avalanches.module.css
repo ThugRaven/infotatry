@@ -17,6 +17,7 @@
   width: min(1280px, 100%);
   gap: var(--space-4);
   padding: var(--space-4);
+  text-align: center;
   overflow-y: auto;
 }
 
@@ -211,7 +212,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: var(--space-2);
   overflow-x: auto;
+}
+
+@media screen and (min-width: 768px) {
+  .bulletins {
+    gap: var(--space-4);
+  }
 }
 
 .bulletins__list {
@@ -266,4 +274,11 @@
   .title {
     font-size: var(--fs-2xl);
   }
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-6);
 }
