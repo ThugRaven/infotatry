@@ -33,7 +33,7 @@ const ProfileDropdown = ({ onClick }: ProfileDropdownProps) => {
           {
             icon: <MdOutlineSettings />,
             name: 'Ustawienia',
-            path: '/settings',
+            path: '/dashboard/settings',
           },
         ].map(({ name, icon, path }) => (
           <li key={name}>
