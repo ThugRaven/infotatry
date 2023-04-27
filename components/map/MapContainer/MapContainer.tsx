@@ -48,6 +48,7 @@ import Map, {
   Source,
 } from 'react-map-gl';
 import { useQuery } from 'react-query';
+import { CompletedHike } from 'types/hikes-types';
 import features from '../../../public/features.json';
 import MapPopup from '../MapPopup';
 import MapStyles from '../MapStyles';
@@ -55,7 +56,7 @@ import s from './MapContainer.module.css';
 
 type MapContainerProps = {
   trailIds?: number[];
-  hike?: any;
+  hike?: CompletedHike;
   children?: React.ReactNode;
   padding?: number;
   isLoading?: boolean;
@@ -145,7 +146,6 @@ const MapContainer = ({
       setIsMapRefLoaded(true);
     }
   }, []);
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [cursor, setCursor] = useState('grab');
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
@@ -156,8 +156,6 @@ const MapContainer = ({
 
   const [trails, setTrails] = useState<Trail[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [selectedTrail, setSelectedTrail] = useState<Trail | null>(null);
   const [isMapRefLoaded, setIsMapRefLoaded] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
@@ -255,6 +253,13 @@ const MapContainer = ({
     const bounds = new LngLatBounds();
     console.log(trailIds, hike);
 
+    if (!isMapRefLoaded) {
+      return {
+        type: 'FeatureCollection',
+        features,
+      };
+    }
+
     if (trailIds) {
       trailIds?.forEach((id) => {
         const trail = trails.find((trail) => trail.id === id);
@@ -300,7 +305,7 @@ const MapContainer = ({
       type: 'FeatureCollection',
       features,
     };
-  }, [trailIds, hike, isMapRefLoaded]);
+  }, [trailIds, hike, trails, isMapRefLoaded]);
 
   const fetchAnnouncements = async () => {
     try {
@@ -328,19 +333,19 @@ const MapContainer = ({
     }
   };
 
-  const {
-    isLoading: isQueryLoading,
-    error,
-    data,
-  } = useQuery<Announcement[], Error>(['announcements'], fetchAnnouncements, {
-    refetchOnWindowFocus: false,
-    retry: false,
-    cacheTime: 15 * 60 * 1000, // 15 minutes
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    onSuccess: (data) => {
-      console.log(data);
+  const { data } = useQuery<Announcement[], Error>(
+    ['announcements'],
+    fetchAnnouncements,
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log(data);
+      },
     },
-  });
+  );
 
   const closedTrailsData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.LineString>[] = [];
@@ -428,12 +433,8 @@ const MapContainer = ({
         id="map"
         ref={mapInitializeRef}
         initialViewState={INITIAL_VIEW_STATE}
-        // {...viewState}
-        // onMove={(evt) => setViewState(evt.viewState)}
         maxPitch={85}
         reuseMaps
-        // mapStyle="mapbox://styles/mapbox/streets-v9"
-        // mapStyle="mapbox://styles/thugraven/cl7rzd4h3004914lfputsqkg9"
         mapStyle={
           style.type === 'DEFAULT'
             ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DEFAULT
@@ -452,9 +453,7 @@ const MapContainer = ({
         }}
         cursor={cursor}
         onClick={(e) => {
-          // console.log(mapRef.current?.getStyle().layers);
           const features = e.features;
-          // console.log(features);
 
           if (
             !mapRef.current ||
@@ -466,37 +465,21 @@ const MapContainer = ({
             return;
           }
 
-          let trail = selectedTrail;
           let lngLat = e.lngLat;
 
           if (
             features[0].properties &&
-            features[0].layer.id !== 'nodes-draw-layer'
-          ) {
-            const id = features[0].properties.id;
-            trail = trails.find((trail) => trail.id === id) ?? null;
-
-            setSelectedTrail(trail);
-            setSelectedNode(null);
-          } else if (
-            features[0].properties &&
             features[0].layer.id === 'nodes-draw-layer'
           ) {
-            const id = features[0].properties.id;
-            const node = nodes.find((node) => node.id === id) ?? null;
             lngLat = new LngLat(
               features[0].properties.lng,
               features[0].properties.lat,
             );
-
-            setSelectedTrail(null);
-            setSelectedNode(node);
           }
 
           const trailInfo = {
             lngLat,
             features,
-            trail,
           };
 
           console.log(trailInfo);
@@ -510,15 +493,6 @@ const MapContainer = ({
             return;
 
           setPopupInfo(trailInfo);
-
-          // mapRef.current.flyTo({
-          //   center: e.lngLat,
-          //   zoom: 12,
-          //   duration: 500,
-          // });
-        }}
-        onZoom={(e) => {
-          // console.log(e.viewState);
         }}
       >
         {(isLoading || !isMapRefLoaded) && (
