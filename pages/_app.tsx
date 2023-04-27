@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import '../styles/globals.css';
 import '../styles/reset.css';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   // eslint-disable-next-line no-unused-vars
   getLayout?: (page: ReactElement) => ReactNode;
