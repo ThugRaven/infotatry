@@ -1,10 +1,10 @@
-import { SEO } from '@components/common';
-import LoadingOverlay from '@components/common/LoadingOverlay';
-import Pagination from '@components/common/Pagination';
+import { LoadingOverlay, Pagination, SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import Button from '@components/ui/Button';
-import Card from '@components/ui/Card';
-import { getServerSidePropsIsAuthenticated } from '@lib/api';
+import { Button, Card } from '@components/ui';
+import {
+  PaginationResponse,
+  getServerSidePropsIsAuthenticated,
+} from '@lib/api';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Hikes.module.css';
 import classNames from 'classnames';
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { ReactElement, useEffect, useState } from 'react';
 import { MdTrendingDown, MdTrendingUp } from 'react-icons/md';
 import { useQuery } from 'react-query';
+import { CompletedHike, PlannedHike } from 'types/hikes-types';
 
 const dateTimeFormat = Intl.DateTimeFormat(undefined, {
   dateStyle: 'short',
@@ -96,14 +97,12 @@ const ListItem = ({
 export const getServerSideProps = getServerSidePropsIsAuthenticated;
 
 const Hikes = () => {
-  const { user, status } = useAuth();
+  const { user } = useAuth();
   const [hikesType, setHikesType] = useState<'planned' | 'completed'>(
     'planned',
   );
   const { page, handlePageClick } = usePagination();
   useEffect(() => {
-    console.log('type');
-
     handlePageClick(1);
   }, [hikesType, handlePageClick]);
 
@@ -157,47 +156,37 @@ const Hikes = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingPlannedHikes,
-    error: errorPlannedHikes,
-    data: plannedHikes,
-    isFetching: isFetchingPlannedHikes,
-  } = useQuery<any, Error>(
-    ['hikes-planned', user?.id, page],
-    () => fetchPlannedHikes(page),
-    {
-      enabled: hikesType === 'planned',
-      refetchOnWindowFocus: false,
-      retry: false,
-      cacheTime: 15 * 60 * 1000, // 15 minutes
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      keepPreviousData: true,
-      onSuccess: (data) => {
-        console.log(data);
-      },
+  const { data: plannedHikes, isFetching: isFetchingPlannedHikes } = useQuery<
+    PaginationResponse<PlannedHike[]>,
+    Error
+  >(['hikes-planned', user?.id, page], () => fetchPlannedHikes(page), {
+    enabled: hikesType === 'planned',
+    refetchOnWindowFocus: false,
+    retry: false,
+    cacheTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    keepPreviousData: true,
+    onSuccess: (data) => {
+      console.log(data);
     },
-  );
+  });
 
-  const {
-    isLoading: isLoadingCompletedHikes,
-    error: errorCompletedHikes,
-    data: completedHikes,
-    isFetching: isFetchingCompletedHikes,
-  } = useQuery<any, Error>(
-    ['hikes-completed', user?.id, page],
-    () => fetchCompletedHikes(page),
-    {
-      enabled: hikesType === 'completed',
-      refetchOnWindowFocus: false,
-      retry: false,
-      cacheTime: 15 * 60 * 1000, // 15 minutes
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      keepPreviousData: true,
-      onSuccess: (data) => {
-        console.log(data);
+  const { data: completedHikes, isFetching: isFetchingCompletedHikes } =
+    useQuery<PaginationResponse<CompletedHike[]>, Error>(
+      ['hikes-completed', user?.id, page],
+      () => fetchCompletedHikes(page),
+      {
+        enabled: hikesType === 'completed',
+        refetchOnWindowFocus: false,
+        retry: false,
+        cacheTime: 15 * 60 * 1000, // 15 minutes
+        staleTime: 10 * 60 * 1000, // 10 minutes
+        keepPreviousData: true,
+        onSuccess: (data) => {
+          console.log(data);
+        },
       },
-    },
-  );
+    );
 
   return (
     <>

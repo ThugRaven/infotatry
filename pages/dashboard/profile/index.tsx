@@ -1,8 +1,7 @@
 import { Avatar } from '@chakra-ui/react';
-import { SEO } from '@components/common';
-import LoadingOverlay from '@components/common/LoadingOverlay';
+import { LoadingOverlay, SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import Card from '@components/ui/Card';
+import { Card } from '@components/ui';
 import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import s from '@styles/Profile.module.css';
 import classNames from 'classnames';
@@ -10,6 +9,7 @@ import { useAuth } from 'hooks/useAuth';
 import Link from 'next/link';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
+import { CompletedHike, PlannedHike } from 'types/hikes-types';
 
 const dateTimeFormat = Intl.DateTimeFormat(undefined, {
   dateStyle: 'short',
@@ -73,11 +73,13 @@ const Profile = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingLastHikes,
-    error: errorLastHikes,
-    data: lastHikes,
-  } = useQuery<any, Error>(['hikes-last', user?.id], fetchLastHikes, {
+  const { isLoading: isLoadingLastHikes, data: lastHikes } = useQuery<
+    {
+      plannedHikes: PlannedHike[];
+      completedHikes: CompletedHike[];
+    },
+    Error
+  >(['hikes-last', user?.id], fetchLastHikes, {
     enabled: true,
     refetchOnWindowFocus: false,
     retry: false,
@@ -100,7 +102,7 @@ const Profile = () => {
             <div className={s.hikes}>
               {isLoadingLastHikes && <LoadingOverlay />}
               <Card cardTitle={'Zaplanowane'} className={s.card}>
-                {lastHikes?.plannedHikes?.length > 0 && (
+                {lastHikes && lastHikes.plannedHikes?.length > 0 && (
                   <ul className={s.hikes__list}>
                     {lastHikes.plannedHikes.map((hike) => (
                       <ListItem
@@ -115,7 +117,7 @@ const Profile = () => {
                 )}
               </Card>
               <Card cardTitle={'Przebyte'} className={s.card}>
-                {lastHikes?.completedHikes?.length > 0 && (
+                {lastHikes && lastHikes.completedHikes?.length > 0 && (
                   <ul className={s.hikes__list}>
                     {lastHikes.completedHikes.map((hike) => (
                       <ListItem

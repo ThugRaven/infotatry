@@ -1,11 +1,10 @@
 import { useToast } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import { Input } from '@components/ui';
-import Button from '@components/ui/Button';
-import Card from '@components/ui/Card';
+import { Button, Card, Input } from '@components/ui';
 import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import s from '@styles/Settings.module.css';
+import { User } from 'context/AuthContext';
 import { useAuth } from 'hooks/useAuth';
 import { useSignOut } from 'hooks/useSignOut';
 import { ReactElement, useState } from 'react';
@@ -43,21 +42,21 @@ const Settings = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingUser,
-    error: errorUser,
-    data: userData,
-  } = useQuery<any, Error>(['user', user?.id], fetchUser, {
-    enabled: true,
-    refetchOnWindowFocus: false,
-    retry: false,
-    onSuccess: (data) => {
-      console.log(data);
-      if (data && data.user) {
-        setName(data.user.name);
-      }
+  const { data: userData } = useQuery<{ user: User }, Error>(
+    ['user', user?.id],
+    fetchUser,
+    {
+      enabled: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (data) => {
+        console.log(data);
+        if (data && data.user) {
+          setName(data.user.name);
+        }
+      },
     },
-  });
+  );
 
   const editUser = async (name: string) => {
     try {

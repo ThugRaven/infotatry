@@ -1,15 +1,15 @@
 import { Spinner, useMediaQuery } from '@chakra-ui/react';
-import AvalancheInfo from '@components/avalanche/AvalancheInfo';
-import ErrorText from '@components/common/ErrorText';
-import RouteResult from '@components/route/RouteResult';
-import RouteSegments from '@components/route/RouteSegments';
+import { AvalancheInfo } from '@components/avalanche';
+import { ErrorText } from '@components/common';
+import { RouteResult, RouteSegments } from '@components/route';
 import { SearchRoute } from '@components/search';
-import Button from '@components/ui/Button';
-import CurrentWeather from '@components/weather/CurrentWeather';
+import { Button } from '@components/ui';
+import { CurrentWeather } from '@components/weather';
 import classNames from 'classnames';
 import { PopupState } from 'pages';
 import { memo, useEffect, useRef } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
+import { Route } from 'types/route-types';
 import { CurrentWeatherResponse } from 'types/weather-types';
 import s from './MapSidebar.module.css';
 
@@ -19,7 +19,7 @@ interface MapSidebarProps {
   onWidthChange: (width: number) => void;
   isLoading: boolean;
   error: Error | null;
-  data: any;
+  data?: Route[];
   onSearch: (searchForm: SearchForm | null) => void;
   onPlanHike: () => void;
   index: number;
@@ -89,7 +89,7 @@ const MapSidebar = ({
             onSearch={onSearch}
             onClear={handleClear}
             popupState={popupState}
-            hasRoute={data && data.length > 0}
+            hasRoute={(data && data.length > 0) || false}
           />
           {isLoading ? (
             <div className={s.spinner}>
@@ -99,35 +99,36 @@ const MapSidebar = ({
             <ErrorText>Nie znaleziono trasy</ErrorText>
           ) : error ? (
             <ErrorText>Wystąpił błąd</ErrorText>
-          ) : data && data.length > 0 ? (
-            <>
-              <ul>
-                {data.map((route: any, idx: number) => (
-                  <RouteResult
-                    key={idx}
-                    index={idx}
-                    active={index === idx}
-                    type={route.type}
-                    distance={route.distance}
-                    time={route.time}
-                    ascent={route.ascent}
-                    descent={route.descent}
-                    segments={route.segments}
-                    onClick={() => onSelectRoute(idx)}
-                  />
-                ))}
-              </ul>
-              <Button className={s['plan-btn']} onClick={onPlanHike}>
-                Zaplanuj wędrówkę
-              </Button>
-              <CurrentWeather
-                location={data[index].weatherSite}
-                weather={currentWeather}
-                onWeatherModalOpen={onWeatherModalOpen}
-              />
-            </>
           ) : (
-            data && data.message
+            data &&
+            data.length > 0 && (
+              <>
+                <ul>
+                  {data.map((route: Route, idx: number) => (
+                    <RouteResult
+                      key={idx}
+                      index={idx}
+                      active={index === idx}
+                      type={route.type}
+                      distance={route.distance}
+                      time={route.time}
+                      ascent={route.ascent}
+                      descent={route.descent}
+                      segments={route.segments}
+                      onClick={() => onSelectRoute(idx)}
+                    />
+                  ))}
+                </ul>
+                <Button className={s['plan-btn']} onClick={onPlanHike}>
+                  Zaplanuj wędrówkę
+                </Button>
+                <CurrentWeather
+                  location={data[index].weatherSite}
+                  weather={currentWeather}
+                  onWeatherModalOpen={onWeatherModalOpen}
+                />
+              </>
+            )
           )}
 
           <AvalancheInfo level={dangerLevel} increase={increase} />

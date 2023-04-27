@@ -1,10 +1,11 @@
 import { SEO } from '@components/common';
 import { DashboardLayout } from '@components/layouts';
-import Card from '@components/ui/Card';
+import { Card } from '@components/ui';
 import { getServerSidePropsIsAuthenticated } from '@lib/api';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/Stats.module.css';
 import classNames from 'classnames';
+import { User } from 'context/AuthContext';
 import { useAuth } from 'hooks/useAuth';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
@@ -12,7 +13,7 @@ import { useQuery } from 'react-query';
 export const getServerSideProps = getServerSidePropsIsAuthenticated;
 
 const Stats = () => {
-  const { user, status } = useAuth();
+  const { user } = useAuth();
 
   const fetchUser = async () => {
     try {
@@ -36,18 +37,18 @@ const Stats = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingUser,
-    error: errorUser,
-    data: userData,
-  } = useQuery<any, Error>(['user', user?.id], fetchUser, {
-    enabled: true,
-    refetchOnWindowFocus: false,
-    retry: false,
-    onSuccess: (data) => {
-      console.log(data);
+  const { data: userData } = useQuery<{ user: User }, Error>(
+    ['user', user?.id],
+    fetchUser,
+    {
+      enabled: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (data) => {
+        console.log(data);
+      },
     },
-  });
+  );
 
   return (
     <>

@@ -2,23 +2,23 @@ import { useDisclosure } from '@chakra-ui/react';
 import { SEO } from '@components/common';
 import { MainLayout } from '@components/layouts';
 import { MapContainer } from '@components/map';
-import RouteSegments from '@components/route/RouteSegments';
-import Button from '@components/ui/Button';
-import WeatherModal from '@components/weather/WeatherModal';
+import { RouteSegments } from '@components/route';
+import { Button } from '@components/ui';
+import { WeatherModal } from '@components/weather';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import s from '@styles/CompletedHike.module.css';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 import { ReactElement, useState } from 'react';
 import { useQuery } from 'react-query';
+import { CompletedHike } from 'types/hikes-types';
 import {
   CurrentWeatherResponse,
   WeatherForecastResponse,
 } from 'types/weather-types';
 
-export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
-  context,
-) => {
+export const getServerSideProps: GetServerSideProps<{
+  hike: CompletedHike;
+}> = async (context) => {
   const { id } = context.query;
 
   console.log(id);
@@ -78,9 +78,7 @@ export const getServerSideProps: GetServerSideProps<{ hike: any }> = async (
   };
 };
 
-const CompletedHike = ({ hike }: any) => {
-  const router = useRouter();
-  const { id } = router.query;
+const CompletedHikePage = ({ hike }: { hike: CompletedHike }) => {
   const [hoveredNode, setHoveredNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -122,11 +120,7 @@ const CompletedHike = ({ hike }: any) => {
     }
   };
 
-  const {
-    isLoading: isLoadingCurrentWeather,
-    error: currentWeatherError,
-    data: currentWeatherData,
-  } = useQuery<CurrentWeatherResponse, Error>(
+  const { data: currentWeatherData } = useQuery<CurrentWeatherResponse, Error>(
     ['current-weather', hike && hike.weatherSite],
     () => fetchCurrentWeather(hike && hike.weatherSite),
     {
@@ -170,11 +164,10 @@ const CompletedHike = ({ hike }: any) => {
     }
   };
 
-  const {
-    isLoading: isLoadingWeatherForecast,
-    error: weatherForecastError,
-    data: weatherForecastData,
-  } = useQuery<WeatherForecastResponse, Error>(
+  const { data: weatherForecastData } = useQuery<
+    WeatherForecastResponse,
+    Error
+  >(
     ['weather', hike && hike.weatherSite],
     () => fetchWeatherForecast(hike && hike.weatherSite),
     {
@@ -250,8 +243,7 @@ const CompletedHike = ({ hike }: any) => {
         </section>
         <section className={s.map}>
           <MapContainer
-            trailIds={hike && hike.encoded != '' ? hike.trails : null}
-            hike={hike && hike.encoded == '' ? null : hike}
+            hike={hike}
             hoveredNode={hoveredNode}
             hoveredTrail={hoveredTrail}
           />
@@ -270,8 +262,8 @@ const CompletedHike = ({ hike }: any) => {
   );
 };
 
-CompletedHike.getLayout = function getLayout(page: ReactElement) {
+CompletedHikePage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout maxHeight={true}>{page}</MainLayout>;
 };
 
-export default CompletedHike;
+export default CompletedHikePage;
