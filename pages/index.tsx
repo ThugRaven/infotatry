@@ -9,38 +9,28 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { MainLayout } from '@components/layouts';
 import { MapContainer, MapSidebar } from '@components/map';
 import { SearchForm } from '@components/map/MapSidebar/MapSidebar';
-import { TrailSegment } from '@components/route/RouteSegments/RouteSegments';
-import Button from '@components/ui/Button';
-import WeatherModal from '@components/weather/WeatherModal';
+import { Button } from '@components/ui';
+import { WeatherModal } from '@components/weather';
 import s from '@styles/MapPage.module.css';
 import { useRouter } from 'next/router';
 import { ReactElement, useCallback, useReducer, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { CurrentWeatherResponse } from 'types/weather-types';
+import { Route } from 'types/route-types';
+import {
+  CurrentWeatherResponse,
+  WeatherForecastResponse,
+} from 'types/weather-types';
+import { Avalanche } from './avalanches';
 
 interface HikeArgs {
   query: SearchForm | null;
   date: number;
 }
-
-export type Route = {
-  name: {
-    start: string;
-    end: string;
-  };
-  trails: number[];
-  segments?: TrailSegment[];
-  distance: number;
-  time: number;
-  ascent: number;
-  descent: number;
-  type: 'normal' | 'closed' | 'shortest';
-  weatherSite: string;
-};
 
 export interface PopupState {
   type: 'start' | 'mid' | 'end' | 'camera';
@@ -105,6 +95,7 @@ const MapPage = () => {
     name: null,
   });
   const router = useRouter();
+  const toast = useToast();
   const [hoveredNode, setHoveredNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
 
@@ -217,11 +208,7 @@ const MapPage = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingCurrentWeather,
-    error: currentWeatherError,
-    data: currentWeatherData,
-  } = useQuery<CurrentWeatherResponse, Error>(
+  const { data: currentWeatherData } = useQuery<CurrentWeatherResponse, Error>(
     ['current-weather', data && data[index].weatherSite],
     () => fetchCurrentWeather(data && data[index].weatherSite),
     {
@@ -268,11 +255,10 @@ const MapPage = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingWeatherForecast,
-    error: weatherForecastError,
-    data: weatherForecastData,
-  } = useQuery<any, Error>(
+  const { data: weatherForecastData } = useQuery<
+    WeatherForecastResponse,
+    Error
+  >(
     ['weather', data && data[index].weatherSite],
     () => fetchWeatherForecast(data && data[index].weatherSite),
     {
@@ -316,19 +302,19 @@ const MapPage = () => {
     }
   };
 
-  const {
-    isLoading: isLoadingAvalanches,
-    error: avalanchesError,
-    data: avalanchesData,
-  } = useQuery<any, Error>(['avalanches-last'], () => fetchAvalanches(), {
-    refetchOnWindowFocus: false,
-    cacheTime: 15 * 60 * 1000, // 15 minutes
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    onSuccess: (data) => {
-      console.log('onSuccess avalanche bulletin');
-      console.log(data);
+  const { data: avalanchesData } = useQuery<Avalanche[], Error>(
+    ['avalanches-last'],
+    () => fetchAvalanches(),
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: 15 * 60 * 1000, // 15 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      onSuccess: (data) => {
+        console.log('onSuccess avalanche bulletin');
+        console.log(data);
+      },
     },
-  });
+  );
 
   const handleSearch = useCallback((searchForm: SearchForm | null) => {
     console.log('handleSearch');
@@ -395,6 +381,19 @@ const MapPage = () => {
           if (data) {
             setIsOpen(false);
             router.push(`/hikes/planned/${data._id}`);
+          }
+        },
+        onError: (error) => {
+          if (error instanceof Error) {
+            if (error.message === 'Unauthorized') {
+              toast({
+                title: 'Wystąpił błąd!',
+                description: 'Aby zaplanować wędrówkę należy być zalogowanym!',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              });
+            }
           }
         },
       },
