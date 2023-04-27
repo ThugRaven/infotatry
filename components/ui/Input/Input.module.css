@@ -1,9 +1,9 @@
 .input {
   width: 100%;
-  padding: 0.25rem 0.5rem;
+  padding: var(--space-1) var(--space-2);
   color: var(--text-primary-dark);
   background-color: inherit;
-  border-radius: 0.5rem;
+  border-radius: var(--br-base);
   border: 1px solid var(--clr-400);
   outline: 0;
   transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;

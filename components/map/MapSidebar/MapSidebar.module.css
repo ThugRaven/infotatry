@@ -35,13 +35,13 @@
 
 .container {
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   transition: transform 250ms ease-in-out;
   z-index: 10;
   pointer-events: all;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 }
 
 @media screen and (min-width: 768px) {

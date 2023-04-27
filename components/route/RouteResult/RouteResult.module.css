@@ -54,8 +54,8 @@
 }
 
 .icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--icon-24dp);
+  height: var(--icon-24dp);
   fill: var(--clr-900);
 }
 
@@ -94,11 +94,6 @@
 .route__message--closed {
   color: var(--clr-red);
   fill: var(--clr-red);
-}
-
-.result__icon {
-  display: flex;
-  gap: 0.25rem;
 }
 
 .trails {

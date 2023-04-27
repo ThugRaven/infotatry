@@ -32,12 +32,12 @@
 }
 
 .search__icon > svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--icon-20dp);
+  height: var(--icon-20dp);
   fill: var(--clr-900);
 }
 
 .search__remove {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-32dp);
+  height: var(--icon-32dp);
 }

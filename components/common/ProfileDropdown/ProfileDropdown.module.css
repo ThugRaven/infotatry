@@ -36,8 +36,8 @@
 }
 
 .icon > svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--icon-24dp);
+  height: var(--icon-24dp);
 }
 
 .divider {

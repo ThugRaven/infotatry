@@ -4,9 +4,7 @@
 }
 
 .spinner {
-  --margin: 2rem;
-
   position: absolute;
-  right: var(--margin);
-  bottom: var(--margin);
+  right: var(--space-8);
+  bottom: var(--space-8);
 }

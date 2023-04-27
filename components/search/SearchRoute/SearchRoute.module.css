@@ -36,10 +36,10 @@
 }
 
 .search__icon {
-  width: 2rem;
-  height: 2rem;
+  width: var(--icon-32dp);
+  height: var(--icon-32dp);
   margin: 0 var(--space-6);
-  padding: 0.25rem;
+  padding: var(--space-1);
   background-color: transparent;
   fill: var(--clr-900);
   border-radius: 9999px;

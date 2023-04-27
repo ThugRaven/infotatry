@@ -3,7 +3,7 @@
   left: 50%;
   bottom: 0;
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   margin-bottom: 1.5rem;
   transform: translateX(-50%);
 }
@@ -12,17 +12,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  border-radius: 4px;
+  padding: var(--space-4);
+  border-radius: var(--br-base);
   color: var(--clr-50);
-  background-color: hsl(0, 0%, 13%);
+  background-color: var(--clr-800);
   transition: background-color 250ms ease-in-out;
 }
 
 .button:hover {
-  background-color: hsl(0, 0%, 23%);
+  background-color: var(--clr-700);
 }
 
 .button:active {
-  background-color: hsl(0, 0%, 33%);
+  background-color: var(--clr-600);
 }

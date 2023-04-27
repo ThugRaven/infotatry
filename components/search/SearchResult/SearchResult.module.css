@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 0.75em 0.5em;
+  padding: var(--space-3) var(--space-2);
   cursor: pointer;
 }
 
@@ -13,5 +13,5 @@
 
 .result__icon {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--space-1);
 }

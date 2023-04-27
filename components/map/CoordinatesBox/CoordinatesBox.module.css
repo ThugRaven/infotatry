@@ -2,9 +2,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  margin: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 4px;
+  margin: var(--space-2);
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--br-base);
   color: var(--text-primary-dark);
   background-color: var(--clr-50);
   z-index: 10;

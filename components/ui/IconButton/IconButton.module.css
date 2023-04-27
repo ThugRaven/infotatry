@@ -7,8 +7,8 @@
 
 .button--normal {
   height: 2.5rem;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  padding: var(--space-2);
+  border-radius: var(--br-base);
   background-color: var(--clr-800);
 }
 
@@ -28,9 +28,9 @@
 }
 
 .button--action {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.25rem;
+  width: var(--icon-32dp);
+  height: var(--icon-32dp);
+  padding: var(--space-1);
   border-radius: 9999px;
   background-color: transparent;
 }
