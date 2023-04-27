@@ -7,8 +7,7 @@ import {
   DrawerOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
-import { IconButton } from '@components/ui';
-import Button from '@components/ui/Button';
+import { Button, IconButton } from '@components/ui';
 import classNames from 'classnames';
 import { User } from 'context/AuthContext';
 import { useSignOut } from 'hooks/useSignOut';

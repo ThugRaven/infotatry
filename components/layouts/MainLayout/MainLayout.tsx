@@ -1,4 +1,4 @@
-import Header from '@components/common/Header';
+import { Header } from '@components/common';
 import classNames from 'classnames';
 import { useAuth } from 'hooks/useAuth';
 import { ReactNode } from 'react';

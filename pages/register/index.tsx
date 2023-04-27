@@ -1,8 +1,7 @@
 import { useToast } from '@chakra-ui/react';
-import Logo from '@components/common/Logo';
-import GridLayout from '@components/layouts/GridLayout';
-import { Input } from '@components/ui';
-import Button from '@components/ui/Button';
+import { Logo } from '@components/common';
+import { GridLayout } from '@components/layouts';
+import { Button, Input } from '@components/ui';
 import s from '@styles/Register.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -64,11 +63,9 @@ const Register = () => {
     try {
       e.preventDefault();
 
-      const nameSchema = z
-        .string()
-        .min(3, {
-          message: 'Nazwa użytkownika musi mieć co najmniej 3 znaki!',
-        });
+      const nameSchema = z.string().min(3, {
+        message: 'Nazwa użytkownika musi mieć co najmniej 3 znaki!',
+      });
       const emailSchema = z
         .string()
         .email({ message: 'Niepoprawny adres email!' });

@@ -1,8 +1,7 @@
 import { useToast } from '@chakra-ui/react';
-import Logo from '@components/common/Logo';
-import GridLayout from '@components/layouts/GridLayout';
-import { Input } from '@components/ui';
-import Button from '@components/ui/Button';
+import { Logo } from '@components/common';
+import { GridLayout } from '@components/layouts';
+import { Button, Input } from '@components/ui';
 import s from '@styles/Login.module.css';
 import { useSignIn } from 'hooks/useSignIn';
 import Image from 'next/image';
