@@ -36,9 +36,11 @@ export const cardinalDirectionToBooleanArray = (direction: string) => {
 };
 
 export const getAvalancheLevelName = (level: number | null) => {
-  const _level = level && level >= 0 && level <= 5 ? level : null;
+  const _level = level != null && level >= 0 && level <= 5 ? level : null;
 
-  return _level === 1
+  return _level === 0
+    ? 'Brak zagrożenia lawinowego'
+    : _level === 1
     ? 'Niskie'
     : _level === 2
     ? 'Umiarkowane'

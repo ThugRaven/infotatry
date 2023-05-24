@@ -57,8 +57,14 @@ const AvalancheInfoItemStats = ({
   return (
     <li>
       <AvalancheIcon level={level} increase={increase} />
-      <AvalancheProblem problem={problem} />
-      <AvalancheAspect aspect={aspect} />
+      {level === 0 ? (
+        'Brak zagrożenia lawinowego'
+      ) : (
+        <>
+          <AvalancheProblem problem={problem} />
+          <AvalancheAspect aspect={aspect} />
+        </>
+      )}
     </li>
   );
 };
@@ -90,7 +96,7 @@ const AvalancheInfoItem = ({
       ? '#fe9800'
       : level === 4 || level === 5
       ? '#fe0000'
-      : '#000000';
+      : '#ffffff';
   };
 
   return (
