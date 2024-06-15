@@ -47,6 +47,7 @@ import {
   trailsDrawOffset3in3OutlineLayer,
   trailsDrawOutlineLayer,
 } from '@config/layer-styles';
+import Graph from '@lib/Graph';
 import { getServerSidePropsIsAdmin } from '@lib/api';
 import {
   createLineString,
@@ -55,7 +56,6 @@ import {
   encode,
   swapCoordinates,
 } from '@lib/geo-utils';
-import Graph from '@lib/Graph';
 import s from '@styles/DashboardAdminMap.module.css';
 import distance from '@turf/distance';
 import { INITIAL_VIEW_STATE } from 'constants/constants';
@@ -71,7 +71,14 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import Map, { Layer, MapRef, NavigationControl, Source } from 'react-map-gl';
+import Map, {
+  Layer,
+  MapRef,
+  NavigationControl,
+  Source,
+  ViewStateChangeEvent,
+} from 'react-map-gl';
+import { TrailColor } from 'types/route-types';
 import features from '../../../../public/features.json';
 
 interface PopupInfo {
@@ -79,8 +86,6 @@ interface PopupInfo {
   features: mapboxgl.MapboxGeoJSONFeature[];
   trail: Trail | null;
 }
-
-export type TrailColor = 'red' | 'blue' | 'green' | 'yellow' | 'black';
 
 export type Trail = {
   id: number;
@@ -101,7 +106,6 @@ export type Trail = {
   };
   elevation_profile: number[];
   direction: string;
-  // bounds: [[number, number], [number, number]];
   bounds: number[][];
 };
 
@@ -337,7 +341,7 @@ const DashboardAdminMap = () => {
       type: 'FeatureCollection',
       features,
     };
-  }, [selectedTrail]);
+  }, [selectedTrail, trails]);
 
   const trailNodesSelectedData: GeoJSON.FeatureCollection = useMemo(() => {
     const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
@@ -1475,7 +1479,10 @@ const DashboardAdminMap = () => {
     );
   };
 
-  // const handleMove = useCallback((evt) => setViewState(evt.viewState), []);
+  const handleMove = useCallback(
+    (e: ViewStateChangeEvent) => setViewState(e.viewState),
+    [],
+  );
 
   const handleComputeTrailBounds = () => {
     if (!selectedTrail) {
@@ -1575,7 +1582,7 @@ const DashboardAdminMap = () => {
             ref={mapRef}
             initialViewState={INITIAL_VIEW_STATE}
             // {...viewState}
-            // onMove={handleMove}
+            onMove={handleMove}
             maxPitch={60}
             reuseMaps
             // mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -1644,15 +1651,6 @@ const DashboardAdminMap = () => {
                 return;
 
               setPopupInfo(trailInfo);
-
-              // mapRef.current.flyTo({
-              //   center: e.lngLat,
-              //   zoom: 12,
-              //   duration: 500,
-              // });
-            }}
-            onZoom={(e) => {
-              // console.log(e.viewState);
             }}
           >
             <Source
@@ -1684,7 +1682,6 @@ const DashboardAdminMap = () => {
                   <TrailAdminPopup
                     lngLat={popupInfo.lngLat}
                     features={popupInfo.features}
-                    trail={popupInfo.trail}
                     key={popupInfo.trail.name.start + popupInfo.trail.name.end}
                     onClose={() => {
                       setPopupInfo(null);
