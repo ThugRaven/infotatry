@@ -43,13 +43,13 @@ export interface WeatherForecastResponse {
     dt_txt: string;
   }[];
   city: {
-    id: number;
-    name: string;
+    id?: number;
+    name?: string;
     coord: {
       lat: number;
       lon: number;
     };
-    country: string;
+    country?: string;
     population: number;
     timezone: number;
     sunrise: number;
@@ -105,7 +105,7 @@ export interface CurrentWeatherResponse {
     sunset: number;
   };
   timezone: number;
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
   cod: number;
 }
