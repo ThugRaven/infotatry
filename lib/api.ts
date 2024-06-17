@@ -85,7 +85,6 @@ export const isAdmin = async (
 export const isAuthenticated = async (
   context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
 ) => {
-  console.log(context.req);
   console.log(context.req.cookies);
 
   const authCookie = context.req.cookies['connect.sid'];
@@ -159,7 +158,11 @@ export const getServerSidePropsIsAdmin: GetServerSideProps<
 export const getServerSidePropsIsAuthenticated: GetServerSideProps<
   APIUserResponse
 > = async (context) => {
+  console.log('cookies: ');
+  console.log(context.req.cookies);
+
   const response = await isAuthenticated(context);
+  console.log(response);
 
   if ('redirect' in response) {
     return response;
