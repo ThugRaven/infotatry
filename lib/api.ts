@@ -85,6 +85,7 @@ export const isAdmin = async (
 export const isAuthenticated = async (
   context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
 ) => {
+  console.log(context.req);
   console.log(context.req.cookies);
 
   const authCookie = context.req.cookies['connect.sid'];
