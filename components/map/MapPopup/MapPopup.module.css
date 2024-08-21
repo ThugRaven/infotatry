@@ -98,3 +98,12 @@
 .button:active {
   background-color: var(--clr-400);
 }
+
+.closed {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-base);
+  color: var(--clr-red);
+  fill: var(--clr-red);
+}

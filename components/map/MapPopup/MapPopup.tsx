@@ -9,6 +9,7 @@ import { Dispatch, ReactNode, forwardRef, memo } from 'react';
 import { FaCrosshairs, FaHiking } from 'react-icons/fa';
 import {
   MdClose,
+  MdErrorOutline,
   MdLandscape,
   MdOutlinePlace,
   MdSchedule,
@@ -19,6 +20,7 @@ import s from './MapPopup.module.css';
 interface MapPopupProps {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
+  isClosed: boolean;
   onClose: () => void;
   dispatch?: Dispatch<PopupAction>;
 }
@@ -54,7 +56,7 @@ const PopupButton = ({
 };
 
 const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
-  function MapPopup({ lngLat, features, onClose, dispatch }, ref) {
+  function MapPopup({ lngLat, features, isClosed, onClose, dispatch }, ref) {
     const divRef =
       ref && typeof ref !== 'function' && ref.current ? ref.current : null;
 
@@ -268,6 +270,12 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
           <div className={s.popup}>
             <h3 className={s.feature__name}>{feature.properties.name}</h3>
             {type === 'trail' ? trailInfo : nodeInfo}
+            {isClosed && (
+              <div className={s.closed}>
+                <MdErrorOutline />
+                <span>Zamknięty szlak</span>
+              </div>
+            )}
             {buttons}
           </div>
         ) : null}

@@ -70,6 +70,7 @@ type MapContainerProps = {
 interface PopupInfo {
   lngLat: mapboxgl.LngLat;
   features: mapboxgl.MapboxGeoJSONFeature[];
+  isClosed: boolean;
 }
 
 export type Announcement = {
@@ -483,9 +484,18 @@ const MapContainer = ({
             );
           }
 
+          const isClosed =
+            features[0].layer.id === 'trails-data-layer' &&
+            closedTrailsData.features.find(
+              (trail) => trail.properties?.id === features[0].properties?.id,
+            )
+              ? true
+              : false;
+
           const trailInfo = {
             lngLat,
             features,
+            isClosed,
           };
 
           console.log(trailInfo);
@@ -514,6 +524,7 @@ const MapContainer = ({
           <MapPopup
             lngLat={popupInfo.lngLat}
             features={popupInfo.features}
+            isClosed={popupInfo.isClosed}
             onClose={handleClosePopup}
             dispatch={popupDispatch}
             ref={ref}
