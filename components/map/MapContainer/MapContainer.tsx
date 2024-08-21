@@ -418,12 +418,18 @@ const MapContainer = ({
     }
   }, [bounds]);
 
-  useKeyboard(['Z', 'X'], ref.current, [
+  useKeyboard(['Z', 'X', ' '], ref.current, [
     () => {
       mapRef.current?.zoomIn({ duration: 150 });
     },
     () => {
       mapRef.current?.zoomOut({ duration: 150 });
+    },
+    () => {
+      mapRef.current?.flyTo({
+        center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
+        zoom: INITIAL_VIEW_STATE.zoom,
+      });
     },
   ]);
 
