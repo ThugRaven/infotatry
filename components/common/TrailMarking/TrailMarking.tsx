@@ -8,6 +8,30 @@ interface TrailMarkingProps {
 }
 
 const TrailMarking = ({ color, size }: TrailMarkingProps) => {
+  let colorTitle = '';
+  switch (color) {
+    case 'red': {
+      colorTitle = 'czerwony';
+      break;
+    }
+    case 'blue': {
+      colorTitle = 'niebieski';
+      break;
+    }
+    case 'yellow': {
+      colorTitle = 'żółty';
+      break;
+    }
+    case 'green': {
+      colorTitle = 'zielony';
+      break;
+    }
+    case 'black': {
+      colorTitle = 'czarny';
+      break;
+    }
+  }
+
   return (
     <div
       className={classNames(
@@ -15,6 +39,7 @@ const TrailMarking = ({ color, size }: TrailMarkingProps) => {
         s[`marking--${color}`],
         s[`marking--${size}`],
       )}
+      title={`Szlak ${colorTitle}`}
     ></div>
   );
 };
