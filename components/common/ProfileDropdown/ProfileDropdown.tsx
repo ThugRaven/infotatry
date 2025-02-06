@@ -37,11 +37,9 @@ const ProfileDropdown = ({ onClick }: ProfileDropdownProps) => {
           },
         ].map(({ name, icon, path }) => (
           <li key={name}>
-            <Link href={path}>
-              <a className={s.list__item} onClick={onClick}>
-                <div className={s.icon}>{icon}</div>
-                {name}
-              </a>
+            <Link href={path} className={s.list__item} onClick={onClick}>
+              <div className={s.icon}>{icon}</div>
+              {name}
             </Link>
           </li>
         ))}

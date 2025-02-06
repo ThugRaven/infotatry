@@ -76,8 +76,8 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
                 {navRoutes.map((route) => {
                   return (
                     <li key={route.name}>
-                      <Link href={route.path}>
-                        <a className={s.route__item}>{route.name}</a>
+                      <Link href={route.path} className={s.route__item}>
+                        {route.name}
                       </Link>
                     </li>
                   );
@@ -87,11 +87,9 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
 
             {user && isLoggedIn ? (
               <div className={classNames(s.profile, s['profile--mobile'])}>
-                <Link href={'/dashboard/profile'}>
-                  <a className={s.profile__btn}>
-                    <Avatar name={user.name} src={user.image} />
-                    <span className={s.profile__name}>Moje konto</span>
-                  </a>
+                <Link href={'/dashboard/profile'} className={s.profile__btn}>
+                  <Avatar name={user.name} src={user.image} />
+                  <span className={s.profile__name}>Moje konto</span>
                 </Link>
                 <button className={s.logout} onClick={handleSignOut}>
                   <div className={s.icon}>
@@ -117,18 +115,16 @@ const Header = ({ navRoutes, user, isLoggedIn = false }: HeaderProps) => {
         </DrawerContent>
       </Drawer>
       <div className={s.wrapper}>
-        <Link href={'/'}>
-          <a className={s.logo}>
-            <Logo textClassName={s.logo__text} />
-          </a>
+        <Link href={'/'} className={s.logo}>
+          <Logo textClassName={s.logo__text} />
         </Link>
         <nav className={s.nav}>
           <ul className={s.nav__routes}>
             {navRoutes.map((route) => {
               return (
                 <li key={route.name}>
-                  <Link href={route.path}>
-                    <a className={s.route__item}>{route.name}</a>
+                  <Link href={route.path} className={s.route__item}>
+                    {route.name}
                   </Link>
                 </li>
               );

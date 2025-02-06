@@ -29,15 +29,13 @@ const ListItem = ({
 }) => {
   return (
     <li>
-      <Link href={path}>
-        <a className={s.item}>
-          <div className={s.item__date}>
-            {dateTimeFormat.format(new Date(date))}
-          </div>
-          <div>
-            {nameStart} - {nameEnd}
-          </div>
-        </a>
+      <Link href={path} className={s.item}>
+        <div className={s.item__date}>
+          {dateTimeFormat.format(new Date(date))}
+        </div>
+        <div>
+          {nameStart} - {nameEnd}
+        </div>
       </Link>
     </li>
   );

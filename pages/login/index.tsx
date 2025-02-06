@@ -36,10 +36,8 @@ const Login = () => {
     <>
       <div className={s.container}>
         <form onSubmit={handleLogin} className={s.login__form}>
-          <Link href={'/'}>
-            <a className={s.logo}>
-              <Logo />
-            </a>
+          <Link href={'/'} className={s.logo}>
+            <Logo />
           </Link>
           <span className={s.action}>Zaloguj się</span>
           <Input
@@ -67,8 +65,8 @@ const Login = () => {
           </a>
           <span className={s.register}>
             Nie masz konta?{' '}
-            <Link href={'/register'}>
-              <a className={s.register__link}>Zarejestruj się</a>
+            <Link href={'/register'} className={s.register__link}>
+              Zarejestruj się
             </Link>
           </span>
         </form>

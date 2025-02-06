@@ -62,16 +62,15 @@ const DashboardLayout = ({
               },
             ].map(({ name, icon, path }) => (
               <li key={name}>
-                <Link href={path}>
-                  <a
-                    className={classNames(s.list__item, {
-                      [s['list__item--active']]: path === router.pathname,
-                    })}
-                  >
-                    <div className={s.icon}>{icon}</div>
-                    <span className={s.item__text}>{name}</span>
-                    <span className={s.item__tooltip}>{name}</span>
-                  </a>
+                <Link
+                  href={path}
+                  className={classNames(s.list__item, {
+                    [s['list__item--active']]: path === router.pathname,
+                  })}
+                >
+                  <div className={s.icon}>{icon}</div>
+                  <span className={s.item__text}>{name}</span>
+                  <span className={s.item__tooltip}>{name}</span>
                 </Link>
               </li>
             ))}
@@ -107,16 +106,15 @@ const DashboardLayout = ({
                   },
                 ].map(({ name, icon, path }) => (
                   <li key={name}>
-                    <Link href={path}>
-                      <a
-                        className={classNames(s.list__item, {
-                          [s['list__item--active']]: path === router.pathname,
-                        })}
-                      >
-                        <div className={s.icon}>{icon}</div>
-                        <span className={s.item__text}>{name}</span>
-                        <span className={s.item__tooltip}>{name}</span>
-                      </a>
+                    <Link
+                      href={path}
+                      className={classNames(s.list__item, {
+                        [s['list__item--active']]: path === router.pathname,
+                      })}
+                    >
+                      <div className={s.icon}>{icon}</div>
+                      <span className={s.item__text}>{name}</span>
+                      <span className={s.item__tooltip}>{name}</span>
                     </Link>
                   </li>
                 ))}

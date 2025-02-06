@@ -48,11 +48,9 @@ const DashboardAdmin = () => {
             },
           ].map(({ name, icon, path }) => (
             <li key={name}>
-              <Link href={path}>
-                <a className={s.list__item}>
-                  <div className={s.icon}>{icon}</div>
-                  {name}
-                </a>
+              <Link href={path} className={s.list__item}>
+                <div className={s.icon}>{icon}</div>
+                {name}
               </Link>
             </li>
           ))}

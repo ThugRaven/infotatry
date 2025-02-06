@@ -44,51 +44,49 @@ const ListItem = ({
 }) => {
   return (
     <li>
-      <Link href={path}>
-        <a className={s.item}>
-          <div className={s.item__date}>
-            {dateTimeFormat.format(new Date(date))}
-          </div>
-          <div>
-            {nameStart} - {nameEnd}
-          </div>
-          {type === 'completed' && time && distance && ascent && descent && (
-            <div className={s.stats}>
-              <span className={s.value} title={`${time} min.`}>
-                {formatMinutesToHours(time)}
-                <span className={s.unit}>h</span>
+      <Link href={path} className={s.item}>
+        <div className={s.item__date}>
+          {dateTimeFormat.format(new Date(date))}
+        </div>
+        <div>
+          {nameStart} - {nameEnd}
+        </div>
+        {type === 'completed' && time && distance && ascent && descent && (
+          <div className={s.stats}>
+            <span className={s.value} title={`${time} min.`}>
+              {formatMinutesToHours(time)}
+              <span className={s.unit}>h</span>
+            </span>
+            <span className={s.value} title={`${distance} m`}>
+              {formatMetersToKm(distance)}
+              <span className={s.unit}>km</span>
+            </span>
+            <div
+              className={classNames(
+                s.stats__elevation,
+                s['stats__elevation--ascent'],
+              )}
+            >
+              <MdTrendingUp className={s.icon} />
+              <span className={s.value}>
+                {ascent}
+                <span className={s.unit}>m</span>
               </span>
-              <span className={s.value} title={`${distance} m`}>
-                {formatMetersToKm(distance)}
-                <span className={s.unit}>km</span>
-              </span>
-              <div
-                className={classNames(
-                  s.stats__elevation,
-                  s['stats__elevation--ascent'],
-                )}
-              >
-                <MdTrendingUp className={s.icon} />
-                <span className={s.value}>
-                  {ascent}
-                  <span className={s.unit}>m</span>
-                </span>
-              </div>
-              <div
-                className={classNames(
-                  s.stats__elevation,
-                  s['stats__elevation--descent'],
-                )}
-              >
-                <MdTrendingDown className={s.icon} />
-                <span className={s.value}>
-                  {descent}
-                  <span className={s.unit}>m</span>
-                </span>
-              </div>
             </div>
-          )}
-        </a>
+            <div
+              className={classNames(
+                s.stats__elevation,
+                s['stats__elevation--descent'],
+              )}
+            >
+              <MdTrendingDown className={s.icon} />
+              <span className={s.value}>
+                {descent}
+                <span className={s.unit}>m</span>
+              </span>
+            </div>
+          </div>
+        )}
       </Link>
     </li>
   );

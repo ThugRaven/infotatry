@@ -103,10 +103,8 @@ const Register = () => {
     <>
       <div className={s.container}>
         <form onSubmit={handleRegister} className={s.login__form}>
-          <Link href={'/'}>
-            <a className={s.logo}>
-              <Logo />
-            </a>
+          <Link href={'/'} className={s.logo}>
+            <Logo />
           </Link>
           <span className={s.action}>Zarejestruj się</span>
           <Input
@@ -141,8 +139,8 @@ const Register = () => {
           </a>
           <span className={s.register}>
             Masz konto?{' '}
-            <Link href={'/login'}>
-              <a className={s.register__link}>Zaloguj się</a>
+            <Link href={'/login'} className={s.register__link}>
+              Zaloguj się
             </Link>
           </span>
         </form>
