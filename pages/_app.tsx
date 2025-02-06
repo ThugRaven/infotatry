@@ -7,6 +7,7 @@ import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { Analytics } from '@vercel/analytics/next';
 import '../styles/globals.css';
 import '../styles/reset.css';
 
@@ -41,6 +42,7 @@ export default function MyApp({
         <AuthProvider>
           <ChakraProvider>
             {getLayout(<Component {...pageProps} />)}
+            <Analytics />
           </ChakraProvider>
         </AuthProvider>
         <ReactQueryDevtools />
