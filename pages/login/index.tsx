@@ -76,8 +76,7 @@ const Login = () => {
           className={s.image}
           src={image_1}
           alt="Polana Strążyska"
-          layout="fill"
-          objectFit="cover"
+          fill
           sizes="(max-width: 1024px) 100vw,
           50vw"
           placeholder="blur"

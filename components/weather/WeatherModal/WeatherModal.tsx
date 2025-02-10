@@ -107,7 +107,6 @@ const WeatherModal = ({
                           className={s.icon}
                           src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
                           alt={data.weather[0].main}
-                          layout={'fixed'}
                           width={100}
                           height={100}
                         />
@@ -151,7 +150,6 @@ const WeatherModal = ({
                         className={s.icon}
                         src={`https://openweathermap.org/img/wn/${selectedItem.weather[0].icon}@2x.png`}
                         alt={selectedItem.weather[0].main}
-                        layout={'fixed'}
                         width={100}
                         height={100}
                       />

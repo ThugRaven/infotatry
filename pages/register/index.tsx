@@ -150,8 +150,7 @@ const Register = () => {
           className={s.image}
           src={image_2}
           alt="Giewont"
-          layout="fill"
-          objectFit="cover"
+          fill
           sizes="(max-width: 1024px) 100vw,
               50vw"
           placeholder="blur"
