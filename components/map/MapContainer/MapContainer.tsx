@@ -402,7 +402,7 @@ const MapContainer = ({
       padding: mapPadding,
       duration: 250,
     });
-  }, [padding]);
+  }, [padding, isMapRefLoaded]);
 
   const handleClosePopup = useCallback(() => {
     setPopupInfo(null);
