@@ -16,10 +16,10 @@ const SearchResult = ({ id, name, type, icon, onClick }: SearchResultProps) => {
 
   return (
     <li key={`${type}-${id}`}>
-      <a className={s.search__result} onClick={handleClick}>
+      <span className={s.search__result} onClick={handleClick}>
         <div className={s.result__icon}>{icon}</div>
         <span>{name}</span>
-      </a>
+      </span>
     </li>
   );
 };
