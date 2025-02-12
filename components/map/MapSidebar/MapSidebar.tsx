@@ -1,7 +1,7 @@
 import { Spinner, useMediaQuery } from '@chakra-ui/react';
 import { AvalancheInfo } from '@components/avalanche';
 import { ErrorText } from '@components/common';
-import { RouteResult, RouteSegments } from '@components/route';
+import { RouteResult } from '@components/route';
 import { SearchRoute } from '@components/search';
 import { Button } from '@components/ui';
 import { CurrentWeather } from '@components/weather';
@@ -12,6 +12,7 @@ import { MdChevronLeft } from 'react-icons/md';
 import { Route } from 'types/route-types';
 import { CurrentWeatherResponse } from 'types/weather-types';
 import s from './MapSidebar.module.css';
+import RouteSegmentsNew from '@components/route/RouteSegmentsNew';
 
 interface MapSidebarProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ interface MapSidebarProps {
   currentWeather?: CurrentWeatherResponse;
   onWeatherModalOpen: () => void;
   onHover: (id: number, type: 'node' | 'trail') => void;
+  onSelectSegment: (id: number, type: 'node' | 'trail') => void;
   className?: string;
 }
 
@@ -52,6 +54,7 @@ const MapSidebar = ({
   currentWeather,
   onWeatherModalOpen,
   onHover,
+  onSelectSegment,
   className,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -132,9 +135,10 @@ const MapSidebar = ({
           )}
 
           <AvalancheInfo level={dangerLevel} increase={increase} />
-          <RouteSegments
+          <RouteSegmentsNew
             segments={(data && data[index].segments) ?? []}
             onHover={onHover}
+            onSelectSegment={onSelectSegment}
           />
         </div>
       </div>

@@ -358,8 +358,51 @@ export const trailHighlightLayer: LineLayer = {
   },
 };
 
+export const trailSelectedLayer: LineLayer = {
+  id: 'trail-selected-layer',
+  type: 'line',
+  layout: { 'line-cap': 'round' },
+  paint: {
+    'line-width': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      ...trailHighlightWidthArray,
+    ],
+    // 'line-color': '#0081cc',
+    'line-color': '#f9a743',
+  },
+};
+
 export const nodeHighlightLayer: CircleLayer = {
   id: 'node-highlight-layer',
+  type: 'circle',
+  paint: {
+    'circle-radius': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      4,
+      22,
+      8,
+    ],
+    'circle-color': '#f9a743',
+    'circle-stroke-color': '#ffffff',
+    'circle-stroke-width': [
+      'interpolate',
+      ['exponential', 1.3],
+      ['zoom'],
+      0,
+      1.5,
+      22,
+      3,
+    ],
+  },
+};
+
+export const nodeSelectedLayer: CircleLayer = {
+  id: 'node-selected-layer',
   type: 'circle',
   paint: {
     'circle-radius': [

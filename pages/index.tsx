@@ -97,7 +97,9 @@ const MapPage = () => {
   const router = useRouter();
   const toast = useToast();
   const [hoveredNode, setHoveredNode] = useState(-1);
+  const [selectedNode, setSelectedNode] = useState(-1);
   const [hoveredTrail, setHoveredTrail] = useState(-1);
+  const [selectedTrail, setSelectedTrail] = useState(-1);
 
   const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -413,6 +415,19 @@ const MapPage = () => {
     }
   }, []);
 
+  const handleSelectSegment = useCallback(
+    (id: number, type: 'node' | 'trail') => {
+      if (type === 'node') {
+        setSelectedNode(id);
+        setSelectedTrail(-1);
+      } else {
+        setSelectedNode(-1);
+        setSelectedTrail(id);
+      }
+    },
+    [],
+  );
+
   return (
     <>
       <div className={s.container}>
@@ -422,7 +437,9 @@ const MapPage = () => {
             trailIds={data && data[index].trails}
             popupDispatch={dispatch}
             hoveredNode={hoveredNode}
+            selectedNode={selectedNode}
             hoveredTrail={hoveredTrail}
+            selectedTrail={selectedTrail}
             bounds={state.bounds}
           />
         </div>
@@ -443,6 +460,7 @@ const MapPage = () => {
           currentWeather={currentWeatherData}
           onWeatherModalOpen={onWeatherModalOpen}
           onHover={handleHover}
+          onSelectSegment={handleSelectSegment}
           className={s.sidebar}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>

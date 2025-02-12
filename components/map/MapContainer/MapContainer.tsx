@@ -2,6 +2,7 @@ import { Spinner } from '@chakra-ui/react';
 import {
   nodeHighlightLayer,
   nodesDrawLayer,
+  nodeSelectedLayer,
   routeLayer,
   trailHighlightLayer,
   trailsClosedLayer,
@@ -18,6 +19,7 @@ import {
   trailsDrawOffset3in3Layer,
   trailsDrawOffset3in3OutlineLayer,
   trailsDrawOutlineLayer,
+  trailSelectedLayer,
 } from '@config/layer-styles';
 import {
   createLineString,
@@ -63,7 +65,9 @@ type MapContainerProps = {
   popup?: boolean;
   popupDispatch?: Dispatch<PopupAction>;
   hoveredNode?: number;
+  selectedNode?: number;
   hoveredTrail?: number;
+  selectedTrail?: number;
   bounds?: [[number, number], [number, number]];
 };
 
@@ -133,7 +137,9 @@ const MapContainer = ({
   popup = true,
   popupDispatch,
   hoveredNode,
+  selectedNode,
   hoveredTrail,
+  selectedTrail,
   bounds,
 }: MapContainerProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -419,6 +425,31 @@ const MapContainer = ({
     }
   }, [bounds]);
 
+  useEffect(() => {
+    const trail = trails.find((trail) => trail.id === selectedTrail);
+    const bounds = new LngLatBounds();
+
+    if (trail) {
+      let decoded = decode(trail.encoded);
+      decoded = swapCoordinates(decoded);
+
+      decoded.forEach((node) => {
+        bounds.extend([node[0], node[1]]);
+      });
+    }
+    if (!bounds.isEmpty()) {
+      mapRef.current?.fitBounds(bounds, { padding: 100 });
+    }
+  }, [selectedTrail, trails]);
+
+  useEffect(() => {
+    const node = nodes.find((node) => node.id === selectedNode);
+
+    if (node) {
+      mapRef.current?.flyTo({ center: [node.lng, node.lat], padding: 100 });
+    }
+  }, [selectedNode, nodes]);
+
   useKeyboard(['Z', 'X', ' '], ref.current, [
     () => {
       mapRef.current?.zoomIn({ duration: 150 });
@@ -556,6 +587,10 @@ const MapContainer = ({
             {...trailHighlightLayer}
             filter={['==', hoveredTrail ?? null, ['get', 'id']]}
           />
+          <Layer
+            {...trailSelectedLayer}
+            filter={['==', selectedTrail ?? null, ['get', 'id']]}
+          />
         </Source>
         <Source type="geojson" data={routeData} lineMetrics={true}>
           <Layer {...routeLayer} />
@@ -565,6 +600,10 @@ const MapContainer = ({
           <Layer
             {...nodeHighlightLayer}
             filter={['==', hoveredNode ?? null, ['get', 'id']]}
+          />
+          <Layer
+            {...nodeSelectedLayer}
+            filter={['==', selectedNode ?? null, ['get', 'id']]}
           />
         </Source>
         <Source type="geojson" data={closedTrailsData}>
