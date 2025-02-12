@@ -4,7 +4,7 @@ import NodeIcon from '@components/icons/NodeIcon';
 import ShelterIcon from '@components/icons/ShelterIcon';
 import { formatMetersToKm, formatMinutesToHours } from '@lib/utils';
 import classNames from 'classnames';
-import { Fragment, memo, useEffect, useMemo, useState } from 'react';
+import { Fragment, memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
   MdChevronLeft,
   MdChevronRight,
@@ -48,6 +48,8 @@ const RouteSegmentsNew = ({
     return _mappedSegments;
   }, [segments]);
 
+  const ref = useRef<HTMLUListElement>(null);
+
   const onNextSegment = () => {
     setSegmentIndex((v) => (v < mappedSegments.length - 1 ? v + 1 : v));
   };
@@ -62,11 +64,14 @@ const RouteSegmentsNew = ({
     }
 
     const { segment, type } = mappedSegments[segmentIndex];
-
     onSelectSegment(
       type === 'trail' ? segment.trail_id : segment.node_id,
       type,
     );
+
+    ref.current
+      ?.querySelectorAll('li')
+      [segmentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [mappedSegments, onSelectSegment, segmentIndex]);
 
   return mappedSegments.length > 0 ? (
@@ -80,7 +85,7 @@ const RouteSegmentsNew = ({
           <MdChevronRight className={s.controls__icon} />
         </button>
       </div>
-      <ul className={s.list}>
+      <ul className={s.list} ref={ref}>
         {mappedSegments.map(({ type, segment }, index) => {
           if (type === 'node') {
             const _totalTime = totalTime;
