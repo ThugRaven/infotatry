@@ -136,6 +136,7 @@ const MapSidebar = ({
 
           <AvalancheInfo level={dangerLevel} increase={increase} />
           <RouteSegmentsNew
+            key={(data && data[index].trails.toString()) ?? ''}
             segments={(data && data[index].segments) ?? []}
             onHover={onHover}
             onSelectSegment={onSelectSegment}

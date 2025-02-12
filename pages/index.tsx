@@ -321,6 +321,8 @@ const MapPage = () => {
   const handleSearch = useCallback((searchForm: SearchForm | null) => {
     console.log('handleSearch');
     if (!searchForm) {
+      setSelectedNode(-1);
+      setSelectedTrail(-1);
       return setQuery(null);
     }
 
