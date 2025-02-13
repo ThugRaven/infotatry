@@ -432,11 +432,11 @@ const MapPage = () => {
 
   const handleClick = useCallback((id: number, type: 'node' | 'trail') => {
     if (type === 'node') {
-      setSelectedNode(id);
+      setSelectedNode((v) => (v === id ? -1 : id));
       setSelectedTrail(-1);
     } else {
       setSelectedNode(-1);
-      setSelectedTrail(id);
+      setSelectedTrail((v) => (v === id ? -1 : id));
     }
   }, []);
 

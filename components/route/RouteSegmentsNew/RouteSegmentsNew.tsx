@@ -102,7 +102,7 @@ const RouteSegmentsNew = ({
                   onMouseOver={() => onHover(segment.node_id, 'node')}
                   onMouseLeave={() => onHover(-1, 'node')}
                   onClick={() => {
-                    setSegmentIndex(index);
+                    setSegmentIndex((v) => (v === index ? -1 : index));
                     onClick(segment.node_id, 'node');
                   }}
                 >
@@ -141,7 +141,7 @@ const RouteSegmentsNew = ({
                     onMouseOver={() => onHover(segment.trail_id, 'trail')}
                     onMouseLeave={() => onHover(-1, 'trail')}
                     onClick={() => {
-                      setSegmentIndex(index);
+                      setSegmentIndex((v) => (v === index ? -1 : index));
                       onClick(segment.trail_id, 'trail');
                     }}
                   >
