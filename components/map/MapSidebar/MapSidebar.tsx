@@ -32,6 +32,7 @@ interface MapSidebarProps {
   onWeatherModalOpen: () => void;
   onHover: (id: number, type: 'node' | 'trail') => void;
   onSelectSegment: (id: number, type: 'node' | 'trail') => void;
+  onClick: (id: number, type: 'node' | 'trail') => void;
   className?: string;
 }
 
@@ -55,6 +56,7 @@ const MapSidebar = ({
   onWeatherModalOpen,
   onHover,
   onSelectSegment,
+  onClick,
   className,
 }: MapSidebarProps) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -140,6 +142,7 @@ const MapSidebar = ({
             segments={(data && data[index].segments) ?? []}
             onHover={onHover}
             onSelectSegment={onSelectSegment}
+            onClick={onClick}
           />
         </div>
       </div>

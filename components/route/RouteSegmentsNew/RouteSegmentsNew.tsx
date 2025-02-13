@@ -19,12 +19,14 @@ interface RouteSegmentsProps {
   segments: TrailSegment[] | Segment[];
   onHover: (id: number, type: 'node' | 'trail') => void;
   onSelectSegment: (id: number, type: 'node' | 'trail') => void;
+  onClick: (id: number, type: 'node' | 'trail') => void;
 }
 
 const RouteSegmentsNew = ({
   segments,
   onHover,
   onSelectSegment,
+  onClick,
 }: RouteSegmentsProps) => {
   let totalTime = 0;
   let totalDistance = 0;
@@ -99,6 +101,10 @@ const RouteSegmentsNew = ({
                   key={`${index}-node`}
                   onMouseOver={() => onHover(segment.node_id, 'node')}
                   onMouseLeave={() => onHover(-1, 'node')}
+                  onClick={() => {
+                    setSegmentIndex(index);
+                    onClick(segment.node_id, 'node');
+                  }}
                 >
                   <div
                     className={classNames(s.item, s['item--node'], {
@@ -134,6 +140,10 @@ const RouteSegmentsNew = ({
                     key={`${index}-trail`}
                     onMouseOver={() => onHover(segment.trail_id, 'trail')}
                     onMouseLeave={() => onHover(-1, 'trail')}
+                    onClick={() => {
+                      setSegmentIndex(index);
+                      onClick(segment.trail_id, 'trail');
+                    }}
                   >
                     <div
                       className={classNames(s.item, s['item--trail'], {

@@ -430,6 +430,16 @@ const MapPage = () => {
     [],
   );
 
+  const handleClick = useCallback((id: number, type: 'node' | 'trail') => {
+    if (type === 'node') {
+      setSelectedNode(id);
+      setSelectedTrail(-1);
+    } else {
+      setSelectedNode(-1);
+      setSelectedTrail(id);
+    }
+  }, []);
+
   return (
     <>
       <div className={s.container}>
@@ -463,6 +473,7 @@ const MapPage = () => {
           onWeatherModalOpen={onWeatherModalOpen}
           onHover={handleHover}
           onSelectSegment={handleSelectSegment}
+          onClick={handleClick}
           className={s.sidebar}
         />
         <Modal isOpen={isModalOpen} onClose={onClose} isCentered>
