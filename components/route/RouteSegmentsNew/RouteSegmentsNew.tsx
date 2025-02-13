@@ -14,6 +14,7 @@ import {
 import { Segment } from 'types/hikes-types';
 import { TrailSegment } from 'types/route-types';
 import s from './RouteSegmentsNew.module.css';
+import { useKeyboard } from 'hooks/useKeyboard';
 
 interface RouteSegmentsProps {
   segments: TrailSegment[] | Segment[];
@@ -51,6 +52,7 @@ const RouteSegmentsNew = ({
   }, [segments]);
 
   const ref = useRef<HTMLUListElement>(null);
+  const keyboardRef = useRef<HTMLDivElement>(null);
 
   const onNextSegment = () => {
     setSegmentIndex((v) => (v < mappedSegments.length - 1 ? v + 1 : v));
@@ -76,14 +78,31 @@ const RouteSegmentsNew = ({
       [segmentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [mappedSegments, onSelectSegment, segmentIndex]);
 
+  useKeyboard(['ArrowLeft', 'ArrowRight'], keyboardRef.current, [
+    () => {
+      onPreviousSegment();
+    },
+    () => {
+      onNextSegment();
+    },
+  ]);
+
   return mappedSegments.length > 0 ? (
-    <section>
+    <section ref={keyboardRef}>
       <h2 className={s.title}>Przebieg trasy</h2>
       <div className={s.controls}>
-        <button onClick={onPreviousSegment} className={s.controls__btn}>
+        <button
+          onClick={onPreviousSegment}
+          className={s.controls__btn}
+          title="Poprzedni (←)"
+        >
           <MdChevronLeft className={s.controls__icon} />
         </button>
-        <button onClick={onNextSegment} className={s.controls__btn}>
+        <button
+          onClick={onNextSegment}
+          className={s.controls__btn}
+          title="Następny (→)"
+        >
           <MdChevronRight className={s.controls__icon} />
         </button>
       </div>
