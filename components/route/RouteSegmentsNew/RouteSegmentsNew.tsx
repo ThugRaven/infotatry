@@ -9,7 +9,9 @@ import {
   MdChevronLeft,
   MdChevronRight,
   MdErrorOutline,
+  MdFirstPage,
   MdLandscape,
+  MdLastPage,
 } from 'react-icons/md';
 import { Segment } from 'types/hikes-types';
 import { TrailSegment } from 'types/route-types';
@@ -62,6 +64,14 @@ const RouteSegmentsNew = ({
     setSegmentIndex((v) => (v > 0 ? v - 1 : 0));
   };
 
+  const onFirstSegment = () => {
+    setSegmentIndex(0);
+  };
+
+  const onLastSegment = () => {
+    setSegmentIndex(mappedSegments.length - 1);
+  };
+
   useEffect(() => {
     if (!mappedSegments[segmentIndex]) {
       return;
@@ -92,6 +102,13 @@ const RouteSegmentsNew = ({
       <h2 className={s.title}>Przebieg trasy</h2>
       <div className={s.controls}>
         <button
+          onClick={onFirstSegment}
+          className={s.controls__btn}
+          title="Pierwszy"
+        >
+          <MdFirstPage className={s.controls__icon} />
+        </button>
+        <button
           onClick={onPreviousSegment}
           className={s.controls__btn}
           title="Poprzedni (←)"
@@ -104,6 +121,13 @@ const RouteSegmentsNew = ({
           title="Następny (→)"
         >
           <MdChevronRight className={s.controls__icon} />
+        </button>
+        <button
+          onClick={onLastSegment}
+          className={s.controls__btn}
+          title="Ostatni"
+        >
+          <MdLastPage className={s.controls__icon} />
         </button>
       </div>
       <ul className={s.list} ref={ref}>
