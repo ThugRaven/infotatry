@@ -15,7 +15,7 @@ import s from './MapSidebar.module.css';
 import RouteSegmentsNew from '@components/route/RouteSegmentsNew';
 
 interface MapSidebarProps {
-  isOpen: boolean;
+  isCollapsed: boolean;
   onToggle: () => void;
   onWidthChange: (width: number) => void;
   isLoading: boolean;
@@ -39,7 +39,7 @@ interface MapSidebarProps {
 export type SearchForm = { [key: number]: string };
 
 const MapSidebar = ({
-  isOpen,
+  isCollapsed,
   onToggle,
   onWidthChange,
   isLoading,
@@ -76,16 +76,16 @@ const MapSidebar = ({
       className={classNames(
         s.wrapper,
         {
-          [s['wrapper--collapsed']]: !isOpen,
+          [s['wrapper--collapsed']]: !isCollapsed,
         },
         className,
       )}
       ref={ref}
     >
-      <div className={`${s.container} ${!isOpen ? s.collapsed : ''}`}>
+      <div className={`${s.container} ${!isCollapsed ? s.collapsed : ''}`}>
         <button className={s.toggle} onClick={onToggle}>
           <MdChevronLeft
-            className={`${s.toggle__icon} ${!isOpen ? s.rotate : ''}`}
+            className={`${s.toggle__icon} ${!isCollapsed ? s.rotate : ''}`}
           />
         </button>
 

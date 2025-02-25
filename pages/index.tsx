@@ -85,7 +85,7 @@ const popupReducer = (state: PopupState, action: PopupAction): PopupState => {
 };
 
 const MapPage = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [width, setWidth] = useState(0);
   const [query, setQuery] = useState<SearchForm | null>(null);
   const [index, setIndex] = useState(0);
@@ -116,7 +116,7 @@ const MapPage = () => {
   );
 
   const onToggle = useCallback(() => {
-    setIsOpen((open) => !open);
+    setIsCollapsed((collapsed) => !collapsed);
   }, []);
 
   const onWidthChange = useCallback((width: number) => {
@@ -383,7 +383,7 @@ const MapPage = () => {
           console.log(data);
           console.log(data && data._id);
           if (data) {
-            setIsOpen(false);
+            setIsCollapsed(false);
             router.push(`/hikes/planned/${data._id}`);
           }
         },
@@ -445,7 +445,7 @@ const MapPage = () => {
       <div className={s.container}>
         <div className={s.map}>
           <MapContainer
-            padding={isOpen ? width : 0}
+            padding={isCollapsed ? width : 0}
             trailIds={data && data[index].trails}
             popupDispatch={dispatch}
             hoveredNode={hoveredNode}
@@ -456,7 +456,7 @@ const MapPage = () => {
           />
         </div>
         <MapSidebar
-          isOpen={isOpen}
+          isCollapsed={isCollapsed}
           onToggle={onToggle}
           onWidthChange={onWidthChange}
           isLoading={isLoading}
