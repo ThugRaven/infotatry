@@ -17,12 +17,14 @@ import { Segment } from 'types/hikes-types';
 import { TrailSegment } from 'types/route-types';
 import s from './RouteSegmentsNew.module.css';
 import { useKeyboard } from 'hooks/useKeyboard';
+import { useMediaQuery } from '@chakra-ui/react';
 
 interface RouteSegmentsProps {
   segments: TrailSegment[] | Segment[];
   onHover: (id: number, type: 'node' | 'trail') => void;
   onSelectSegment: (id: number, type: 'node' | 'trail') => void;
   onClick: (id: number, type: 'node' | 'trail') => void;
+  isCollapsed: boolean;
 }
 
 const RouteSegmentsNew = ({
@@ -30,6 +32,7 @@ const RouteSegmentsNew = ({
   onHover,
   onSelectSegment,
   onClick,
+  isCollapsed,
 }: RouteSegmentsProps) => {
   let totalTime = 0;
   let totalDistance = 0;
@@ -72,6 +75,8 @@ const RouteSegmentsNew = ({
     setSegmentIndex(mappedSegments.length - 1);
   };
 
+  const [isDesktopSidebar] = useMediaQuery('(min-width: 768px)');
+
   useEffect(() => {
     if (!mappedSegments[segmentIndex]) {
       return;
@@ -83,10 +88,17 @@ const RouteSegmentsNew = ({
       type,
     );
 
-    ref.current
-      ?.querySelectorAll('li')
-      [segmentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [mappedSegments, onSelectSegment, segmentIndex]);
+    ref.current?.querySelectorAll('li')[segmentIndex].scrollIntoView({
+      behavior: 'smooth',
+      block: !isDesktopSidebar && isCollapsed ? 'end' : 'center',
+    });
+  }, [
+    mappedSegments,
+    onSelectSegment,
+    segmentIndex,
+    isDesktopSidebar,
+    isCollapsed,
+  ]);
 
   useKeyboard(['ArrowLeft', 'ArrowRight'], keyboardRef.current, [
     () => {

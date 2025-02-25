@@ -143,6 +143,7 @@ const MapSidebar = ({
             onHover={onHover}
             onSelectSegment={onSelectSegment}
             onClick={onClick}
+            isCollapsed={isCollapsed}
           />
         </div>
       </div>
