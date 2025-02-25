@@ -264,7 +264,7 @@ const MapPopup = forwardRef<HTMLDivElement | null, MapPopupProps>(
         onClose={onClose}
         closeOnClick={false}
         closeButton={false}
-        maxWidth="300px"
+        maxWidth={undefined}
       >
         {feature && feature.properties && type ? (
           <div className={s.popup}>

@@ -1,9 +1,22 @@
 .mapbox__popup {
   --icon-size: var(--icon-24dp);
 
+  max-width: 200px;
   color: var(--text-primary-dark);
   font-family: var(--ff-primary);
-  font-size: clamp(var(--fs-base), 1vw, var(--fs-xl));
+  font-size: clamp(var(--fs-sm), 1.5vw, var(--fs-xl));
+}
+
+@media screen and (min-width: 320px) {
+  .mapbox__popup {
+    max-width: 240px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .mapbox__popup {
+    max-width: 300px;
+  }
 }
 
 .popup {
@@ -32,7 +45,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--space-2);
+  gap: 0 var(--space-2);
 }
 
 .info__item {
@@ -85,9 +98,16 @@
 }
 
 .button > svg {
-  width: var(--icon-20dp);
-  height: var(--icon-20dp);
+  width: var(--icon-16dp);
+  height: var(--icon-16dp);
   fill: var(--clr-900);
+}
+
+@media screen and (min-width: 768px) {
+  .button > svg {
+    width: var(--icon-20dp);
+    height: var(--icon-20dp);
+  }
 }
 
 .button:hover,
